@@ -74,7 +74,6 @@
     --text-sub: #D3CBE8;
   }
 
-  /* Isolated Decorative Background */
   .bg-decor {
     position: fixed;
     inset: 0;
@@ -127,7 +126,25 @@
     border-radius: 55% 45% 0 0;
   }
 
-  /* Main Responsive Shell */
+  .screen-flash {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255, 234, 167, 0.75), rgba(255, 107, 157, 0.35));
+    pointer-events: none !important;
+    z-index: 110;
+    opacity: 0;
+    transition: opacity 0.35s ease-out;
+  }
+  .screen-flash.active { opacity: 1; }
+
+  .fly-reward {
+    position: fixed;
+    font-size: 1.5rem;
+    z-index: 130;
+    pointer-events: none !important;
+    transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.65s ease-in;
+  }
+
   #app-shell {
     position: relative;
     z-index: 10;
@@ -150,7 +167,6 @@
     }
   }
 
-  /* Touch-safe buttons */
   button {
     font-family: inherit;
     cursor: pointer;
@@ -164,7 +180,6 @@
     pointer-events: none;
   }
 
-  /* Top Status Bar */
   .top-bar {
     display: flex;
     align-items: center;
@@ -215,6 +230,12 @@
     border: 2px solid #FFEAA7;
     white-space: nowrap;
   }
+  .stat-pill.clickable-pill {
+    cursor: pointer;
+  }
+  .stat-pill.clickable-pill:active {
+    transform: translateY(1px);
+  }
 
   .icon-btn {
     width: 38px;
@@ -232,7 +253,6 @@
   }
   .icon-btn:active { transform: translateY(2px) scale(0.95); }
 
-  /* Strict Block Vertical Flow for Views */
   .app-main {
     display: block;
     width: 100%;
@@ -246,7 +266,6 @@
     display: block;
   }
 
-  /* Companion Banner */
   .companion-card {
     display: flex;
     align-items: center;
@@ -299,11 +318,22 @@
 
   .pet-name {
     font-weight: 900;
-    font-size: 0.98rem;
+    font-size: 0.96rem;
     color: #E84393;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .pet-skill-tag {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #0984E3;
+    background: #E8F4FD;
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-bottom: 4px;
+    display: inline-block;
   }
 
   .switch-pet-btn {
@@ -322,8 +352,8 @@
     background: #F8F9FA;
     color: #57606F;
     border-radius: 12px;
-    padding: 5px 9px;
-    font-size: 0.8rem;
+    padding: 4px 9px;
+    font-size: 0.78rem;
     font-weight: 700;
     margin-bottom: 6px;
     white-space: nowrap;
@@ -358,7 +388,92 @@
     transition: width 0.3s ease;
   }
 
-  /* Difficulty Strip */
+  .daily-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    border: 2px solid #FFEAA7;
+    box-shadow: 0 4px 0 rgba(253, 203, 110, 0.25);
+  }
+  .daily-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    font-weight: 900;
+    margin-bottom: 6px;
+    color: #B36B00;
+    flex-wrap: wrap;
+  }
+  body.theme-night .daily-card-header { color: #FFEAA7; }
+
+  .challenge-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 14px;
+    background: linear-gradient(90deg, rgba(162, 155, 254, 0.16), rgba(255, 107, 157, 0.14));
+    border: 1.5px solid rgba(162, 155, 254, 0.45);
+    margin-bottom: 8px;
+    font-size: 0.76rem;
+    font-weight: 800;
+  }
+
+  .daily-mission-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: 12px;
+    background: rgba(255, 249, 235, 0.75);
+    margin-bottom: 5px;
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+  body.theme-night .daily-mission-row { background: rgba(255, 255, 255, 0.08); }
+  .daily-mission-row:last-child { margin-bottom: 0; }
+  .daily-mission-row.completed { border: 1.5px solid #FECA57; }
+  .daily-mission-row.claimed { opacity: 0.82; }
+
+  .daily-mission-icon { font-size: 1.05rem; }
+  .daily-mission-content { flex: 1; min-width: 0; }
+  .daily-mission-progress { font-size: 0.72rem; color: var(--text-sub); }
+  .daily-mission-reward { font-size: 0.72rem; color: #E67E22; font-weight: 900; white-space: nowrap; }
+
+  .daily-mission-claim {
+    padding: 4px 10px;
+    min-height: 44px;
+    border-radius: 12px;
+    font-size: 0.74rem;
+    font-weight: 900;
+    background: #F1F2F6;
+    color: #57606F;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .daily-mission-claim.ready {
+    background: linear-gradient(180deg, #FFEAA7, #FDCB6E);
+    color: #7F5500;
+    border-bottom: 3px solid #E1B12C;
+    animation: pulseClaim 1.2s infinite;
+  }
+  .daily-mission-claim.claimed {
+    background: transparent;
+    color: #1DD1A1;
+    min-height: 32px;
+  }
+  @keyframes pulseClaim {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+  }
+
   .diff-strip {
     display: flex;
     align-items: center;
@@ -388,7 +503,7 @@
 
   .diff-btn {
     padding: 6px 12px;
-    min-height: 36px;
+    min-height: 44px;
     border-radius: 12px;
     font-weight: 800;
     font-size: 0.82rem;
@@ -402,7 +517,6 @@
     border-bottom-color: #E1B12C;
   }
 
-  /* Section Title */
   .sec-heading {
     font-size: 0.86rem;
     font-weight: 900;
@@ -413,7 +527,6 @@
     justify-content: space-between;
   }
 
-  /* Uniform 3-Column Equal-Size Card Rows */
   .uniform-row-3 {
     display: flex;
     flex-direction: row;
@@ -524,7 +637,6 @@
     box-shadow: 0 2px 4px rgba(255, 71, 87, 0.4);
   }
 
-  /* Card Accent Borders & Icon Pill Colors */
   .c-clock { border-color: #70A1FF; border-bottom-color: #1E90FF; }
   .c-clock .card-icon-pill { background: linear-gradient(180deg, #54A0FF, #2E86DE); }
 
@@ -561,7 +673,6 @@
   .c-whack { border-color: #FFCCCC; border-bottom-color: #FF6B81; }
   .c-whack .card-icon-pill { background: linear-gradient(180deg, #FF9FF3, #F368E0); }
 
-  /* Bottom Navigation */
   .bottom-nav {
     position: fixed;
     bottom: calc(var(--safe-bottom) + 8px);
@@ -602,7 +713,6 @@
     box-shadow: inset 0 1px 0 #fff, 0 2px 0 #FFB8D0;
   }
 
-  /* Game Stage Overlay / View */
   .game-hud {
     display: flex;
     align-items: center;
@@ -622,7 +732,7 @@
     border: 1.5px solid #FFC2D4;
     border-radius: 12px;
     padding: 6px 10px;
-    min-height: 38px;
+    min-height: 44px;
     font-weight: 900;
     font-size: 0.82rem;
     white-space: nowrap;
@@ -673,7 +783,44 @@
     padding: 3px 8px;
     border-radius: 999px;
     font-size: 0.78rem;
+    transition: all 0.2s;
   }
+  .combo-chip.tier2 { background: linear-gradient(90deg, #FF6B6B, #FF9F43); }
+  .combo-chip.tier3 { background: linear-gradient(90deg, #6C5CE7, #E84393); }
+  .combo-chip.tier4 { background: linear-gradient(90deg, #FF6B9D, #FECA57, #1DD1A1); color: #2D3436; }
+
+  .event-banner {
+    background: linear-gradient(90deg, #FFF3BF, #FFE8CC);
+    border: 2px solid #FFA94D;
+    color: #8C4A00;
+    border-radius: 14px;
+    padding: 6px 12px;
+    margin-bottom: 8px;
+    font-size: 0.82rem;
+    font-weight: 900;
+    text-align: center;
+    display: none;
+  }
+  .event-banner.active { display: block; }
+  .event-banner.boss {
+    background: linear-gradient(90deg, #FFE3E3, #FFC9C9);
+    border-color: #FF6B6B;
+    color: #A61E4D;
+  }
+
+  .game-pet-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 14px;
+    padding: 5px 10px;
+    margin-bottom: 8px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--text-main);
+  }
+  body.theme-night .game-pet-bar { background: rgba(255, 255, 255, 0.1); }
 
   .time-progress-wrap {
     width: 100%;
@@ -681,7 +828,7 @@
     background: rgba(255, 255, 255, 0.7);
     border-radius: 999px;
     overflow: hidden;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     border: 1px solid #FFD6E5;
   }
   .time-progress-bar {
@@ -701,7 +848,6 @@
     margin-bottom: 10px;
   }
 
-  /* Powerups Bar */
   .powerups-bar {
     display: flex;
     gap: 8px;
@@ -724,8 +870,19 @@
     gap: 4px;
   }
   .powerup-btn:active { transform: translateY(2px); }
+  .powerup-btn.active-shield {
+    border-color: #1DD1A1;
+    background: #E6FCF5;
+    color: #087F5B;
+  }
+  .powerup-btn.empty {
+    opacity: 0.45;
+    filter: grayscale(0.8);
+  }
+  .powerup-btn:disabled {
+    cursor: not-allowed;
+  }
 
-  /* Keypad & Options */
   .keypad-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -766,15 +923,42 @@
     color: #2D3436;
     border: 2.5px solid rgba(0, 0, 0, 0.08);
     border-bottom-width: 5px;
-    transition: transform 0.1s;
+    transition: all 0.15s;
   }
   .choice-pill:active { transform: translateY(2px); }
   .choice-pill.c0 { background: linear-gradient(180deg, #D6EAFF, #AED6FF); border-bottom-color: #54A0FF; }
   .choice-pill.c1 { background: linear-gradient(180deg, #FFF3BF, #FFE066); border-bottom-color: #FECA57; }
   .choice-pill.c2 { background: linear-gradient(180deg, #FFD8E8, #FFB3D1); border-bottom-color: #FF6B9D; }
   .choice-pill.c3 { background: linear-gradient(180deg, #D3F9D8, #96F2D7); border-bottom-color: #1DD1A1; }
+  .choice-pill.eliminated {
+    opacity: 0.25;
+    pointer-events: none;
+    text-decoration: line-through;
+  }
+  .choice-pill.correct-glow {
+    background: linear-gradient(180deg, #69DB7C, #38D9A9) !important;
+    border-color: #2B8A3E !important;
+    color: #fff !important;
+    transform: scale(1.03);
+  }
+  .choice-pill.wrong-shake {
+    background: linear-gradient(180deg, #FFA8A8, #FF6B6B) !important;
+    border-color: #C92A2A !important;
+    color: #fff !important;
+  }
 
-  /* Clock Module Styles */
+  .feedback-callout {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 16px;
+    background: #FFF5F5;
+    border: 2px solid #FFA8A8;
+    color: #C92A2A;
+    font-size: 0.86rem;
+    font-weight: 800;
+    text-align: center;
+  }
+
   .clock-subtabs {
     display: flex;
     gap: 6px;
@@ -782,7 +966,7 @@
   }
   .clock-tab {
     flex: 1;
-    min-height: 40px;
+    min-height: 44px;
     border-radius: 14px;
     font-size: 0.8rem;
     font-weight: 800;
@@ -840,7 +1024,6 @@
     border-bottom-width: 4px;
   }
 
-  /* Schulte & Match & OddOne Grids */
   .schulte-grid {
     display: grid;
     gap: 8px;
@@ -849,9 +1032,9 @@
   }
   .schulte-cell {
     aspect-ratio: 1 / 1;
-    min-height: 54px;
+    min-height: 50px;
     border-radius: 16px;
-    font-size: 1.35rem;
+    font-size: 1.25rem;
     font-weight: 900;
     background: #FFF5E4;
     color: #6D4C41;
@@ -864,8 +1047,12 @@
     color: #2E7D32;
     opacity: 0.55;
   }
+  .schulte-cell.hint-pulse {
+    border-color: #FF4757;
+    background: #FFE3E3;
+    animation: pulseClaim 0.8s infinite;
+  }
 
-  /* Canvas Handwriting */
   .hw-canvas-wrap {
     position: relative;
     width: 100%;
@@ -885,7 +1072,6 @@
     touch-action: none;
   }
 
-  /* Visual Aids (Apples & Blocks) */
   .visual-aid-box {
     background: #FFF9EC;
     border: 2px solid #FFEAA7;
@@ -896,8 +1082,11 @@
     line-height: 1.4;
     text-align: center;
   }
+  body.theme-night .visual-aid-box {
+    background: rgba(255, 255, 255, 0.1);
+    color: #FFF8F0;
+  }
 
-  /* Learning Path Cards */
   .path-node {
     background: var(--card-bg);
     border-radius: 20px;
@@ -909,6 +1098,10 @@
     align-items: center;
     justify-content: space-between;
     gap: 10px;
+  }
+  .path-node.completed {
+    border-color: #55EFC4;
+    border-bottom-color: #00B894;
   }
   .path-badge {
     width: 52px;
@@ -924,7 +1117,6 @@
     justify-content: center;
   }
 
-  /* Pet House & Profile Cards */
   .pet-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -949,7 +1141,119 @@
     background: rgba(255, 107, 157, 0.2);
   }
 
-  /* Result Stamp & Modal */
+  .achievement-section {
+    margin-top: 8px;
+  }
+  .achievement-filter-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .ach-filter-btn {
+    padding: 6px 12px;
+    min-height: 44px;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    font-weight: 900;
+    background: #F1F2F6;
+    color: #57606F;
+    border-bottom: 3px solid #DFE4EA;
+  }
+  .ach-filter-btn.active {
+    background: linear-gradient(180deg, #FFEAA7, #FDCB6E);
+    color: #7F5500;
+    border-bottom-color: #E1B12C;
+  }
+
+  .achievement-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  @media (min-width: 768px) {
+    .achievement-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+  }
+
+  .achievement-card {
+    position: relative;
+    min-height: 102px;
+    background: rgba(0, 0, 0, 0.03);
+    border: 2px solid #ECEFF4;
+    border-radius: 16px;
+    padding: 8px 6px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .achievement-card.locked .achievement-icon {
+    filter: grayscale(1);
+    opacity: 0.55;
+  }
+  .achievement-card.locked {
+    opacity: 0.72;
+  }
+  .achievement-card.unlocked {
+    background: #FFF9EB;
+    border-color: #FDCB6E;
+    box-shadow: 0 3px 0 rgba(253, 203, 110, 0.35);
+  }
+  body.theme-night .achievement-card.unlocked {
+    background: rgba(254, 202, 87, 0.16);
+  }
+
+  .achievement-icon {
+    font-size: 1.55rem;
+    line-height: 1.1;
+  }
+  .achievement-new-badge {
+    position: absolute;
+    top: -6px;
+    right: -4px;
+    background: #FF4757;
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: 900;
+    padding: 2px 6px;
+    border-radius: 999px;
+  }
+  .achievement-progress {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: var(--text-sub);
+  }
+
+  .shop-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+    text-align: center;
+  }
+  .shop-card-item {
+    background: rgba(0, 0, 0, 0.03);
+    border: 2px solid #ECEFF4;
+    border-radius: 16px;
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .shop-card-item.owned {
+    background: #E6FCF5;
+    border-color: #63E6BE;
+  }
+  body.theme-night .shop-card-item.owned {
+    background: rgba(29, 209, 161, 0.16);
+  }
+
   .modal-backdrop {
     display: none;
     position: fixed;
@@ -965,14 +1269,62 @@
   }
   .modal-card {
     width: 100%;
-    max-width: 420px;
+    max-width: 440px;
+    max-height: 88dvh;
+    overflow-y: auto;
     background: var(--card-bg);
     border-radius: 28px;
-    padding: 22px 18px;
+    padding: 20px 18px;
     text-align: center;
     border: 3px solid #FFD6E5;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
   }
+
+  .rank-medal {
+    width: 78px;
+    height: 78px;
+    margin: 4px auto 8px auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.3rem;
+    font-weight: 900;
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+  }
+  .rank-S { background: linear-gradient(135deg, #FECA57, #FF6B9D); }
+  .rank-A { background: linear-gradient(135deg, #54A0FF, #5F27CD); }
+  .rank-B { background: linear-gradient(135deg, #1DD1A1, #10AC84); }
+  .rank-C { background: linear-gradient(135deg, #A4B0BE, #747D8C); }
+
+  .report-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin: 10px 0;
+    text-align: center;
+  }
+  .report-cell {
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 14px;
+    padding: 8px;
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+  body.theme-night .report-cell { background: rgba(255, 255, 255, 0.08); }
+
+  .result-extra-box {
+    background: #FFF9EB;
+    border: 2px solid #FFEAA7;
+    border-radius: 16px;
+    padding: 8px 10px;
+    margin: 8px 0;
+    text-align: left;
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+  body.theme-night .result-extra-box { background: rgba(255, 255, 255, 0.08); }
 
   .stamp-100 {
     width: 96px;
@@ -1003,7 +1355,7 @@
     font-size: 1rem;
     font-weight: 900;
     border-bottom: 4px solid #D63068;
-    margin-top: 10px;
+    margin-top: 8px;
   }
 
   .floating-toast {
@@ -1015,53 +1367,15 @@
     color: #fff;
     padding: 8px 16px;
     border-radius: 999px;
-    font-size: 0.85rem;
+    font-size: 0.84rem;
     font-weight: 800;
     z-index: 120;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s;
+    white-space: nowrap;
   }
   .floating-toast.show { opacity: 1; }
-
-  /* Daily Missions / Achievements / Shop */
-  .daily-card, .shop-card, .achievement-panel, .challenge-card {
-    background: var(--card-bg); border-radius: 22px; padding: 12px;
-    border: 2.5px solid #FFD6E5; box-shadow: 0 5px 0 rgba(255,184,208,.22);
-    margin-bottom: 10px;
-  }
-  .daily-head, .panel-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
-  .daily-head h3, .panel-head h3 { margin:0; font-size:1rem; }
-  .daily-count { background:#FFF0B8; color:#8B6500; padding:4px 8px; border-radius:999px; font-size:.72rem; font-weight:900; white-space:nowrap; }
-  .mission-row { display:flex; align-items:center; gap:8px; padding:8px 4px; border-top:1px solid rgba(255,214,229,.7); }
-  .mission-row:first-child { border-top:0; }
-  .mission-icon { width:34px; height:34px; border-radius:11px; background:#FFF3F8; display:flex; align-items:center; justify-content:center; font-size:1.15rem; flex:none; }
-  .mission-body { flex:1; min-width:0; }
-  .mission-title { font-size:.78rem; font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .mission-meta { display:flex; align-items:center; gap:6px; color:var(--text-sub); font-size:.68rem; font-weight:800; margin-top:4px; }
-  .mission-track { flex:1; height:7px; background:#ECEFF4; border-radius:999px; overflow:hidden; }
-  .mission-fill { height:100%; background:linear-gradient(90deg,#54A0FF,#1DD1A1); border-radius:999px; }
-  .mission-reward { color:#B36B00; font-size:.68rem; font-weight:900; white-space:nowrap; }
-  .claim-btn { min-height:32px; padding:4px 8px; border-radius:10px; background:#55EFC4; color:#005542; font-size:.7rem; font-weight:900; white-space:nowrap; }
-  .claim-btn.done { background:#E8F5E9; color:#2E7D32; }
-  .challenge-card { border-color:#B8C7FF; background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(232,235,255,.95)); }
-  .challenge-card .challenge-title { font-weight:900; font-size:.9rem; }
-  .challenge-card .challenge-desc { color:var(--text-sub); font-size:.75rem; font-weight:700; margin:3px 0 7px; }
-  .shop-grid, .achievement-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:9px; }
-  @media (min-width:600px) { .shop-grid, .achievement-grid { grid-template-columns:repeat(3,1fr); } }
-  .shop-item, .achievement-item { background:var(--card-bg); border:2px solid #FFD6E5; border-bottom-width:4px; border-radius:18px; padding:10px 8px; text-align:center; }
-  .shop-item.owned, .achievement-item.unlocked { border-color:#55EFC4; background:#F2FFFB; }
-  .shop-item.locked, .achievement-item.locked { opacity:.72; filter:saturate(.65); }
-  .shop-icon, .achievement-icon { font-size:2rem; line-height:1.1; margin-bottom:5px; }
-  .shop-name, .achievement-name { font-size:.8rem; font-weight:900; }
-  .shop-desc, .achievement-desc { color:var(--text-sub); font-size:.68rem; font-weight:700; min-height:30px; margin:4px 0 7px; }
-  .shop-buy { width:100%; min-height:36px; border-radius:11px; background:#FFEAA7; color:#7F5500; font-weight:900; font-size:.72rem; }
-  .shop-buy.owned { background:#D3F9D8; color:#2E7D32; }
-  .achievement-progress { height:6px; background:#ECEFF4; border-radius:999px; overflow:hidden; margin:6px 0; }
-  .achievement-progress > div { height:100%; background:linear-gradient(90deg,#FF9F43,#FF6B9D); }
-  .achievement-small { color:var(--text-sub); font-size:.66rem; font-weight:800; }
-  .shop-balance { color:#B36B00; font-weight:900; font-size:.8rem; }
-
 </style>
 </head>
 <body>
@@ -1074,25 +1388,24 @@
   <div class="hill-layer-2"></div>
 </div>
 
+<div id="screen-flash" class="screen-flash"></div>
 <div id="toast" class="floating-toast"></div>
 
 <div id="app-shell">
-  <!-- Top Status Bar -->
   <header class="top-bar">
     <div class="brand-pill">
       <span>🐾 JOJO數學</span>
       <span id="ui-lv" class="lv-badge">Lv.1</span>
     </div>
     <div class="stat-group">
-      <div class="stat-pill">🍪 <span id="ui-coins">200</span></div>
-      <div class="stat-pill">🔥 <span id="ui-streak">1</span></div>
+      <div class="stat-pill clickable-pill" id="coin-target-pill" data-action="open-shop" title="開啟森林商城">🍪 <span id="ui-coins">200</span></div>
+      <div class="stat-pill">🔥 <span id="ui-streak">1</span>天</div>
       <button class="icon-btn" data-action="toggle-theme" title="切換日夜背景">☀️</button>
       <button class="icon-btn" data-action="toggle-sound" id="btn-sound" title="音效開關">🔊</button>
     </div>
   </header>
 
   <main class="app-main">
-    <!-- TAB 1: HOME TRAINING -->
     <section id="view-home" class="view-pane active">
       <!-- Companion Card -->
       <div class="companion-card">
@@ -1105,6 +1418,7 @@
             <span class="pet-name" id="home-pet-name">JOJO 小熊貓</span>
             <button class="switch-pet-btn" data-action="nav" data-tab="pets">換夥伴 ›</button>
           </div>
+          <div class="pet-skill-tag" id="home-pet-skill">✨ 技能：首錯保留連擊</div>
           <div class="pet-speech" id="home-pet-speech">「啾啾～每題都有 30 秒可以慢慢想喔！」</div>
           <div class="xp-row">
             <span id="home-rank">森林見習生</span>
@@ -1114,8 +1428,15 @@
         </div>
       </div>
 
-      <div id="daily-missions-container"></div>
-      <div id="daily-challenge-container"></div>
+      <!-- Daily Missions & Timed Challenge Card -->
+      <div class="daily-card" id="daily-mission-card">
+        <div class="daily-card-header">
+          <span id="daily-countdown-label">📅 今日森林任務剩餘 -- 小時 -- 分</span>
+          <span id="daily-summary-badge">0/3 完成</span>
+        </div>
+        <div class="challenge-strip" id="daily-challenge-strip"></div>
+        <div id="daily-missions-list"></div>
+      </div>
 
       <!-- Difficulty Strip -->
       <div class="diff-strip">
@@ -1127,7 +1448,6 @@
         </div>
       </div>
 
-      <!-- Special Learning Features (Equal 3-Column Row) -->
       <div class="sec-heading">
         <span>✨ 特色互動學堂（每題 30 秒）</span>
         <span>均等大卡片</span>
@@ -1163,7 +1483,6 @@
         </button>
       </div>
 
-      <!-- 9 Focus Modes (3 Uniform Rows x 3 Equal Cards) -->
       <div class="sec-heading">
         <span>🎮 九大專注力訓練關卡</span>
         <span>⏱️ 30s / 題</span>
@@ -1257,7 +1576,6 @@
       </div>
     </section>
 
-    <!-- TAB 2: LEARNING PATH -->
     <section id="view-path" class="view-pane">
       <div class="game-arena">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -1267,49 +1585,60 @@
             <button class="diff-btn" data-action="set-path-subj" data-subj="eng">🔤 英文拼讀</button>
           </div>
         </div>
+        <div style="font-size:0.78rem; color:var(--text-sub); margin-bottom:10px; font-weight:700;">
+          依目前學科與題型累積進度（滿 100% 可領取 50 🍪 達標獎勵）
+        </div>
         <div id="path-list-container"></div>
       </div>
     </section>
 
-    <!-- TAB 3: PET HOUSE -->
     <section id="view-pets" class="view-pane">
       <div class="game-arena">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:6px;">
           <h3 style="margin:0; font-size:1.05rem;">🏡 森林小動物小屋</h3>
-          <button class="switch-pet-btn" data-action="feed-pet">🍓 餵食餅乾 (-30🍪)</button>
+          <div style="display:flex; gap:6px;">
+            <button class="switch-pet-btn" data-action="open-shop">🛒 森林商城</button>
+            <button class="switch-pet-btn" data-action="feed-pet">🍓 餵食 (-30🍪)</button>
+          </div>
         </div>
         <div class="pet-grid" id="pet-grid-container"></div>
       </div>
     </section>
 
-    <!-- TAB 4: SHOP -->
-    <section id="view-shop" class="view-pane">
-      <div class="shop-card">
-        <div class="panel-head"><h3>🛒 森林獎勵商城</h3><span class="shop-balance">🍪 <span id="shop-coins">0</span></span></div>
-        <div class="shop-grid" id="shop-grid-container"></div>
-      </div>
-    </section>
-
-    <!-- TAB 5: PROFILE & ACHIEVEMENTS -->
     <section id="view-profile" class="view-pane">
       <div class="game-arena">
-        <h3 style="margin:0 0 10px 0; font-size:1.05rem;">📊 專注力成長與系統檢測</h3>
-        <div id="stats-summary-box" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; margin-bottom:12px;"></div>
-        <div class="achievement-panel">
-          <div class="panel-head"><h3>🏅 成就徽章</h3><span class="daily-count" id="achievement-count">0/0</span></div>
-          <div class="achievement-grid" id="achievement-grid-container"></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="margin:0; font-size:1.05rem;">📊 專注力成長統計</h3>
+          <button class="switch-pet-btn" data-action="open-shop">🛒 獎勵中心／商城</button>
         </div>
-        <button class="quit-btn" style="width:100%;" data-action="reset-data">🔧 重設本機存檔（修復異常狀態）</button>
+        <div id="stats-summary-box" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; margin-bottom:10px;"></div>
+        <div id="error-insight-box" class="result-extra-box" style="margin-bottom:12px;"></div>
+
+        <div class="achievement-section">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-weight:900; font-size:0.95rem;">🏅 成就徽章</span>
+            <span style="font-weight:900; font-size:0.84rem; color:#E67E22;"><span id="ach-unlocked-count">0</span> / <span id="ach-total-count">12</span></span>
+          </div>
+          <div class="achievement-filter-row" id="ach-filter-row">
+            <button class="ach-filter-btn active" data-action="set-ach-filter" data-filter="all">全部</button>
+            <button class="ach-filter-btn" data-action="set-ach-filter" data-filter="habit">登入習慣</button>
+            <button class="ach-filter-btn" data-action="set-ach-filter" data-filter="skill">技巧</button>
+            <button class="ach-filter-btn" data-action="set-ach-filter" data-filter="explore">探索</button>
+            <button class="ach-filter-btn" data-action="set-ach-filter" data-filter="collection">養成</button>
+          </div>
+          <div class="achievement-grid" id="achievement-grid"></div>
+        </div>
+
+        <button class="quit-btn" style="width:100%; margin-top:14px;" data-action="reset-data">🔧 重設本機存檔（修復異常狀態）</button>
       </div>
     </section>
 
-    <!-- ACTIVE GAMEPLAY VIEW -->
     <section id="view-game" class="view-pane">
       <div class="game-hud">
         <button class="quit-btn" data-action="quit-game">✕ 離開</button>
         <div id="game-timer-pill" class="timer-pill">⏱️ <span id="game-timer-val">30</span>s</div>
         <div class="hud-metrics">
-          <span class="combo-chip">🔥 <span id="game-combo">0</span></span>
+          <span id="game-combo-chip" class="combo-chip">🔥 0</span>
           <span>⭐ <span id="game-score">0</span></span>
         </div>
       </div>
@@ -1318,17 +1647,24 @@
         <div id="game-time-bar" class="time-progress-bar"></div>
       </div>
 
+      <div id="game-event-banner" class="event-banner"></div>
+
+      <div class="game-pet-bar">
+        <span id="game-pet-ico" style="font-size:1.35rem;">🐼</span>
+        <span id="game-pet-line" style="flex:1;">「專心看題目，我們一定可以的！」</span>
+      </div>
+
       <div class="game-arena" id="game-stage"></div>
 
       <div class="powerups-bar">
-        <button class="powerup-btn" data-action="use-item" data-item="freeze">❄️ 凍結 (<span id="item-freeze">2</span>)</button>
-        <button class="powerup-btn" data-action="use-item" data-item="hint">💡 提示 (<span id="item-hint">2</span>)</button>
-        <button class="powerup-btn" data-action="use-item" data-item="shield">🛡️ 護盾 (<span id="item-shield">2</span>)</button>
+        <button class="powerup-btn" id="btn-item-freeze" data-action="use-item" data-item="freeze">❄️ 凍結 (<span id="item-freeze">2</span>)</button>
+        <button class="powerup-btn" id="btn-item-hint" data-action="use-item" data-item="hint">💡 提示 (<span id="item-hint">2</span>)</button>
+        <button class="powerup-btn" id="btn-item-shield" data-action="use-item" data-item="shield">🛡️ 護盾 (<span id="item-shield">2</span>)</button>
       </div>
     </section>
   </main>
 
-  <!-- Bottom 4-Tab Navigation -->
+  <!-- 4 Bottom Navigation Tabs -->
   <nav class="bottom-nav" id="bottom-nav">
     <button class="nav-btn active" data-action="nav" data-tab="home">
       <span class="nav-ico">🎮</span>
@@ -1342,10 +1678,6 @@
       <span class="nav-ico">🏡</span>
       <span>動物小屋</span>
     </button>
-    <button class="nav-btn" data-action="nav" data-tab="shop">
-      <span class="nav-ico">🛒</span>
-      <span>獎勵商城</span>
-    </button>
     <button class="nav-btn" data-action="nav" data-tab="profile">
       <span class="nav-ico">📊</span>
       <span>成長成就</span>
@@ -1357,13 +1689,37 @@
 <div id="result-modal" class="modal-backdrop">
   <div class="modal-card">
     <div id="result-stamp-area"></div>
-    <h2 id="result-title" style="margin:6px 0;">訓練完成！</h2>
-    <p id="result-desc" style="color:var(--text-sub); font-weight:700; margin:6px 0 12px 0;"></p>
-    <div style="display:flex; justify-content:center; gap:14px; font-weight:900; margin-bottom:12px;">
-      <span>⭐ 得分：<b id="res-score">0</b></span>
-      <span>🍪 獎勵：+<b id="res-coins">0</b></span>
-    </div>
+    <h2 id="result-title" style="margin:4px 0;">訓練完成！</h2>
+    <p id="result-desc" style="color:var(--text-sub); font-weight:700; font-size:0.86rem; margin:4px 0 8px 0;"></p>
+    <div class="report-grid" id="result-report-grid"></div>
+    <div id="result-suggestion-box" class="result-extra-box"></div>
+    <div id="result-mission-summary" class="result-extra-box" style="display:none;"></div>
+    <div id="result-ach-summary" class="result-extra-box" style="display:none;"></div>
     <button class="primary-action-btn" data-action="close-modal">回到學園首頁</button>
+  </div>
+</div>
+
+<!-- Achievement Detail Modal -->
+<div id="ach-detail-modal" class="modal-backdrop">
+  <div class="modal-card" id="ach-detail-card"></div>
+</div>
+
+<!-- Forest Shop Modal -->
+<div id="shop-modal" class="modal-backdrop">
+  <div class="modal-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+      <h3 style="margin:0;">🛒 森林獎勵商城</h3>
+      <span style="font-weight:900; color:#E67E22;">🍪 <span id="shop-modal-coins">0</span></span>
+    </div>
+    <div id="shop-limit-hint" style="font-size:0.74rem; color:var(--text-sub); font-weight:800; margin-bottom:8px;"></div>
+    <div class="achievement-filter-row" id="shop-cat-row">
+      <button class="ach-filter-btn active" data-action="set-shop-cat" data-cat="all">全部</button>
+      <button class="ach-filter-btn" data-action="set-shop-cat" data-cat="theme">造型</button>
+      <button class="ach-filter-btn" data-action="set-shop-cat" data-cat="item">道具</button>
+      <button class="ach-filter-btn" data-action="set-shop-cat" data-cat="collectible">收藏</button>
+    </div>
+    <div class="shop-grid" id="shop-grid"></div>
+    <button class="primary-action-btn" data-action="close-shop">關閉商城</button>
   </div>
 </div>
 
@@ -1371,24 +1727,314 @@
 (function() {
   'use strict';
 
-  const QUESTION_SECONDS = 30; // Every question / round gets 30 full seconds!
+  const STORAGE_KEY = 'jojo_math_academy_v5';
+  const BASE_QUESTION_SECONDS = 30;
+  const DAILY_COIN_LIMIT = 500;
+
+  const DAILY_MISSION_DEFS = {
+    play_2: {
+      id: 'play_2',
+      type: 'gamesCompleted',
+      category: 'basic',
+      title: '完成 2 局專注訓練',
+      icon: '🎮',
+      target: 2,
+      reward: { coins: 30, xp: 20 },
+      action: { tab: 'home' }
+    },
+    correct_5: {
+      id: 'correct_5',
+      type: 'correctAnswers',
+      category: 'basic',
+      title: '答對 5 題',
+      icon: '⭐',
+      target: 5,
+      reward: { coins: 25, xp: 30 },
+      action: { tab: 'home' }
+    },
+    combo_5: {
+      id: 'combo_5',
+      type: 'bestCombo',
+      category: 'skill',
+      title: '完成一次 5 題連擊',
+      icon: '🔥',
+      target: 5,
+      reward: { coins: 40, xp: 35 },
+      action: { tab: 'home' }
+    },
+    review_1: {
+      id: 'review_1',
+      type: 'reviewCompleted',
+      category: 'skill',
+      title: '完成 1 題錯題訂正',
+      icon: '⏰',
+      target: 1,
+      reward: { coins: 20, xp: 30 },
+      action: { mode: 'review' }
+    },
+    modes_2: {
+      id: 'modes_2',
+      type: 'uniqueModes',
+      category: 'explore',
+      title: '挑戰 2 種不同玩法',
+      icon: '🧭',
+      target: 2,
+      reward: { coins: 35, xp: 25 },
+      action: { tab: 'home' }
+    },
+    pet_feed_1: {
+      id: 'pet_feed_1',
+      type: 'petFed',
+      category: 'collection',
+      title: '餵食夥伴 1 次',
+      icon: '🍓',
+      target: 1,
+      reward: { coins: 15, xp: 15 },
+      action: { tab: 'pets' }
+    }
+  };
+
+  const TIMED_CHALLENGE_DEFS = {
+    speedRush: {
+      id: 'speedRush',
+      title: '⚡ 閃電速算衝刺',
+      description: '在 20 秒內答對 3 題',
+      mode: 'speed',
+      target: 3,
+      timeLimit: 20,
+      reward: { coins: 60, xp: 50 }
+    },
+    clutchMaster: {
+      id: 'clutchMaster',
+      title: '🔥 最後一秒也不慌',
+      description: '在剩餘 5 秒內答對 2 題',
+      target: 2,
+      reward: { coins: 75, xp: 60 }
+    },
+    reviewRush: {
+      id: 'reviewRush',
+      title: '⏰ 錯題訂正衝刺',
+      description: '在一局錯題複習中完成 2 題',
+      mode: 'review',
+      target: 2,
+      reward: { coins: 70, xp: 60 }
+    }
+  };
+
+  const LOGIN_ACHIEVEMENTS = [
+    {
+      id: 'login_3',
+      category: 'habit',
+      icon: '📅',
+      title: '三日不間斷',
+      description: '連續登入 3 天',
+      type: 'loginStreak',
+      target: 3,
+      reward: { coins: 60, xp: 50 }
+    },
+    {
+      id: 'login_7',
+      category: 'habit',
+      icon: '🔥',
+      title: '一週習慣',
+      description: '連續登入 7 天',
+      type: 'loginStreak',
+      target: 7,
+      reward: { coins: 150, xp: 100 }
+    },
+    {
+      id: 'login_14',
+      category: 'habit',
+      icon: '🌟',
+      title: '專注小達人',
+      description: '連續登入 14 天',
+      type: 'loginStreak',
+      target: 14,
+      reward: { coins: 300, xp: 200 }
+    }
+  ];
+
+  const ACHIEVEMENT_DEFS = [
+    ...LOGIN_ACHIEVEMENTS,
+    {
+      id: 'first_game',
+      category: 'explore',
+      icon: '🏆',
+      title: '初次出發',
+      description: '完成第一局專注訓練',
+      type: 'gamesCompleted',
+      target: 1,
+      reward: { coins: 50, xp: 30 }
+    },
+    {
+      id: 'combo_10',
+      category: 'skill',
+      icon: '🔥',
+      title: '連擊高手',
+      description: '單局達成 10 題連擊',
+      type: 'bestCombo',
+      target: 10,
+      reward: { coins: 100, xp: 60 }
+    },
+    {
+      id: 'correct_100',
+      category: 'skill',
+      icon: '💯',
+      title: '百題小達人',
+      description: '累計答對 100 題',
+      type: 'correctAnswers',
+      target: 100,
+      reward: { coins: 120, xp: 80 }
+    },
+    {
+      id: 'review_10',
+      category: 'skill',
+      icon: '⏰',
+      title: '錯題終結者',
+      description: '完成 10 題錯題訂正',
+      type: 'reviewCompleted',
+      target: 10,
+      reward: { coins: 100, xp: 80 }
+    },
+    {
+      id: 'mode_6',
+      category: 'explore',
+      icon: '🧭',
+      title: '森林探險家',
+      description: '挑戰 6 種不同遊戲模式',
+      type: 'uniqueModes',
+      target: 6,
+      reward: { coins: 100, xp: 70 }
+    },
+    {
+      id: 'perfect_round',
+      category: 'skill',
+      icon: '🌟',
+      title: '全神貫注',
+      description: '單局 8 題全部答對',
+      type: 'perfectRounds',
+      target: 1,
+      reward: { coins: 150, xp: 100 }
+    },
+    {
+      id: 'pet_3',
+      category: 'collection',
+      icon: '🐾',
+      title: '寵物收藏家',
+      description: '解鎖 3 隻森林夥伴',
+      type: 'petsUnlocked',
+      target: 3,
+      reward: { coins: 100, xp: 60 }
+    },
+    {
+      id: 'feed_10',
+      category: 'collection',
+      icon: '🍓',
+      title: '照顧小達人',
+      description: '餵食夥伴 10 次',
+      type: 'petFed',
+      target: 10,
+      reward: { coins: 80, xp: 50 }
+    },
+    {
+      id: 'all_modes',
+      category: 'explore',
+      icon: '👑',
+      title: '全模式制霸',
+      description: '至少完成所有遊戲模式一次',
+      type: 'uniqueModes',
+      target: 12,
+      reward: { coins: 300, xp: 200 }
+    }
+  ];
+
+  const SHOP_ITEMS = [
+    { id: 'theme-sunset', category: 'theme', title: '粉彩夕陽背景', icon: '🌅', cost: 120, unique: true, kind: 'theme', value: 'sunset' },
+    { id: 'theme-night', category: 'theme', title: '星空夜色背景', icon: '🌙', cost: 180, unique: true, kind: 'theme', value: 'night' },
+    { id: 'theme-rainbow-card', category: 'theme', title: '彩虹卡片主題', icon: '🌈', cost: 160, unique: true, kind: 'collectible', value: 'rainbow_card' },
+    { id: 'stamp-crown', category: 'theme', title: '皇冠結果印章', icon: '👑', cost: 200, unique: true, kind: 'collectible', value: 'crown_stamp' },
+    { id: 'pack-freeze', category: 'item', title: '凍結補給包 (+2)', icon: '❄️', cost: 70, unique: false, kind: 'item', itemKey: 'freeze', amount: 2 },
+    { id: 'pack-hint', category: 'item', title: '提示補給包 (+2)', icon: '💡', cost: 70, unique: false, kind: 'item', itemKey: 'hint', amount: 2 },
+    { id: 'pack-shield', category: 'item', title: '護盾補給包 (+2)', icon: '🛡️', cost: 70, unique: false, kind: 'item', itemKey: 'shield', amount: 2 },
+    { id: 'pack-bundle', category: 'item', title: '全道具小禮包', icon: '🎒', cost: 150, unique: false, kind: 'bundle', amount: 2 },
+    { id: 'badge-star', category: 'collectible', title: '閃亮星星徽章', icon: '⭐', cost: 140, unique: true, kind: 'collectible', value: 'star_badge' },
+    { id: 'toy-ball', category: 'collectible', title: '寵物專屬毛線球', icon: '🧶', cost: 130, unique: true, kind: 'collectible', value: 'yarn_toy' }
+  ];
 
   const PETS = [
-    { id: 'panda', name: 'JOJO 小熊貓', emoji: '🐼', cost: 0, quote: '「啾啾～每題都有 30 秒，看清楚再出手喔！」' },
-    { id: 'chick', name: '披風小雞隊長', emoji: '🐥', cost: 120, quote: '「滴滴！我們一起把錯題全部訂正成 100 分！」' },
-    { id: 'bunny', name: '麻糬小兔', emoji: '🐰', cost: 180, quote: '「跳跳～時鐘的短針看小時、長針看分鐘喔！」' },
-    { id: 'shiba', name: '布丁小柴犬', emoji: '🐶', cost: 250, quote: '「汪汪！專注力滿分，餅乾獎勵拿不完！」' },
-    { id: 'seal', name: '泡泡小海豹', emoji: '🦭', cost: 320, quote: '「呼嚕～心平氣和，30 秒一定算得出來！」' },
-    { id: 'hedgehog', name: '奇異果小刺蝟', emoji: '🦔', cost: 400, quote: '「沙沙～細心觀察每一個數字與指針位置！」' }
+    { id: 'panda', name: 'JOJO 小熊貓', emoji: '🐼', cost: 0, skill: '每局首錯保留連擊', quote: '「啾啾～每題都有 30 秒，看清楚再出手喔！」' },
+    { id: 'chick', name: '披風小雞隊長', emoji: '🐥', cost: 120, skill: '錯題訂正經驗 +50%', quote: '「滴滴！我們一起把錯題全部訂正成 100 分！」' },
+    { id: 'bunny', name: '麻糬小兔', emoji: '🐰', cost: 180, skill: '認識鐘表每題多 +3 秒', quote: '「跳跳～時鐘的短針看小時、長針看分鐘喔！」' },
+    { id: 'shiba', name: '布丁小柴犬', emoji: '🐶', cost: 250, skill: '通關餅乾獎勵 +20%', quote: '「汪汪！專注力滿分，餅乾獎勵拿不完！」' },
+    { id: 'seal', name: '泡泡小海豹', emoji: '🦭', cost: 320, skill: '最後 5 秒倒數減速一半', quote: '「呼嚕～心平氣和，最後幾秒也能穩穩算完！」' },
+    { id: 'hedgehog', name: '奇異果小刺蝟', emoji: '🦔', cost: 400, skill: '舒爾特/找碴開局免費提示', quote: '「沙沙～細心觀察每一個數字與算式細節！」' }
   ];
+
+  const PATH_NODES = {
+    math: [
+      { code: 'A1', title: '認識 1～10 與蘋果計數', mode: 'speed' },
+      { code: 'A2', title: '合十的方法與湊十消消樂', mode: 'match' },
+      { code: 'B1', title: '認識鐘表：整點與半點', mode: 'clock' },
+      { code: 'B2', title: '加減進退位與天平平衡', mode: 'balance' },
+      { code: 'C1', title: '手寫數字筆畫專注力小考', mode: 'handwriting' }
+    ],
+    eng: [
+      { code: 'E1', title: '自然發音 /c/ /a/ /t/ 拼寫', mode: 'handwriting' },
+      { code: 'E2', title: '水果單字 banana 描寫', mode: 'handwriting' },
+      { code: 'E3', title: '英文時間 O\'clock 認識鐘表', mode: 'clock' }
+    ]
+  };
+
+  function getTodayKey() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function getRemainingDayText() {
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+    const diffMin = Math.max(1, Math.floor((midnight - now) / 60000));
+    const h = Math.floor(diffMin / 60);
+    const m = diffMin % 60;
+    return `${h} 小時 ${m} 分`;
+  }
+
+  const DAILY_STATE_DEFAULT = {
+    date: '',
+    missionIds: [],
+    progress: {},
+    claimed: {},
+    completedAt: {},
+    allClaimed: false
+  };
+
+  const ACHIEVEMENT_STATE_DEFAULT = {
+    progress: {},
+    unlocked: {},
+    isNew: {},
+    uniqueModes: [],
+    totalCorrect: 0,
+    totalGames: 0,
+    totalReviews: 0,
+    totalPetFeeds: 0,
+    totalPetUnlocks: 0,
+    perfectRounds: 0,
+    bestCombo: 0
+  };
 
   const DEFAULT_STATE = {
     coins: 200,
     xp: 60,
     level: 1,
     streak: 1,
+    loginBestStreak: 1,
+    lastPlayDate: '',
     sound: true,
     theme: 'day',
+    unlockedThemes: ['day'],
     diff: 'easy',
     activePet: 'panda',
     unlockedPets: ['panda'],
@@ -1401,52 +2047,326 @@
       balance: 0, train: 0, whack: 0
     },
     wrongBank: [
-      { q: '16 + 2 = ?', ans: '18', user: '19' },
-      { q: '12 + 8 = ?', ans: '20', user: '21' }
+      { q: '16 + 2 = ?', ans: '18', user: '19', tip: '先算個位數 6 + 2 = 8，再加上 10 喔！', mode: 'speed', errorType: 'calculation', createdAt: '2026-11-25T00:00:00.000Z' },
+      { q: '12 + 8 = ?', ans: '20', user: '21', tip: '2 和 8 剛好湊成 10，10 + 10 = 20！', mode: 'speed', errorType: 'calculation', createdAt: '2026-11-25T00:00:00.000Z' }
     ],
     pathSubj: 'math',
-    pathProgress: { A1: 80, A2: 40, B1: 20, B2: 0, C1: 0 },
-    daily: { date: '', missionIds: [], progress: {}, claimed: {}, completedAt: {}, allClaimed: false },
-    login: { lastDate: '', streak: 0, bestStreak: 0 },
-    challenge: { date: '', id: '', progress: 0, completed: false, claimed: false },
-    achievements: { progress: {}, unlocked: {}, isNew: {}, totalPetFeeds: 0, totalReviews: 0, totalGames: 0, totalCorrect: 0, bestCombo: 0 },
-    inventory: [],
-    ownedShop: []
+    pathProgress: { A1: 40, A2: 20, B1: 0, B2: 0, C1: 0, E1: 30, E2: 0, E3: 0 },
+    pathClaimed: {},
+    daily: Object.assign({}, DAILY_STATE_DEFAULT),
+    challenge: { date: '', id: '', progress: 0, target: 0, completed: false, claimed: false },
+    dailyReward: { date: '', earnedCoins: 0, limit: DAILY_COIN_LIMIT },
+    shop: { owned: [], purchases: 0, lastPurchaseAt: '' },
+    achievements: Object.assign({}, ACHIEVEMENT_STATE_DEFAULT)
   };
 
-  let state = loadState();
+  let state = null;
+  let activeAchFilter = 'all';
+  let activeShopCat = 'all';
+  let lastRoundSummary = { missions: [], unlockedAchs: [] };
+
+  function pickDailyMissionIds(count) {
+    const basicPool = ['play_2', 'correct_5'];
+    const skillPool = ['combo_5', 'review_1'];
+    const explorePool = ['modes_2', 'pet_feed_1'];
+    const picked = [
+      basicPool[Math.floor(Math.random() * basicPool.length)],
+      skillPool[Math.floor(Math.random() * skillPool.length)],
+      explorePool[Math.floor(Math.random() * explorePool.length)]
+    ];
+    return picked.slice(0, count || 3);
+  }
+
+  function pickDailyChallengeDef() {
+    const keys = Object.keys(TIMED_CHALLENGE_DEFS);
+    const dayNum = new Date().getDate();
+    return TIMED_CHALLENGE_DEFS[keys[dayNum % keys.length]];
+  }
+
+  function ensureDailyRewardState() {
+    const today = getTodayKey();
+    if (!state.dailyReward || state.dailyReward.date !== today) {
+      state.dailyReward = {
+        date: today,
+        earnedCoins: 0,
+        limit: DAILY_COIN_LIMIT
+      };
+    }
+  }
+
+  function grantCoins(amount) {
+    ensureDailyRewardState();
+    const cleanAmt = Math.max(0, Number(amount || 0));
+    const remaining = Math.max(0, state.dailyReward.limit - state.dailyReward.earnedCoins);
+    const actual = Math.min(cleanAmt, remaining);
+    state.coins += actual;
+    state.dailyReward.earnedCoins += actual;
+    return actual;
+  }
+
+  function ensureDailyState() {
+    if (!state) return;
+    ensureDailyRewardState();
+    const today = getTodayKey();
+
+    if (!state.challenge || state.challenge.date !== today || !TIMED_CHALLENGE_DEFS[state.challenge.id]) {
+      const cDef = pickDailyChallengeDef();
+      state.challenge = {
+        date: today,
+        id: cDef.id,
+        progress: 0,
+        target: cDef.target,
+        completed: false,
+        claimed: false
+      };
+    }
+
+    if (state.daily && state.daily.date === today && Array.isArray(state.daily.missionIds) && state.daily.missionIds.length === 3) {
+      return;
+    }
+    const ids = pickDailyMissionIds(3);
+    state.daily = {
+      date: today,
+      missionIds: ids,
+      progress: Object.fromEntries(ids.map(id => [id, 0])),
+      claimed: Object.fromEntries(ids.map(id => [id, false])),
+      completedAt: {},
+      allClaimed: false
+    };
+  }
+
+  function normalizeLevel() {
+    while (state.xp >= state.level * 300) {
+      state.xp -= state.level * 300;
+      state.level++;
+    }
+  }
 
   function loadState() {
     try {
-      const raw = localStorage.getItem('jojo_math_academy_v5');
-      if (!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE));
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        const fresh = JSON.parse(JSON.stringify(DEFAULT_STATE));
+        state = fresh;
+        ensureDailyState();
+        return fresh;
+      }
       const parsed = JSON.parse(raw);
-      return Object.assign(JSON.parse(JSON.stringify(DEFAULT_STATE)), parsed, {
-        best: Object.assign({}, DEFAULT_STATE.best, parsed.best || {}),
-        items: Object.assign({}, DEFAULT_STATE.items, parsed.items || {}),
-        daily: Object.assign({}, DEFAULT_STATE.daily, parsed.daily || {}),
-        login: Object.assign({}, DEFAULT_STATE.login, parsed.login || {}),
-        challenge: Object.assign({}, DEFAULT_STATE.challenge, parsed.challenge || {}),
-        achievements: Object.assign({}, DEFAULT_STATE.achievements, parsed.achievements || {}, {
-          progress: Object.assign({}, DEFAULT_STATE.achievements.progress, parsed.achievements?.progress || {}),
-          unlocked: Object.assign({}, parsed.achievements?.unlocked || {}),
-          isNew: Object.assign({}, parsed.achievements?.isNew || {})
-        }),
-        inventory: Array.isArray(parsed.inventory) ? parsed.inventory : [],
-        ownedShop: Array.isArray(parsed.ownedShop) ? parsed.ownedShop : []
-      });
+      const merged = Object.assign(
+        JSON.parse(JSON.stringify(DEFAULT_STATE)),
+        parsed,
+        {
+          best: Object.assign({}, DEFAULT_STATE.best, parsed.best || {}),
+          items: Object.assign({}, DEFAULT_STATE.items, parsed.items || {}),
+          pathProgress: Object.assign({}, DEFAULT_STATE.pathProgress, parsed.pathProgress || {}),
+          pathClaimed: Object.assign({}, DEFAULT_STATE.pathClaimed, parsed.pathClaimed || {}),
+          daily: Object.assign({}, DAILY_STATE_DEFAULT, parsed.daily || {
+            progress: {}, claimed: {}, completedAt: {}
+          }),
+          challenge: Object.assign({}, DEFAULT_STATE.challenge, parsed.challenge || {}),
+          dailyReward: Object.assign({}, DEFAULT_STATE.dailyReward, parsed.dailyReward || {}),
+          shop: Object.assign({}, DEFAULT_STATE.shop, parsed.shop || {}),
+          achievements: Object.assign({}, ACHIEVEMENT_STATE_DEFAULT, parsed.achievements || {
+            progress: {}, unlocked: {}, isNew: {}, uniqueModes: []
+          })
+        }
+      );
+      merged.unlockedThemes = Array.isArray(merged.unlockedThemes) && merged.unlockedThemes.length > 0
+        ? Array.from(new Set(['day', ...merged.unlockedThemes]))
+        : ['day'];
+      merged.loginBestStreak = Math.max(merged.loginBestStreak || 0, merged.streak || 0);
+      merged.shop.owned = Array.isArray(merged.shop.owned) ? merged.shop.owned : [];
+      merged.daily.progress = Object.assign({}, merged.daily.progress || {});
+      merged.daily.claimed = Object.assign({}, merged.daily.claimed || {});
+      merged.daily.completedAt = Object.assign({}, merged.daily.completedAt || {});
+      merged.achievements.progress = Object.assign({}, merged.achievements.progress || {});
+      merged.achievements.unlocked = Object.assign({}, merged.achievements.unlocked || {});
+      merged.achievements.isNew = Object.assign({}, merged.achievements.isNew || {});
+      merged.achievements.uniqueModes = Array.isArray(merged.achievements.uniqueModes) ? merged.achievements.uniqueModes : [];
+      state = merged;
+      ensureDailyState();
+      return merged;
     } catch (e) {
-      return JSON.parse(JSON.stringify(DEFAULT_STATE));
+      const fallback = JSON.parse(JSON.stringify(DEFAULT_STATE));
+      state = fallback;
+      ensureDailyState();
+      return fallback;
     }
   }
 
   function saveState() {
     try {
-      localStorage.setItem('jojo_math_academy_v5', JSON.stringify(state));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch (e) {}
   }
 
-  // Audio helper (iOS Safari safe)
+  function getMetricValue(type, roundCorrect) {
+    const ach = state.achievements;
+    if (type === 'loginStreak') return Math.max(state.streak || 0, state.loginBestStreak || 0);
+    if (type === 'gamesCompleted') return ach.totalGames || 0;
+    if (type === 'correctAnswers') return (ach.totalCorrect || 0) + (roundCorrect || 0);
+    if (type === 'bestCombo') return ach.bestCombo || 0;
+    if (type === 'reviewCompleted') return ach.totalReviews || 0;
+    if (type === 'uniqueModes') return (ach.uniqueModes || []).length;
+    if (type === 'perfectRounds') return ach.perfectRounds || 0;
+    if (type === 'petsUnlocked') return (state.unlockedPets || []).length;
+    if (type === 'petFed') return ach.totalPetFeeds || 0;
+    return 0;
+  }
+
+  function updateDailyMissions(event, updatedList) {
+    const nowIso = new Date().toISOString();
+    (state.daily.missionIds || []).forEach(id => {
+      const def = DAILY_MISSION_DEFS[id];
+      if (!def || state.daily.claimed[id]) return;
+      const prevProg = state.daily.progress[id] || 0;
+      let nextProg = prevProg;
+
+      if (event.type === 'gameFinished') {
+        if (def.type === 'gamesCompleted') nextProg = prevProg + 1;
+        else if (def.type === 'correctAnswers') nextProg = prevProg + (event.correct || 0);
+        else if (def.type === 'bestCombo') nextProg = Math.max(prevProg, event.bestCombo || 0);
+        else if (def.type === 'uniqueModes') {
+          const modes = new Set(state.achievements.uniqueModes || []);
+          if (event.mode) modes.add(event.mode);
+          nextProg = modes.size;
+        }
+      } else if (event.type === 'reviewCompleted' && def.type === 'reviewCompleted') {
+        nextProg = prevProg + 1;
+      } else if (event.type === 'petFed' && def.type === 'petFed') {
+        nextProg = prevProg + 1;
+      }
+
+      nextProg = Math.min(def.target, nextProg);
+      state.daily.progress[id] = nextProg;
+      if (nextProg >= def.target && !state.daily.completedAt[id]) {
+        state.daily.completedAt[id] = nowIso;
+        if (updatedList) {
+          updatedList.push({ title: def.title, coins: def.reward.coins || 0, xp: def.reward.xp || 0, done: true });
+        }
+      } else if (nextProg > prevProg && updatedList && event.type === 'gameFinished') {
+        updatedList.push({ title: def.title, prog: nextProg, target: def.target, done: false });
+      }
+    });
+  }
+
+  function updateAchievements(event, unlockedList) {
+    const ach = state.achievements;
+    const nowIso = new Date().toISOString();
+
+    if (event.type === 'gameFinished') {
+      ach.totalGames = (ach.totalGames || 0) + 1;
+      ach.totalCorrect = (ach.totalCorrect || 0) + (event.correct || 0);
+      ach.bestCombo = Math.max(ach.bestCombo || 0, event.bestCombo || 0);
+      if (event.mode && !ach.uniqueModes.includes(event.mode)) {
+        ach.uniqueModes.push(event.mode);
+      }
+      if (event.total > 0 && event.correct === event.total) {
+        ach.perfectRounds = (ach.perfectRounds || 0) + 1;
+      }
+    } else if (event.type === 'reviewCompleted') {
+      ach.totalReviews = (ach.totalReviews || 0) + 1;
+    } else if (event.type === 'petFed') {
+      ach.totalPetFeeds = (ach.totalPetFeeds || 0) + 1;
+    } else if (event.type === 'petUnlocked') {
+      ach.totalPetUnlocks = (ach.totalPetUnlocks || 0) + 1;
+    }
+
+    ACHIEVEMENT_DEFS.forEach(def => {
+      if (ach.unlocked[def.id]) {
+        ach.progress[def.id] = def.target;
+        return;
+      }
+      const val = getMetricValue(def.type, 0);
+      ach.progress[def.id] = Math.min(def.target, val);
+      if (val >= def.target) {
+        ach.unlocked[def.id] = nowIso;
+        ach.isNew[def.id] = true;
+        ach.progress[def.id] = def.target;
+        grantCoins(def.reward.coins || 0);
+        state.xp += def.reward.xp || 0;
+        normalizeLevel();
+        if (unlockedList) {
+          unlockedList.push(def);
+        }
+      }
+    });
+  }
+
+  function recordProgress(event) {
+    ensureDailyState();
+    const roundMissions = [];
+    const roundAchs = [];
+    updateDailyMissions(event, roundMissions);
+    updateAchievements(event, roundAchs);
+    if (event.type === 'gameFinished') {
+      lastRoundSummary = { missions: roundMissions, unlockedAchs: roundAchs };
+    }
+    saveState();
+    syncUI();
+  }
+
+  function claimDailyMission(id, btnEl) {
+    const def = DAILY_MISSION_DEFS[id];
+    const prog = state.daily.progress[id] || 0;
+    if (!def || prog < def.target || state.daily.claimed[id]) return;
+
+    state.daily.claimed[id] = true;
+    state.daily.completedAt[id] = new Date().toISOString();
+    const gotCoins = grantCoins(def.reward.coins || 0);
+    state.xp += def.reward.xp || 0;
+    normalizeLevel();
+
+    const wasAllClaimed = !!state.daily.allClaimed;
+    state.daily.allClaimed = (state.daily.missionIds || []).every(mid => !!state.daily.claimed[mid]);
+    saveState();
+    syncUI();
+
+    playTone(880, 'triangle', 0.2);
+    spawnFlyingReward(btnEl, '🍪');
+    showToast(`任務完成！獲得 +${gotCoins} 🍪 與 +${def.reward.xp || 0} XP`);
+
+    if (state.daily.allClaimed && !wasAllClaimed) {
+      setTimeout(() => {
+        playTone(523, 'triangle', 0.12);
+        setTimeout(() => playTone(659, 'triangle', 0.12), 110);
+        setTimeout(() => playTone(784, 'triangle', 0.22), 220);
+        showToast('🎉 今日任務全制霸！');
+      }, 240);
+    }
+  }
+
+  function claimChallengeReward(btnEl) {
+    ensureDailyState();
+    const def = TIMED_CHALLENGE_DEFS[state.challenge.id];
+    if (!def || !state.challenge.completed || state.challenge.claimed) return;
+    state.challenge.claimed = true;
+    const gotCoins = grantCoins(def.reward.coins || 0);
+    state.xp += def.reward.xp || 0;
+    normalizeLevel();
+    saveState();
+    syncUI();
+    playTone(880, 'triangle', 0.2);
+    spawnFlyingReward(btnEl, '⚡');
+    showToast(`🏆 限時挑戰完成！+${gotCoins} 🍪 與 +${def.reward.xp || 0} XP`);
+  }
+
+  function updateDailyStreak() {
+    const today = getTodayKey();
+    if (state.lastPlayDate === today) {
+      state.loginBestStreak = Math.max(state.loginBestStreak || 0, state.streak || 0);
+      return;
+    }
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
+    if (state.lastPlayDate === yStr) state.streak += 1;
+    else state.streak = 1;
+    state.lastPlayDate = today;
+    state.loginBestStreak = Math.max(state.loginBestStreak || 0, state.streak || 0);
+    updateAchievements({ type: 'loginCheck' }, null);
+  }
+
   let audioCtx = null;
   function playTone(freq, type, dur) {
     if (!state.sound) return;
@@ -1485,91 +2405,109 @@
     t.textContent = msg;
     t.classList.add('show');
     clearTimeout(t._tid);
-    t._tid = setTimeout(() => t.classList.remove('show'), 1900);
+    t._tid = setTimeout(() => t.classList.remove('show'), 2100);
   }
 
-  // Daily missions, login streak, timed challenge, achievements and shop
-  const DAILY_MISSION_DEFS = {
-    pet_feed_1: { id:'pet_feed_1', type:'petFed', icon:'🍓', title:'餵食夥伴 1 次', target:1, reward:{coins:15,xp:15} },
-    review_1: { id:'review_1', type:'reviewCompleted', icon:'🧠', title:'完成 1 題錯題訂正', target:1, reward:{coins:20,xp:30} },
-    play_2: { id:'play_2', type:'gamesCompleted', icon:'🎮', title:'完成 2 局專注訓練', target:2, reward:{coins:30,xp:20} },
-    correct_5: { id:'correct_5', type:'correctAnswers', icon:'✨', title:'答對 5 題', target:5, reward:{coins:25,xp:30} }
-  };
-  const CHALLENGE_DEFS = {
-    quick_math: { id:'quick_math', title:'⚡ 限時挑戰：閃電 20 秒', desc:'在 20 秒內完成 3 題速算', target:3, reward:{coins:60,xp:50} },
-    review_rush: { id:'review_rush', title:'⏰ 限時挑戰：訂正衝刺', desc:'在一局內完成 2 題錯題訂正', target:2, reward:{coins:70,xp:60} }
-  };
-  const ACHIEVEMENT_DEFS = {
-    login_3:{id:'login_3',category:'habit',icon:'📅',title:'三日不間斷',description:'連續登入 3 天',type:'bestLoginStreak',target:3,reward:{coins:60,xp:50}},
-    login_7:{id:'login_7',category:'habit',icon:'🔥',title:'一週習慣',description:'連續登入 7 天',type:'bestLoginStreak',target:7,reward:{coins:150,xp:100}},
-    feed_10:{id:'feed_10',category:'collection',icon:'🍓',title:'照顧小達人',description:'累計餵食夥伴 10 次',type:'petFed',target:10,reward:{coins:80,xp:50}},
-    review_10:{id:'review_10',category:'skill',icon:'🧠',title:'錯題終結者',description:'累計完成 10 題錯題訂正',type:'reviewCompleted',target:10,reward:{coins:100,xp:80}},
-    challenge_5:{id:'challenge_5',category:'skill',icon:'⏱️',title:'限時挑戰家',description:'完成 5 次限時挑戰',type:'challengesCompleted',target:5,reward:{coins:120,xp:90}},
-    shop_3:{id:'shop_3',category:'collection',icon:'🛍️',title:'森林採購員',description:'兌換 3 件商城獎勵',type:'shopPurchases',target:3,reward:{coins:80,xp:60}}
-  };
-  const SHOP_ITEMS = [
-    {id:'theme-sunset', icon:'🌅', name:'粉彩夕陽主題', desc:'解鎖夕陽背景', cost:120, kind:'theme', value:'sunset'},
-    {id:'theme-night', icon:'🌙', name:'星空夜色主題', desc:'解鎖夜間背景', cost:180, kind:'theme', value:'night'},
-    {id:'freeze-pack', icon:'❄️', name:'凍結補給包', desc:'獲得 2 個凍結道具', cost:80, kind:'item', value:'freeze', amount:2},
-    {id:'hint-pack', icon:'💡', name:'提示補給包', desc:'獲得 2 個提示道具', cost:80, kind:'item', value:'hint', amount:2},
-    {id:'badge-star', icon:'🌟', name:'閃亮星星徽章', desc:'個人頁專屬收藏', cost:220, kind:'badge', value:'star'}
-  ];
-  function todayKey(){ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-  function addXP(xp){ state.xp += Number(xp||0); while(state.xp >= state.level*300){ state.xp -= state.level*300; state.level++; } }
-  function grantReward(reward){ state.coins += Number(reward?.coins||0); addXP(Number(reward?.xp||0)); }
-  function ensureLoginStreak(){
-    const today=todayKey(); state.login=state.login||{lastDate:'',streak:0,bestStreak:0};
-    if(state.login.lastDate===today) return false;
-    const prev=new Date(); prev.setDate(prev.getDate()-1);
-    const yesterday=`${prev.getFullYear()}-${String(prev.getMonth()+1).padStart(2,'0')}-${String(prev.getDate()).padStart(2,'0')}`;
-    state.login.streak = state.login.lastDate===yesterday ? (state.login.streak||0)+1 : 1;
-    state.login.bestStreak=Math.max(state.login.bestStreak||0,state.login.streak); state.login.lastDate=today;
-    state.streak=state.login.streak; saveState();
-    checkAchievements('bestLoginStreak',state.login.streak);
-    return true;
-  }
-  function ensureDailyMissions(){
-    const today=todayKey(); state.daily=state.daily||{date:'',missionIds:[],progress:{},claimed:{},completedAt:{},allClaimed:false};
-    if(state.daily.date===today && state.daily.missionIds.length) return;
-    const ids=['pet_feed_1','review_1','play_2'];
-    state.daily={date:today,missionIds:ids,progress:Object.fromEntries(ids.map(id=>[id,0])),claimed:Object.fromEntries(ids.map(id=>[id,false])),completedAt:{},allClaimed:false};
-    state.challenge=state.challenge||{}; const challengeIds=Object.keys(CHALLENGE_DEFS); const cid=challengeIds[new Date().getDate()%challengeIds.length];
-    state.challenge={date:today,id:cid,progress:0,completed:false,claimed:false}; saveState();
-  }
-  function ensureRewardSystems(){ ensureLoginStreak(); ensureDailyMissions(); state.achievements=state.achievements||{progress:{},unlocked:{},isNew:{}}; state.achievements.progress=state.achievements.progress||{}; state.achievements.unlocked=state.achievements.unlocked||{}; state.achievements.isNew=state.achievements.isNew||{}; }
-  function progressDaily(type,amount=1){ ensureDailyMissions(); state.daily.missionIds.forEach(id=>{const d=DAILY_MISSION_DEFS[id]; if(d&&d.type===type&&!state.daily.claimed[id]) state.daily.progress[id]=Math.min(d.target,(state.daily.progress[id]||0)+amount);}); }
-  function checkAchievements(type,amount=1){
-    state.achievements=state.achievements||{progress:{},unlocked:{},isNew:{}}; state.achievements.progress=state.achievements.progress||{}; state.achievements.unlocked=state.achievements.unlocked||{}; state.achievements.isNew=state.achievements.isNew||{};
-    Object.values(ACHIEVEMENT_DEFS).filter(d=>d.type===type).forEach(d=>{ if(state.achievements.unlocked[d.id]) return; state.achievements.progress[d.id]=Math.min(d.target,Math.max(state.achievements.progress[d.id]||0,amount)); if(state.achievements.progress[d.id]>=d.target){state.achievements.unlocked[d.id]=new Date().toISOString(); state.achievements.isNew[d.id]=true; grantReward(d.reward); showToast(`🏅 解鎖成就「${d.title}」！`); playTone(1040,'triangle',.2);} });
-  }
-  function recordEvent(type,amount=1){
-    ensureRewardSystems(); progressDaily(type,amount);
-    if(type==='petFed'){state.achievements.totalPetFeeds=(state.achievements.totalPetFeeds||0)+amount; checkAchievements('petFed',state.achievements.totalPetFeeds);}
-    if(type==='reviewCompleted'){state.achievements.totalReviews=(state.achievements.totalReviews||0)+amount; checkAchievements('reviewCompleted',state.achievements.totalReviews);}
-    if(type==='gamesCompleted'){state.achievements.totalGames=(state.achievements.totalGames||0)+amount; checkAchievements('gamesCompleted',state.achievements.totalGames);}
-    if(type==='correctAnswers'){state.achievements.totalCorrect=(state.achievements.totalCorrect||0)+amount;}
-    saveState(); syncUI();
-  }
-  function recordChallengeProgress(mode,amount=1){
-    ensureRewardSystems(); const c=state.challenge, d=CHALLENGE_DEFS[c.id]; if(!d||c.completed||c.claimed) return;
-    const matches=(d.id==='quick_math'&&mode==='speed')||(d.id==='review_rush'&&mode==='review'); if(!matches) return;
-    c.progress=Math.min(d.target,c.progress+amount); if(c.progress>=d.target)c.completed=true; saveState(); renderDailyMissions();
-  }
-  function claimChallenge(){ ensureRewardSystems(); const d=CHALLENGE_DEFS[state.challenge.id]; if(!d||!state.challenge.completed||state.challenge.claimed)return; state.challenge.claimed=true; grantReward(d.reward); state.achievements.challengesCompleted=(state.achievements.challengesCompleted||0)+1; checkAchievements('challengesCompleted',state.achievements.challengesCompleted); saveState(); syncUI(); showToast(`⏱️ 限時挑戰完成！+${d.reward.coins}🍪`); }
-  function claimMission(id){ ensureRewardSystems(); const d=DAILY_MISSION_DEFS[id]; if(!d||state.daily.claimed[id]||state.daily.progress[id]<d.target)return; state.daily.claimed[id]=true; state.daily.completedAt[id]=new Date().toISOString(); grantReward(d.reward); state.daily.allClaimed=state.daily.missionIds.every(x=>state.daily.claimed[x]); saveState(); syncUI(); showToast(`🎁 ${d.title}完成！+${d.reward.coins}🍪`); }
-  function recordPetFed(){ ensureRewardSystems(); state.petAffection=state.petAffection||{}; const pid=state.activePet; state.petAffection[pid]=(state.petAffection[pid]||1)+1; recordEvent('petFed'); }
-  function recordReviewCompleted(){ recordEvent('reviewCompleted'); }
-  function buyShopItem(id){ ensureRewardSystems(); const item=SHOP_ITEMS.find(x=>x.id===id); if(!item||state.ownedShop.includes(id)){showToast('這項獎勵已經擁有了喔！');return;} if(state.coins<item.cost){showToast(`🍪 還差 ${item.cost-state.coins} 個餅乾！`);return;} state.coins-=item.cost; state.ownedShop.push(id); state.achievements.shopPurchases=(state.achievements.shopPurchases||0)+1; if(item.kind==='theme')state.unlockedThemes=(state.unlockedThemes||[]).concat(item.value); if(item.kind==='item')state.items[item.value]=(state.items[item.value]||0)+item.amount; checkAchievements('shopPurchases',state.achievements.shopPurchases); saveState(); renderShop(); syncUI(); showToast(`🛒 已兌換「${item.name}」！`); }
-  function renderDailyMissions(){
-    ensureRewardSystems(); const c=document.getElementById('daily-missions-container'); if(!c)return; const done=state.daily.missionIds.filter(id=>state.daily.claimed[id]).length;
-    c.innerHTML=`<div class="daily-card"><div class="daily-head"><h3>📅 今日森林任務</h3><span class="daily-count">${done}/${state.daily.missionIds.length} 已領取</span></div>${state.daily.missionIds.map(id=>{const d=DAILY_MISSION_DEFS[id],p=Math.min(d.target,state.daily.progress[id]||0),claimed=state.daily.claimed[id];return `<div class="mission-row"><div class="mission-icon">${d.icon}</div><div class="mission-body"><div class="mission-title">${d.title}</div><div class="mission-meta"><div class="mission-track"><div class="mission-fill" style="width:${p/d.target*100}%"></div></div><span>${p}/${d.target}</span></div></div><span class="mission-reward">+${d.reward.coins}🍪</span><button class="claim-btn ${claimed?'done':''}" data-action="claim-mission" data-id="${id}" ${!claimed&&p>=d.target?'':'disabled'}>${claimed?'已領取':p>=d.target?'領取':'進行中'}</button></div>`;}).join('')}</div>`;
-    const ch=document.getElementById('daily-challenge-container'),d=CHALLENGE_DEFS[state.challenge.id],p=state.challenge.progress||0; if(ch&&d)ch.innerHTML=`<div class="challenge-card"><div class="challenge-title">${d.title}</div><div class="challenge-desc">${d.desc}｜進度 ${p}/${d.target}</div><button class="claim-btn ${state.challenge.claimed?'done':''}" data-action="claim-challenge" ${!state.challenge.completed||state.challenge.claimed?'disabled':''}>${state.challenge.claimed?'今日已完成':state.challenge.completed?'領取限時獎勵':`獎勵：+${d.reward.coins}🍪`}</button></div>`;
-  }
-  function renderAchievements(){ const c=document.getElementById('achievement-grid-container'); if(!c)return; const defs=Object.values(ACHIEVEMENT_DEFS),unlocked=defs.filter(d=>state.achievements.unlocked[d.id]).length; const n=document.getElementById('achievement-count');if(n)n.textContent=`${unlocked}/${defs.length}`; c.innerHTML=defs.map(d=>{const p=Math.min(d.target,state.achievements.progress[d.id]||0),u=!!state.achievements.unlocked[d.id];return `<div class="achievement-item ${u?'unlocked':'locked'}"><div class="achievement-icon">${u?d.icon:'🔒'}</div><div class="achievement-name">${d.title}</div><div class="achievement-desc">${d.description}</div><div class="achievement-progress"><div style="width:${p/d.target*100}%"></div></div><div class="achievement-small">${u?'已解鎖':`${p}/${d.target}`}</div></div>`;}).join(''); }
-  function renderShop(){ const c=document.getElementById('shop-grid-container'); if(!c)return; const b=document.getElementById('shop-coins');if(b)b.textContent=state.coins; c.innerHTML=SHOP_ITEMS.map(i=>{const owned=state.ownedShop.includes(i.id);return `<div class="shop-item ${owned?'owned':''}"><div class="shop-icon">${i.icon}</div><div class="shop-name">${i.name}</div><div class="shop-desc">${i.desc}</div><button class="shop-buy ${owned?'owned':''}" data-action="buy-shop" data-id="${i.id}" ${owned?'disabled':''}>${owned?'✓ 已擁有':`🍪 ${i.cost}`}</button></div>`;}).join(''); }
+  function spawnFlyingReward(sourceEl, emoji) {
+    try {
+      const target = document.getElementById('coin-target-pill');
+      if (!target) return;
+      const startRect = sourceEl ? sourceEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight / 2 };
+      const endRect = target.getBoundingClientRect();
 
-  // Render Top & Home UI
+      const el = document.createElement('div');
+      el.className = 'fly-reward';
+      el.textContent = emoji || '🍪';
+      el.style.left = startRect.left + 'px';
+      el.style.top = startRect.top + 'px';
+      document.body.appendChild(el);
+
+      requestAnimationFrame(() => {
+        const dx = endRect.left - startRect.left;
+        const dy = endRect.top - startRect.top;
+        el.style.transform = `translate(${dx}px, ${dy}px) scale(0.5)`;
+        el.style.opacity = '0.2';
+      });
+      setTimeout(() => el.remove(), 700);
+    } catch (e) {}
+  }
+
+  function triggerScreenFlash() {
+    const fl = document.getElementById('screen-flash');
+    fl.classList.add('active');
+    setTimeout(() => fl.classList.remove('active'), 420);
+  }
+
+  function renderDailyMissions() {
+    ensureDailyState();
+    const list = document.getElementById('daily-missions-list');
+    const badge = document.getElementById('daily-summary-badge');
+    const cdEl = document.getElementById('daily-countdown-label');
+    if (cdEl) cdEl.textContent = `📅 今日森林任務剩餘 ${getRemainingDayText()}`;
+
+    const chDef = TIMED_CHALLENGE_DEFS[state.challenge.id];
+    const chStrip = document.getElementById('daily-challenge-strip');
+    if (chStrip && chDef) {
+      const cProg = Math.min(chDef.target, state.challenge.progress || 0);
+      let chBtn = '';
+      if (state.challenge.claimed) {
+        chBtn = `<span class="daily-mission-claim claimed">✓ 已領取</span>`;
+      } else if (state.challenge.completed) {
+        chBtn = `<button class="daily-mission-claim ready" data-action="claim-challenge">領 +${chDef.reward.coins}🍪</button>`;
+      } else {
+        const jumpAttr = chDef.mode ? `data-action="start-game" data-mode="${chDef.mode}"` : `data-action="start-game" data-mode="speed"`;
+        chBtn = `<button class="daily-mission-claim" ${jumpAttr}>挑戰</button>`;
+      }
+      chStrip.innerHTML = `
+        <div style="flex:1; min-width:0;">
+          <div>${chDef.title}（${cProg}/${chDef.target}）</div>
+          <div style="font-size:0.7rem; color:var(--text-sub);">${chDef.description}・獎勵 +${chDef.reward.coins}🍪 +${chDef.reward.xp}XP</div>
+        </div>
+        ${chBtn}
+      `;
+    }
+
+    const ids = state.daily.missionIds || [];
+    const doneCount = ids.filter(id => !!state.daily.claimed[id]).length;
+    const allDone = ids.length > 0 && doneCount === ids.length;
+
+    badge.textContent = allDone ? '今日任務全制霸!' : `${doneCount}/${ids.length} 完成`;
+
+    list.innerHTML = ids.map(id => {
+      const def = DAILY_MISSION_DEFS[id];
+      if (!def) return '';
+      const prog = Math.min(def.target, state.daily.progress[id] || 0);
+      const isClaimed = !!state.daily.claimed[id];
+      const isReady = !isClaimed && prog >= def.target;
+
+      let statusControl = '';
+      if (isClaimed) {
+        statusControl = `<span class="daily-mission-claim claimed">✓ 已領取</span>`;
+      } else if (isReady) {
+        statusControl = `<button class="daily-mission-claim ready" data-action="claim-mission" data-id="${id}">領取獎勵</button>`;
+      } else {
+        const jumpAttr = def.action && def.action.mode
+          ? `data-action="start-game" data-mode="${def.action.mode}"`
+          : `data-action="nav" data-tab="${(def.action && def.action.tab) || 'home'}"`;
+        statusControl = `<button class="daily-mission-claim" ${jumpAttr}>進行中</button>`;
+      }
+
+      return `
+        <div class="daily-mission-row ${isReady ? 'completed' : ''} ${isClaimed ? 'claimed' : ''}">
+          <span class="daily-mission-icon">${def.icon}</span>
+          <div class="daily-mission-content">
+            <div>${def.title}</div>
+            <div class="daily-mission-progress">進度：${prog} / ${def.target}</div>
+          </div>
+          <span class="daily-mission-reward">+${def.reward.coins}🍪 +${def.reward.xp}XP</span>
+          ${statusControl}
+        </div>
+      `;
+    }).join('');
+  }
+
   function syncUI() {
+    ensureDailyState();
     document.getElementById('ui-lv').textContent = 'Lv.' + state.level;
     document.getElementById('ui-coins').textContent = state.coins;
     document.getElementById('ui-streak').textContent = state.streak;
@@ -1583,12 +2521,18 @@
     document.getElementById('home-pet-avatar').innerHTML =
       `<span style="font-size:2.1rem;">${pet.emoji}</span><span class="pet-lv-tag">Lv.${state.petAffection[pet.id] || 1}</span>`;
     document.getElementById('home-pet-name').textContent = pet.name;
+    document.getElementById('home-pet-skill').textContent = '✨ 技能：' + pet.skill;
     document.getElementById('home-pet-speech').textContent = pet.quote;
+
+    const ranks = ['森林見習生', '專注小尖兵', '算術小博士', '森林守護者', '傳說大導師'];
+    document.getElementById('home-rank').textContent = ranks[Math.min(ranks.length - 1, Math.floor((state.level - 1) / 2))];
 
     const needXp = state.level * 300;
     const pct = Math.min(100, Math.round((state.xp / needXp) * 100));
     document.getElementById('home-xp-bar').style.width = pct + '%';
     document.getElementById('home-xp-text').textContent = `${state.xp}/${needXp}`;
+
+    renderDailyMissions();
 
     document.querySelectorAll('[data-action="set-diff"]').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.diff === state.diff);
@@ -1607,12 +2551,91 @@
       wb.style.display = 'none';
     }
 
-    document.getElementById('item-freeze').textContent = state.items.freeze;
-    document.getElementById('item-hint').textContent = state.items.hint;
-    document.getElementById('item-shield').textContent = state.items.shield;
-    renderDailyMissions();
-    renderShop();
-    renderAchievements();
+    ['freeze', 'hint', 'shield'].forEach(item => {
+      const spanEl = document.getElementById('item-' + item);
+      if (spanEl) spanEl.textContent = state.items[item] || 0;
+      const btn = document.getElementById('btn-item-' + item);
+      if (btn) {
+        const empty = !game || (state.items[item] || 0) <= 0;
+        btn.disabled = empty;
+        btn.classList.toggle('empty', (state.items[item] || 0) <= 0);
+      }
+    });
+  }
+
+  function openShopModal() {
+    document.getElementById('shop-modal').classList.add('open');
+    renderShopModal();
+  }
+
+  function renderShopModal() {
+    ensureDailyRewardState();
+    document.getElementById('shop-modal-coins').textContent = state.coins;
+    document.getElementById('shop-limit-hint').textContent =
+      `今日獎勵餅乾：${state.dailyReward.earnedCoins} / ${state.dailyReward.limit} 🍪 ・ 已兌換 ${state.shop.purchases || 0} 次`;
+
+    document.querySelectorAll('[data-action="set-shop-cat"]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.cat === activeShopCat);
+    });
+
+    const list = activeShopCat === 'all'
+      ? SHOP_ITEMS
+      : SHOP_ITEMS.filter(i => i.category === activeShopCat);
+
+    const grid = document.getElementById('shop-grid');
+    grid.innerHTML = list.map(item => {
+      const isOwned = item.unique && (state.shop.owned || []).includes(item.id);
+      return `
+        <div class="shop-card-item ${isOwned ? 'owned' : ''}">
+          <div style="font-size:1.7rem;">${item.icon}</div>
+          <div style="font-weight:900; font-size:0.8rem;">${item.title}</div>
+          <div style="font-size:0.74rem; font-weight:800; color:#E67E22;">
+            ${isOwned ? '✓ 已擁有' : item.cost + ' 🍪'}
+          </div>
+          ${isOwned
+            ? `<button class="switch-pet-btn" style="width:100%;" disabled>已解鎖</button>`
+            : `<button class="diff-btn active" style="width:100%; min-height:36px;" data-action="buy-shop-item" data-shop-id="${item.id}">兌換</button>`
+          }
+        </div>
+      `;
+    }).join('');
+  }
+
+  function buyShopItem(shopId) {
+    const item = SHOP_ITEMS.find(x => x.id === shopId);
+    if (!item) return;
+    if (item.unique && (state.shop.owned || []).includes(item.id)) {
+      showToast('✓ 這項商品已經擁有囉！');
+      return;
+    }
+    if (state.coins < item.cost) {
+      showToast(`🍪 餅乾還差 ${item.cost - state.coins} 個喔！`);
+      return;
+    }
+
+    state.coins -= item.cost;
+    state.shop.purchases = (state.shop.purchases || 0) + 1;
+    state.shop.lastPurchaseAt = new Date().toISOString();
+
+    if (item.unique) {
+      state.shop.owned = Array.from(new Set([...(state.shop.owned || []), item.id]));
+    }
+    if (item.kind === 'theme') {
+      state.unlockedThemes = Array.from(new Set([...(state.unlockedThemes || ['day']), item.value]));
+      state.theme = item.value;
+    } else if (item.kind === 'item') {
+      state.items[item.itemKey] = (state.items[item.itemKey] || 0) + item.amount;
+    } else if (item.kind === 'bundle') {
+      state.items.freeze += item.amount;
+      state.items.hint += item.amount;
+      state.items.shield += item.amount;
+    }
+
+    saveState();
+    syncUI();
+    renderShopModal();
+    playTone(880, 'triangle', 0.2);
+    showToast(`🎉 成功兌換 ${item.title}！`);
   }
 
   function switchTab(tab) {
@@ -1626,39 +2649,39 @@
 
     if (tab === 'path') renderPath();
     if (tab === 'pets') renderPets();
-    if (tab === 'shop') renderShop();
-    if (tab === 'profile') { renderProfile(); renderAchievements(); }
+    if (tab === 'profile') renderProfile();
     syncUI();
   }
 
   function renderPath() {
     const c = document.getElementById('path-list-container');
-    const isMath = state.pathSubj === 'math';
+    const subj = state.pathSubj;
     document.querySelectorAll('[data-action="set-path-subj"]').forEach(b => {
-      b.classList.toggle('active', b.dataset.subj === state.pathSubj);
+      b.classList.toggle('active', b.dataset.subj === subj);
     });
-    const nodes = isMath ? [
-      { code: 'A1', title: '認識 1～10 與蘋果計數', mode: 'speed', prog: 80 },
-      { code: 'A2', title: '合十的方法與湊十消消樂', mode: 'match', prog: 50 },
-      { code: 'B1', title: '認識鐘表：整點與半點', mode: 'clock', prog: 35 },
-      { code: 'B2', title: '加減進退位與天平平衡', mode: 'balance', prog: 15 },
-      { code: 'C1', title: '手寫數字筆畫專注力小考', mode: 'handwriting', prog: 0 }
-    ] : [
-      { code: 'E1', title: '自然發音 /c/ /a/ /t/ 拼寫', mode: 'handwriting', prog: 60 },
-      { code: 'E2', title: '水果單字 banana 描寫', mode: 'handwriting', prog: 30 },
-      { code: 'E3', title: "英文時間 O\'clock 認識鐘表", mode: 'clock', prog: 10 }
-    ];
+    const nodes = PATH_NODES[subj] || PATH_NODES.math;
 
-    c.innerHTML = nodes.map(n => `
-      <div class="path-node">
-        <div class="path-badge">${n.code}</div>
-        <div style="flex:1; min-width:0;">
-          <div style="font-weight:900; font-size:0.94rem; margin-bottom:4px;">${n.title}</div>
-          <div class="xp-bar-bg"><div class="xp-bar-fill" style="width:${n.prog}%;"></div></div>
+    c.innerHTML = nodes.map(n => {
+      const prog = Math.min(100, state.pathProgress[n.code] || 0);
+      const isDone = prog >= 100;
+      const claimed = !!state.pathClaimed[n.code];
+      let actionBtn = `<button class="switch-pet-btn" data-action="start-game" data-mode="${n.mode}">開始練習</button>`;
+      if (isDone && !claimed) {
+        actionBtn = `<button class="daily-mission-claim ready" data-action="claim-path" data-code="${n.code}">領 +50🍪</button>`;
+      } else if (isDone && claimed) {
+        actionBtn = `<button class="switch-pet-btn" data-action="start-game" data-mode="${n.mode}">✓ 已通關</button>`;
+      }
+      return `
+        <div class="path-node ${isDone ? 'completed' : ''}">
+          <div class="path-badge">${n.code}</div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-weight:900; font-size:0.92rem; margin-bottom:4px;">${n.title} (${prog}%)</div>
+            <div class="xp-bar-bg"><div class="xp-bar-fill" style="width:${prog}%;"></div></div>
+          </div>
+          ${actionBtn}
         </div>
-        <button class="switch-pet-btn" data-action="start-game" data-mode="${n.mode}">開始練習</button>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   }
 
   function renderPets() {
@@ -1668,9 +2691,10 @@
       const selected = state.activePet === p.id;
       return `
         <div class="pet-item-card ${selected ? 'selected' : ''}">
-          <div style="font-size:2.6rem; margin-bottom:4px;">${p.emoji}</div>
+          <div style="font-size:2.5rem; margin-bottom:2px;">${p.emoji}</div>
           <div style="font-weight:900; font-size:0.9rem;">${p.name}</div>
-          <div style="font-size:0.74rem; color:var(--text-sub); margin:4px 0 8px 0;">
+          <div style="font-size:0.72rem; color:#0984E3; font-weight:800; margin:2px 0;">✨ ${p.skill}</div>
+          <div style="font-size:0.72rem; color:var(--text-sub); margin:2px 0 8px 0;">
             ${unlocked ? '親密度 Lv.' + (state.petAffection[p.id] || 1) : '需要 ' + p.cost + ' 🍪'}
           </div>
           ${unlocked
@@ -1682,18 +2706,102 @@
     }).join('');
   }
 
-  function renderProfile() {
-    const box = document.getElementById('stats-summary-box');
-    const totalBest = Object.values(state.best).reduce((a, b) => a + b, 0);
-    box.innerHTML = `
-      <div class="stat-pill" style="justify-content:center; padding:12px;">🏆 總最高分：${totalBest}</div>
-      <div class="stat-pill" style="justify-content:center; padding:12px;">🐾 夥伴數：${state.unlockedPets.length}/${PETS.length}</div>
-      <div class="stat-pill" style="justify-content:center; padding:12px;">⏰ 待訂正：${state.wrongBank.length} 題</div>
-      <div class="stat-pill" style="justify-content:center; padding:12px;">⏱️ 每題時限：30 秒</div>
-    `;
+  function getErrorTypeSummary() {
+    const labelMap = {
+      calculation: '計算錯誤',
+      reading: '看鐘或讀題錯誤',
+      attention: '抗干擾或找碴錯誤',
+      memory: '記憶題錯誤',
+      writing: '手寫筆畫問題'
+    };
+    const counts = {};
+    (state.wrongBank || []).forEach(w => {
+      const t = w.errorType || 'calculation';
+      counts[t] = (counts[t] || 0) + 1;
+    });
+    const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    if (entries.length === 0) {
+      return '✨ 最近錯題紀錄已清空，繼續保持專心！';
+    }
+    const topLabel = labelMap[entries[0][0]] || '計算錯誤';
+    return `🔍 你最近最常錯的是「${topLabel}」（${entries[0][1]} 筆），建議先去「錯題訂正」練習 2 題喔！`;
   }
 
-  // Active Game Engine (30-Second Per-Question Timer)
+  function renderProfile() {
+    const ach = state.achievements;
+    const box = document.getElementById('stats-summary-box');
+    const totalBest = Object.values(state.best).reduce((a, b) => a + b, 0);
+    const bestLogin = Math.max(state.streak || 0, state.loginBestStreak || 0);
+    box.innerHTML = `
+      <div class="stat-pill" style="justify-content:center; padding:12px;">🏆 總最高分：${totalBest}</div>
+      <div class="stat-pill" style="justify-content:center; padding:12px;">🔥 最高連登：${bestLogin} 天</div>
+      <div class="stat-pill" style="justify-content:center; padding:12px;">✅ 累積答對：${ach.totalCorrect || 0} 題</div>
+      <div class="stat-pill" style="justify-content:center; padding:12px;">🐾 夥伴數：${state.unlockedPets.length}/${PETS.length}</div>
+    `;
+
+    const errBox = document.getElementById('error-insight-box');
+    if (errBox) errBox.textContent = getErrorTypeSummary();
+
+    const unlockedTotal = ACHIEVEMENT_DEFS.filter(a => !!ach.unlocked[a.id]).length;
+    document.getElementById('ach-unlocked-count').textContent = unlockedTotal;
+    document.getElementById('ach-total-count').textContent = ACHIEVEMENT_DEFS.length;
+
+    document.querySelectorAll('[data-action="set-ach-filter"]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.filter === activeAchFilter);
+    });
+
+    const filtered = activeAchFilter === 'all'
+      ? ACHIEVEMENT_DEFS
+      : ACHIEVEMENT_DEFS.filter(a => a.category === activeAchFilter);
+
+    const grid = document.getElementById('achievement-grid');
+    grid.innerHTML = filtered.map(a => {
+      const unlockedIso = ach.unlocked[a.id];
+      const isUnlocked = !!unlockedIso;
+      const isNew = isUnlocked && !!ach.isNew[a.id];
+      const prog = Math.min(a.target, ach.progress[a.id] || 0);
+      const dateStr = isUnlocked ? unlockedIso.slice(0, 10) : '';
+
+      return `
+        <button class="achievement-card ${isUnlocked ? 'unlocked' : 'locked'}" data-action="open-ach-detail" data-ach-id="${a.id}">
+          ${isNew ? `<span class="achievement-new-badge">NEW</span>` : ''}
+          <span class="achievement-icon">${isUnlocked ? a.icon : '🔒'}</span>
+          <div style="font-weight:900; font-size:0.78rem; margin:2px 0;">${a.title}</div>
+          <div class="achievement-progress">${isUnlocked ? '已解鎖 ' + dateStr : prog + ' / ' + a.target}</div>
+        </button>
+      `;
+    }).join('');
+  }
+
+  function openAchievementDetail(achId) {
+    const def = ACHIEVEMENT_DEFS.find(a => a.id === achId);
+    if (!def) return;
+    const ach = state.achievements;
+    const isUnlocked = !!ach.unlocked[achId];
+    if (ach.isNew[achId]) {
+      ach.isNew[achId] = false;
+      saveState();
+      renderProfile();
+    }
+    const prog = Math.min(def.target, ach.progress[achId] || 0);
+    const modal = document.getElementById('ach-detail-modal');
+    const card = document.getElementById('ach-detail-card');
+
+    card.innerHTML = `
+      <div style="font-size:2.6rem; margin-bottom:6px;">${isUnlocked ? def.icon : '🔒'}</div>
+      <h3 style="margin:4px 0;">${def.title}</h3>
+      <p style="color:var(--text-sub); font-size:0.86rem; font-weight:700; margin:6px 0;">條件：${def.description}</p>
+      <div style="font-size:0.82rem; font-weight:800; margin:6px 0;">
+        狀態：${isUnlocked ? '已解鎖（' + ach.unlocked[achId].slice(0, 10) + '）' : '進行中（' + prog + ' / ' + def.target + '）'}
+      </div>
+      <div style="font-size:0.84rem; font-weight:900; color:#E67E22; margin:6px 0 12px 0;">
+        獎勵：+${def.reward.coins} 🍪 ／ +${def.reward.xp} XP
+      </div>
+      <button class="primary-action-btn" data-action="close-ach-detail">知道了</button>
+    `;
+    modal.classList.add('open');
+  }
+
   let game = null;
   let timerInterval = null;
 
@@ -1704,10 +2812,20 @@
     }
   }
 
+  function getQuestionDuration() {
+    if (!game) return BASE_QUESTION_SECONDS;
+    if (game.eventType === 'rainbow') return 12;
+    let sec = BASE_QUESTION_SECONDS;
+    if (state.activePet === 'bunny' && game.mode === 'clock') sec += 3;
+    return sec;
+  }
+
   function resetQuestionTimer() {
     if (!game) return;
-    game.timeLeft = QUESTION_SECONDS;
+    game.maxTime = getQuestionDuration();
+    game.timeLeft = game.maxTime;
     game.frozenUntil = 0;
+    game.qStartTime = Date.now();
     updateTimerHUD();
   }
 
@@ -1716,15 +2834,74 @@
     const pill = document.getElementById('game-timer-pill');
     const val = document.getElementById('game-timer-val');
     const bar = document.getElementById('game-time-bar');
-    const now = Date.now();
-    const isFrozen = now < game.frozenUntil;
+    const isFrozen = Date.now() < game.frozenUntil;
 
     val.textContent = Math.max(0, Math.ceil(game.timeLeft));
-    bar.style.width = Math.max(0, (game.timeLeft / QUESTION_SECONDS) * 100) + '%';
+    bar.style.width = Math.max(0, (game.timeLeft / game.maxTime) * 100) + '%';
 
     pill.classList.remove('urgent', 'frozen');
     if (isFrozen) pill.classList.add('frozen');
-    else if (game.timeLeft <= 7) pill.classList.add('urgent');
+    else if (game.timeLeft <= 6) pill.classList.add('urgent');
+  }
+
+  function updateComboAndPetHUD() {
+    if (!game) return;
+    const chip = document.getElementById('game-combo-chip');
+    const pet = PETS.find(p => p.id === state.activePet) || PETS[0];
+    document.getElementById('game-pet-ico').textContent = pet.emoji;
+    const lineEl = document.getElementById('game-pet-line');
+
+    chip.classList.remove('tier2', 'tier3', 'tier4');
+    if (game.combo >= 10) {
+      chip.classList.add('tier4');
+      chip.textContent = `🌈 ${game.combo} 彩虹極限!`;
+      lineEl.textContent = `「太神啦！${pet.name} 進入傳說彩虹專注狀態！」`;
+    } else if (game.combo >= 8) {
+      chip.classList.add('tier3');
+      chip.textContent = `⚡ ${game.combo} 超專注`;
+      lineEl.textContent = `「再兩題就能發動彩虹閃光獎勵囉！」`;
+    } else if (game.combo >= 5) {
+      chip.classList.add('tier2');
+      chip.textContent = `🔥 ${game.combo} 專注火焰`;
+      lineEl.textContent = `「進入心流狀態了！速度又快又準！」`;
+    } else if (game.combo >= 3) {
+      chip.textContent = `✨ ${game.combo} 小小連擊`;
+      lineEl.textContent = `「好棒的節奏！繼續保持專注喔～」`;
+    } else {
+      chip.textContent = `🔥 ${game.combo}`;
+      lineEl.textContent = pet.quote;
+    }
+
+    const shieldBtn = document.getElementById('btn-item-shield');
+    if (shieldBtn) shieldBtn.classList.toggle('active-shield', game.shieldActive);
+  }
+
+  function rollStageEvent() {
+    game.eventType = null;
+    const banner = document.getElementById('game-event-banner');
+    banner.className = 'event-banner';
+
+    if (game.mode === 'review') return;
+
+    if (game.qIndex === game.totalQ - 1) {
+      game.eventType = 'boss';
+      banner.className = 'event-banner active boss';
+      banner.textContent = '👑 最終 BOSS 題！答對獲得 3 倍超高分數！';
+      return;
+    }
+
+    if (game.qIndex > 0 && game.qIndex % 3 === 1) {
+      const pool = [
+        { id: 'lucky', text: '🍀 幸運餅乾事件：本題答對獲得雙倍餅乾！' },
+        { id: 'pethelp', text: '🐾 寵物神助攻：夥伴幫你刪掉一個錯誤選項！' },
+        { id: 'rainbow', text: '🌈 彩虹閃電題：限時 12 秒，答對分數翻倍！' },
+        { id: 'silent', text: '🌲 安靜森林考驗：本題靜音倒數，考驗內在專注！' }
+      ];
+      const chosen = pool[Math.floor(Math.random() * pool.length)];
+      game.eventType = chosen.id;
+      banner.className = 'event-banner active';
+      banner.textContent = chosen.text;
+    }
   }
 
   function startGame(mode) {
@@ -1737,33 +2914,46 @@
       mode: mode,
       score: 0,
       combo: 0,
+      maxCombo: 0,
+      correctCount: 0,
+      totalResponseSec: 0,
       qIndex: 0,
       totalQ: mode === 'review' ? Math.max(1, state.wrongBank.length) : 8,
-      timeLeft: QUESTION_SECONDS,
+      maxTime: BASE_QUESTION_SECONDS,
+      timeLeft: BASE_QUESTION_SECONDS,
       frozenUntil: 0,
       shieldActive: false,
+      pandaFreeSaveUsed: false,
+      usedHint: false,
+      clutchHit: false,
+      clutchCorrectCount: 0,
+      lockedAnswer: false,
       inputVal: '',
       showAid: true,
       useHandwritingInput: false,
-      clockSubMode: 'read', // 'read' | 'dial' | 'calc'
+      clockSubMode: 'read',
       clockHelp: true,
       dialH: 3,
       dialM: 0,
-      hwTargetIdx: 0,
       currentAns: null,
-      currentQuestionText: ''
+      currentQuestionText: '',
+      currentQuestionType: 'num',
+      currentErrorType: 'calculation',
+      currentTip: '',
+      eventType: null
     };
 
     document.getElementById('game-score').textContent = '0';
-    document.getElementById('game-combo').textContent = '0';
+    updateComboAndPetHUD();
 
     timerInterval = setInterval(() => {
-      if (!game) return;
+      if (!game || game.lockedAnswer) return;
       if (Date.now() < game.frozenUntil) {
         updateTimerHUD();
         return;
       }
-      game.timeLeft -= 0.25;
+      const tickRate = (state.activePet === 'seal' && game.timeLeft <= 5) ? 0.125 : 0.25;
+      game.timeLeft -= tickRate;
       updateTimerHUD();
       if (game.timeLeft <= 0) {
         onTimeOutQuestion();
@@ -1773,95 +2963,274 @@
     nextQuestion();
   }
 
-  function onTimeOutQuestion() {
-    playTone(220, 'sawtooth', 0.25);
-    showToast('⏰ 30 秒時間到！換下一題繼續加油～');
-    game.combo = 0;
-    document.getElementById('game-combo').textContent = '0';
-    game.qIndex++;
-    if (game.qIndex >= game.totalQ) {
-      finishGame();
-    } else {
-      nextQuestion();
+  function updateTimedChallengeOnCorrect(elapsedSec) {
+    ensureDailyState();
+    const ch = state.challenge;
+    const def = TIMED_CHALLENGE_DEFS[ch.id];
+    if (!def || ch.claimed) return;
+
+    if (ch.id === 'speedRush' && game.mode === 'speed' && elapsedSec <= def.timeLimit) {
+      ch.progress = Math.min(def.target, (ch.progress || 0) + 1);
+    } else if (ch.id === 'clutchMaster' && game.timeLeft <= 5) {
+      game.clutchCorrectCount = (game.clutchCorrectCount || 0) + 1;
+      ch.progress = Math.min(def.target, game.clutchCorrectCount);
+    } else if (ch.id === 'reviewRush' && game.mode === 'review') {
+      ch.progress = Math.min(def.target, (ch.progress || 0) + 1);
+    }
+
+    if (ch.progress >= def.target) {
+      ch.completed = true;
     }
   }
 
-  function handleAnswer(isCorrect, userGiven) {
-    if (!game) return;
+  function onTimeOutQuestion() {
+    if (game.lockedAnswer) return;
+    game.lockedAnswer = true;
+    if (game.eventType !== 'silent') playTone(220, 'sawtooth', 0.25);
+    showToast(`⏰ 時間到！正確答案是 ${game.currentAns}`);
+    game.combo = 0;
+    updateComboAndPetHUD();
+
+    setTimeout(() => {
+      if (!game) return;
+      game.qIndex++;
+      if (game.qIndex >= game.totalQ) finishGame();
+      else nextQuestion();
+    }, 1100);
+  }
+
+  function handleAnswer(isCorrect, userGiven, clickedBtnEl) {
+    if (!game || game.lockedAnswer) return;
+    game.lockedAnswer = true;
+
+    const elapsed = Math.max(1, (Date.now() - game.qStartTime) / 1000);
+    game.totalResponseSec += elapsed;
+
     if (isCorrect) {
-      playTone(660, 'triangle', 0.14);
-      setTimeout(() => playTone(880, 'triangle', 0.16), 90);
+      if (game.eventType !== 'silent') {
+        playTone(660, 'triangle', 0.13);
+        setTimeout(() => playTone(880, 'triangle', 0.15), 85);
+      }
+      if (clickedBtnEl) clickedBtnEl.classList.add('correct-glow');
+      spawnFlyingReward(clickedBtnEl, game.eventType === 'lucky' ? '🍀' : '⭐');
+
       game.combo++;
-      const bonus = 100 + game.combo * 15 + Math.round(game.timeLeft * 2);
+      game.maxCombo = Math.max(game.maxCombo, game.combo);
+      game.correctCount++;
+      if (game.timeLeft <= 5) game.clutchHit = true;
+
+      updateTimedChallengeOnCorrect(elapsed);
+
+      let mult = 1;
+      if (game.eventType === 'boss') mult = 3;
+      else if (game.eventType === 'rainbow') mult = 2;
+
+      const bonus = (100 + game.combo * 15 + Math.round(game.timeLeft * 2)) * mult;
       game.score += bonus;
       document.getElementById('game-score').textContent = game.score;
-      document.getElementById('game-combo').textContent = game.combo;
-      showToast(`✨ 答對了！+${bonus} 分`);
+
+      if (game.eventType === 'lucky') {
+        const extra = grantCoins(15);
+        showToast(`🍀 幸運餅乾雙倍！+${bonus} 分 & +${extra} 🍪`);
+      } else if (game.combo === 10) {
+        triggerScreenFlash();
+        const extra = grantCoins(25);
+        showToast(`🌈 10 連擊彩虹爆發！額外 +${extra} 🍪`);
+      } else {
+        showToast(`✨ 答對了！+${bonus} 分`);
+      }
+
+      updateComboAndPetHUD();
 
       if (game.mode === 'review' && state.wrongBank.length > 0) {
-        recordReviewCompleted();
         state.wrongBank.shift();
+        recordProgress({ type: 'reviewCompleted' });
+      } else {
         saveState();
       }
+
+      setTimeout(() => {
+        if (!game) return;
+        game.qIndex++;
+        if (game.qIndex >= game.totalQ) finishGame();
+        else nextQuestion();
+      }, 650);
     } else {
+      let comboSaved = false;
       if (game.shieldActive) {
         game.shieldActive = false;
-        showToast('🛡️ 連擊護盾抵擋了一次失誤！再試一次');
-        playTone(440, 'sine', 0.2);
-        return;
+        comboSaved = true;
+      } else if (state.activePet === 'panda' && !game.pandaFreeSaveUsed && game.combo > 0) {
+        game.pandaFreeSaveUsed = true;
+        comboSaved = true;
       }
-      playTone(200, 'sawtooth', 0.24);
-      game.combo = 0;
-      document.getElementById('game-combo').textContent = '0';
-      showToast(`💡 正確答案是 ${game.currentAns}`);
+
+      if (game.eventType !== 'silent') playTone(200, 'sawtooth', 0.24);
+      if (clickedBtnEl) clickedBtnEl.classList.add('wrong-shake');
+
+      document.querySelectorAll('.choice-pill').forEach(b => {
+        if (String(b.dataset.val) === String(game.currentAns)) {
+          b.classList.add('correct-glow');
+        }
+      });
+
+      if (!comboSaved) {
+        game.combo = 0;
+      }
+      updateComboAndPetHUD();
+
+      const stage = document.getElementById('game-stage');
+      const tipText = game.currentTip || `正確答案是 ${game.currentAns}，下次再注意細節喔！`;
+      const callout = document.createElement('div');
+      callout.className = 'feedback-callout';
+      callout.innerHTML = `
+        <div>💡 差一點點！正確答案是 <b>${game.currentAns}</b> ${comboSaved ? '（🛡️ 夥伴護盾保住了連擊！）' : ''}</div>
+        <div style="font-size:0.78rem; margin-top:3px; color:#57606F;">${tipText}</div>
+      `;
+      stage.appendChild(callout);
+
       if (game.mode !== 'review' && game.currentQuestionText) {
         state.wrongBank.push({
           q: game.currentQuestionText,
           ans: String(game.currentAns),
-          user: String(userGiven || '?')
+          user: String(userGiven || '?'),
+          tip: tipText,
+          mode: game.mode,
+          errorType: game.currentErrorType || 'calculation',
+          createdAt: new Date().toISOString()
         });
         if (state.wrongBank.length > 15) state.wrongBank.shift();
         saveState();
       }
-    }
 
-    game.qIndex++;
-    if (game.qIndex >= game.totalQ) {
-      finishGame();
-    } else {
-      nextQuestion();
+      setTimeout(() => {
+        if (!game) return;
+        game.qIndex++;
+        if (game.qIndex >= game.totalQ) finishGame();
+        else nextQuestion();
+      }, 1550);
     }
+  }
+
+  function findPathCode(mode, subj) {
+    const list = PATH_NODES[subj] || PATH_NODES.math;
+    const hit = list.find(n => n.mode === mode);
+    return hit ? hit.code : null;
+  }
+
+  function getNextSuggestion(g) {
+    const accuracy = g.correctCount / g.totalQ;
+    if ((state.wrongBank || []).length >= 3) {
+      return '🧠 建議先完成錯題訂正';
+    }
+    if (accuracy >= 0.85 && state.diff === 'easy') {
+      return '🔥 表現很好，可以挑戰進階難度';
+    }
+    if (accuracy < 0.5) {
+      return '🌱 建議開啟具象教具，再練習一次';
+    }
+    return '✨ 繼續保持，你正在穩定進步！';
   }
 
   function finishGame() {
     stopGameTimer();
-    const earnedCoins = Math.max(15, Math.round(game.score / 25));
-    state.coins += earnedCoins;
-    state.xp += Math.max(30, Math.round(game.score / 12));
-    while (state.xp >= state.level * 300) {
-      state.xp -= state.level * 300;
-      state.level++;
-    }
-    if (game.score > (state.best[game.mode] || 0)) {
+    const acc = Math.round((game.correctCount / game.totalQ) * 100);
+    const avgSec = (game.totalResponseSec / game.totalQ).toFixed(1);
+    const nextSug = getNextSuggestion(game);
+
+    let grade = 'C';
+    if (acc >= 90 && game.score >= 850) grade = 'S';
+    else if (acc >= 75) grade = 'A';
+    else if (acc >= 50) grade = 'B';
+
+    let rawCoins = Math.max(15, Math.round(game.score / 25));
+    if (state.activePet === 'shiba') rawCoins = Math.round(rawCoins * 1.2);
+    const earnedCoins = grantCoins(rawCoins);
+
+    let earnedXp = Math.max(35, Math.round(game.score / 11));
+    if (state.activePet === 'chick' && game.mode === 'review') earnedXp = Math.round(earnedXp * 1.5);
+
+    state.xp += earnedXp;
+    normalizeLevel();
+
+    const prevBest = state.best[game.mode] || 0;
+    const isNewRecord = game.score > prevBest;
+    if (isNewRecord) {
       state.best[game.mode] = game.score;
     }
-    recordEvent('gamesCompleted', 1);
-    recordEvent('correctAnswers', Math.max(0, game.combo));
-    recordChallengeProgress(game.mode, Math.max(1, game.qIndex + 1));
-    saveState();
 
-    document.getElementById('res-score').textContent = game.score;
-    document.getElementById('res-coins').textContent = earnedCoins;
+    const pathCode = game.mode === 'handwriting'
+      ? (game.currentQuestionType === 'eng' ? 'E1' : 'C1')
+      : findPathCode(game.mode, state.pathSubj);
+    if (pathCode) {
+      const gain = acc >= 80 ? 25 : (acc >= 60 ? 15 : 5);
+      state.pathProgress[pathCode] = Math.min(100, (state.pathProgress[pathCode] || 0) + gain);
+    }
+
+    updateDailyStreak();
+
+    recordProgress({
+      type: 'gameFinished',
+      mode: game.mode,
+      score: game.score,
+      correct: game.correctCount,
+      total: game.totalQ,
+      bestCombo: game.maxCombo
+    });
 
     const stampArea = document.getElementById('result-stamp-area');
     if (game.mode === 'review') {
       stampArea.innerHTML = `<div class="stamp-100"><span style="font-size:0.65rem;">JO MATH</span><span style="font-size:1.6rem;">100</span><span style="font-size:0.65rem;">訂正滿分</span></div>`;
-      document.getElementById('result-title').textContent = '訂正大成功！';
+      document.getElementById('result-title').textContent = '錯題訂正大成功！';
       document.getElementById('result-desc').textContent = '所有錯題都重新學會了，獲得 100 分紅印章！';
     } else {
-      stampArea.innerHTML = `<div style="font-size:3.2rem;">🏆</div>`;
-      document.getElementById('result-title').textContent = '專注力訓練完成！';
-      document.getElementById('result-desc').textContent = '表現太棒了！小動物夥伴為你歡呼～';
+      stampArea.innerHTML = `<div class="rank-medal rank-${grade}">${grade}</div>`;
+      document.getElementById('result-title').textContent = isNewRecord ? '🎉 突破個人最高紀錄！' : '專注力訓練報告';
+      document.getElementById('result-desc').textContent = isNewRecord
+        ? `比上次紀錄（${prevBest} 分）進步了 +${game.score - prevBest} 分！`
+        : `距離個人紀錄（${prevBest} 分）越來越近囉！`;
+    }
+
+    document.getElementById('result-report-grid').innerHTML = `
+      <div class="report-cell">⭐ 本局得分：<b>${game.score}</b></div>
+      <div class="report-cell">🎯 正確率：<b>${acc}%</b></div>
+      <div class="report-cell">🔥 最高連擊：<b>${game.maxCombo}</b></div>
+      <div class="report-cell">⏱️ 平均作答：<b>${avgSec}s</b></div>
+      <div class="report-cell">🍪 獲得餅乾：<b>+${earnedCoins}</b></div>
+      <div class="report-cell">✨ 獲得經驗：<b>+${earnedXp}</b></div>
+    `;
+
+    const sugBox = document.getElementById('result-suggestion-box');
+    if (sugBox) {
+      sugBox.textContent = `下一步建議：${nextSug}`;
+    }
+
+    const mBox = document.getElementById('result-mission-summary');
+    if (lastRoundSummary.missions.length > 0) {
+      mBox.style.display = 'block';
+      mBox.innerHTML = `<div style="margin-bottom:4px;">📋 今日任務進度</div>` + lastRoundSummary.missions.map(m =>
+        m.done
+          ? `<div>✓ ${m.title}（可領取 +${m.coins}🍪）</div>`
+          : `<div>• ${m.title}（${m.prog}/${m.target}）</div>`
+      ).join('');
+    } else {
+      mBox.style.display = 'none';
+    }
+
+    const aBox = document.getElementById('result-ach-summary');
+    if (lastRoundSummary.unlockedAchs.length > 0) {
+      aBox.style.display = 'block';
+      aBox.innerHTML = `<div style="margin-bottom:4px;">🏅 新成就解鎖</div>` + lastRoundSummary.unlockedAchs.map(a =>
+        `<div>★ ${a.title}：${a.description}（+${a.reward.coins}🍪）</div>`
+      ).join('');
+    } else {
+      aBox.style.display = 'none';
+    }
+
+    if (isNewRecord || grade === 'S') {
+      playTone(523, 'triangle', 0.12);
+      setTimeout(() => playTone(659, 'triangle', 0.12), 110);
+      setTimeout(() => playTone(784, 'triangle', 0.2), 220);
     }
 
     document.getElementById('result-modal').classList.add('open');
@@ -1869,10 +3238,13 @@
     syncUI();
   }
 
-  // Question Generators
   function nextQuestion() {
     resetQuestionTimer();
+    game.lockedAnswer = false;
     game.inputVal = '';
+    rollStageEvent();
+    updateComboAndPetHUD();
+
     const stage = document.getElementById('game-stage');
     const m = game.mode;
 
@@ -1888,20 +3260,53 @@
     else if (m === 'train') renderTrainQuestion(stage);
     else if (m === 'whack') renderWhackQuestion(stage);
     else renderSpeedQuestion(stage);
+
+    if (state.activePet === 'hedgehog' && (m === 'schulte' || m === 'oddone')) {
+      applyHintEffect(true);
+    }
+    if (game.eventType === 'pethelp') {
+      applyHintEffect(true);
+    }
   }
 
-  // 1. SPEED MATH (With Apple/Block Visual Aid + Keypad / Handwriting toggle)
+  function applyHintEffect(isFree) {
+    if (!game) return;
+    const choices = Array.from(document.querySelectorAll('.choice-pill:not(.eliminated)'));
+    const wrongChoices = choices.filter(b => String(b.dataset.val) !== String(game.currentAns));
+    if (wrongChoices.length > 1) {
+      const target = wrongChoices[Math.floor(Math.random() * wrongChoices.length)];
+      target.classList.add('eliminated');
+      if (!isFree) showToast('💡 已幫你刪去一個錯誤選項！');
+      return true;
+    }
+    if (game.mode === 'schulte') {
+      const cell = document.querySelector(`.schulte-cell[data-num="${game.schulteNext}"]`);
+      if (cell) {
+        cell.classList.add('hint-pulse');
+        if (!isFree) showToast(`💡 下一個數字 ${game.schulteNext} 正在閃爍喔！`);
+        return true;
+      }
+    }
+    if (!isFree) {
+      showToast(`💡 提示：${game.currentTip || '仔細檢查十位數與個位數喔！'}`);
+    }
+    return true;
+  }
+
   function renderSpeedQuestion(stage) {
-    const maxN = state.diff === 'easy' ? 12 : (state.diff === 'medium' ? 30 : 60);
+    const maxN = state.diff === 'easy' ? 12 : (state.diff === 'medium' ? 35 : 80);
     const isAdd = Math.random() > 0.4;
     let a = Math.floor(Math.random() * maxN) + 2;
-    let b = Math.floor(Math.random() * Math.min(15, maxN)) + 1;
+    let b = Math.floor(Math.random() * Math.min(20, maxN)) + 1;
     if (!isAdd && a < b) [a, b] = [b, a];
     const ans = isAdd ? a + b : a - b;
     const op = isAdd ? '+' : '-';
 
     game.currentAns = String(ans);
+    game.currentQuestionType = 'num';
+    game.currentErrorType = 'calculation';
     game.currentQuestionText = `${a} ${op} ${b} = ?`;
+    game.currentTip = isAdd ? `先算個位數 ${a % 10} + ${b % 10}，有滿 10 要進位喔！` : `從 ${a} 往回數 ${b} 個就是答案囉！`;
 
     let visualHtml = '';
     if (game.showAid && a <= 25 && b <= 15) {
@@ -1946,7 +3351,6 @@
     if (game.useHandwritingInput) initCanvasDraw('');
   }
 
-  // 2. CLOCK MODULE (Read, Dial, Time Calc + Teaching Ring)
   function buildClockSVG(h, m, showHelp) {
     const minAngle = m * 6;
     const hourAngle = ((h % 12) + m / 60) * 30;
@@ -1966,17 +3370,13 @@
     }
     return `
       <svg viewBox="0 0 300 300" style="width:100%; height:100%;">
-        <!-- Alarm Bells -->
         <circle cx="62" cy="52" r="28" fill="#A3CB38" stroke="#6AB04C" stroke-width="4"/>
         <circle cx="238" cy="52" r="28" fill="#A3CB38" stroke="#6AB04C" stroke-width="4"/>
-        <!-- Body -->
         <circle cx="150" cy="155" r="134" fill="#54A0FF" stroke="#2E86DE" stroke-width="5"/>
         <circle cx="150" cy="155" r="114" fill="#FFFFFF"/>
         <g transform="translate(0, 5)">
           ${marks}
-          <!-- Minute Hand (Blue) -->
           <line x1="150" y1="150" x2="150" y2="54" stroke="#0984E3" stroke-width="6" stroke-linecap="round" transform="rotate(${minAngle} 150 150)"/>
-          <!-- Hour Hand (Orange-Red) -->
           <line x1="150" y1="150" x2="150" y2="86" stroke="#FF6B6B" stroke-width="9" stroke-linecap="round" transform="rotate(${hourAngle} 150 150)"/>
           <circle cx="150" cy="150" r="8" fill="#2D3436"/>
         </g>
@@ -1990,6 +3390,9 @@
     const m = (Math.floor(Math.random() * (60 / step)) * step) % 60;
     const fmt = (hh, mm) => `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
 
+    game.currentQuestionType = 'num';
+    game.currentErrorType = 'reading';
+
     const sub = game.clockSubMode;
     let bodyHtml = '';
 
@@ -1997,6 +3400,7 @@
       const ans = fmt(h, m);
       game.currentAns = ans;
       game.currentQuestionText = `看鐘面認時間 (${ans})`;
+      game.currentTip = `短針指在 ${h} 的位置，長針指在 ${m === 0 ? 12 : m / 5}（${String(m).padStart(2,'0')}分）！`;
       const opts = new Set([ans]);
       while (opts.size < 3) {
         const fh = Math.floor(Math.random() * 12) + 1;
@@ -2015,6 +3419,7 @@
       const target = fmt(h, m);
       game.currentAns = target;
       game.currentQuestionText = `動手撥指針到 ${target}`;
+      game.currentTip = `先用 +1時/-1時 調好短針到 ${h}，再用 +5分/+1分 調長針！`;
       bodyHtml = `
         <div style="text-align:center; font-weight:900; font-size:1.05rem; margin:4px 0;">
           🖐️ 請把時鐘撥到 <span style="color:#E84393; font-size:1.3rem;">${target}</span>
@@ -2038,6 +3443,7 @@
       const ans = fmt(nh, nm);
       game.currentAns = ans;
       game.currentQuestionText = `${fmt(h, m)} 再過 ${addM} 分鐘是？`;
+      game.currentTip = `從 ${m} 分加上 ${addM} 分，滿 60 分要進位 1 小時喔！`;
       const opts = new Set([ans, fmt(h, m), fmt(nh, (nm + 15) % 60)]);
       while (opts.size < 3) opts.add(fmt(Math.floor(Math.random() * 12) + 1, nm));
       const arr = Array.from(opts).sort(() => Math.random() - 0.5);
@@ -2066,40 +3472,43 @@
     `;
   }
 
-  // 3. HANDWRITING TRACING (Math Numbers + English Phonics)
   function renderHandwritingQuestion(stage) {
     const items = [
-      { type: 'num', text: '10', hint: '🍎🍎🍎🍎🍎 🍎🍎🍎🍎🍎 (十顆蘋果)' },
-      { type: 'eng', text: 'cat', hint: '🐱 /c/ /a/ /t/ — 點擊可聽英語發音' },
-      { type: 'num', text: '6', hint: '🍓🍓🍓🍓🍓 🍓 (六顆草莓)' },
-      { type: 'eng', text: 'banana', hint: '🍌 /b/ /a/ /n/ /a/ /n/ /a/ — 香蕉' },
-      { type: 'num', text: '25', hint: '🧱 2 個十與 5 個一' },
-      { type: 'eng', text: 'butterfly', hint: '🦋 蝴蝶 — 一筆一畫練專注' }
+      { type: 'num', text: '10', minPoints: 25, hint: '🍎🍎🍎🍎🍎 🍎🍎🍎🍎🍎 (請沿著虛線完整描出 10)' },
+      { type: 'eng', text: 'cat', minPoints: 35, hint: '🐱 /c/ /a/ /t/ — 點擊右上角可聽英語發音' },
+      { type: 'num', text: '6', minPoints: 18, hint: '🍓🍓🍓🍓🍓 🍓 (一筆畫從上往下繞圈描出 6)' },
+      { type: 'eng', text: 'banana', minPoints: 50, hint: '🍌 /b/ /a/ /n/ /a/ /n/ /a/ — 香蕉' },
+      { type: 'num', text: '25', minPoints: 30, hint: '🧱 2 個十與 5 個一，完整描出 2 和 5' },
+      { type: 'eng', text: 'butterfly', minPoints: 55, hint: '🦋 蝴蝶 — 一筆一畫耐心描完' }
     ];
     const item = items[game.qIndex % items.length];
     game.currentAns = item.text;
+    game.currentQuestionType = item.type;
+    game.currentErrorType = 'writing';
+    game.hwMinPoints = item.minPoints;
     game.currentQuestionText = `手寫描字：${item.text}`;
+    game.currentTip = '請把每個數字或英文字母完整描過一遍再送出喔！';
 
     stage.innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
         <span style="font-weight:900;">✍️ 一筆一畫專注描寫 (${game.qIndex + 1}/${game.totalQ})</span>
         ${item.type === 'eng' ? `<button class="switch-pet-btn" data-action="speak-word" data-word="${item.text}">🔊 聽發音</button>` : ''}
       </div>
-      <div class="visual-aid-box" style="font-size:0.9rem;">${item.hint}</div>
+      <div class="visual-aid-box" style="font-size:0.88rem;">${item.hint}</div>
       <div class="hw-canvas-wrap">
         <canvas id="hw-canvas" class="hw-canvas"></canvas>
       </div>
       <div style="display:flex; gap:8px;">
         <button class="diff-btn" style="flex:1;" data-action="clear-hw">🧹 清除重寫</button>
-        <button class="primary-action-btn" style="flex:2; margin-top:0;" data-action="finish-hw">✨ 完成描寫 (+150分)</button>
+        <button class="primary-action-btn" style="flex:2; margin-top:0;" data-action="finish-hw">✨ 檢查並送出</button>
       </div>
     `;
     initCanvasDraw(item.text);
   }
 
-  let strokeCount = 0;
+  let hwMetrics = { points: 0, minX: 9999, maxX: 0, minY: 9999, maxY: 0 };
   function initCanvasDraw(watermark) {
-    strokeCount = 0;
+    hwMetrics = { points: 0, minX: 9999, maxX: 0, minY: 9999, maxY: 0 };
     const canvas = document.getElementById('hw-canvas');
     if (!canvas) return;
     const rect = canvas.parentElement.getBoundingClientRect();
@@ -2107,7 +3516,6 @@
     canvas.height = Math.max(180, rect.height);
     const ctx = canvas.getContext('2d');
 
-    // Four-line guide + watermark
     ctx.strokeStyle = '#FFD6E5';
     ctx.lineWidth = 2;
     [45, 95, 145, 185].forEach(y => {
@@ -2119,7 +3527,7 @@
 
     if (watermark) {
       ctx.fillStyle = 'rgba(130, 140, 160, 0.25)';
-      ctx.font = '900 74px sans-serif';
+      ctx.font = '900 72px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(watermark, canvas.width / 2, canvas.height / 2 + 4);
@@ -2132,11 +3540,19 @@
       return { x: pt.clientX - r.left, y: pt.clientY - r.top };
     }
 
+    function recordPt(p) {
+      hwMetrics.points++;
+      if (p.x < hwMetrics.minX) hwMetrics.minX = p.x;
+      if (p.x > hwMetrics.maxX) hwMetrics.maxX = p.x;
+      if (p.y < hwMetrics.minY) hwMetrics.minY = p.y;
+      if (p.y > hwMetrics.maxY) hwMetrics.maxY = p.y;
+    }
+
     const start = (e) => {
       e.preventDefault();
       drawing = true;
-      strokeCount++;
       const p = getPos(e);
+      recordPt(p);
       ctx.beginPath();
       ctx.moveTo(p.x, p.y);
       ctx.strokeStyle = '#2D3436';
@@ -2148,6 +3564,7 @@
       if (!drawing) return;
       e.preventDefault();
       const p = getPos(e);
+      recordPt(p);
       ctx.lineTo(p.x, p.y);
       ctx.stroke();
     };
@@ -2161,7 +3578,6 @@
     canvas.addEventListener('touchend', end);
   }
 
-  // 4. REVIEW WRONG ANSWERS (Alarm Clock Mode)
   function renderReviewQuestion(stage) {
     if (state.wrongBank.length === 0) {
       stage.innerHTML = `
@@ -2178,6 +3594,8 @@
     const item = state.wrongBank[0];
     game.currentAns = item.ans;
     game.currentQuestionText = item.q;
+    game.currentErrorType = item.errorType || 'calculation';
+    game.currentTip = item.tip || `再仔細算一次：${item.q}`;
 
     const numAns = parseInt(item.ans, 10);
     const opts = new Set([item.ans]);
@@ -2206,17 +3624,17 @@
     `;
   }
 
-  // 5. SCHULTE GRID
   function renderSchulteQuestion(stage) {
-    const size = state.diff === 'easy' ? 3 : 4;
+    const size = state.diff === 'easy' ? 3 : (state.diff === 'medium' ? 4 : 5);
     const total = size * size;
     const nums = Array.from({ length: total }, (_, i) => i + 1).sort(() => Math.random() - 0.5);
     game.schulteNext = 1;
     game.schulteTotal = total;
+    game.currentErrorType = 'attention';
 
     stage.innerHTML = `
       <div style="text-align:center; font-weight:900; margin-bottom:6px;">
-        🍪 請依序點擊數字：下一個 <span id="schulte-target" style="color:#E84393; font-size:1.3rem;">1</span> / ${total}
+        🍪 依序點擊數字（${size}×${size}）：下一個 <span id="schulte-target" style="color:#E84393; font-size:1.3rem;">1</span> / ${total}
       </div>
       <div class="schulte-grid" style="grid-template-columns: repeat(${size}, 1fr);">
         ${nums.map(n => `<button class="schulte-cell" data-action="tap-schulte" data-num="${n}">${n}</button>`).join('')}
@@ -2224,17 +3642,19 @@
     `;
   }
 
-  // 6. MEMORY EQUATION
   function renderMemoryQuestion(stage) {
-    const a = Math.floor(Math.random() * 15) + 3;
-    const b = Math.floor(Math.random() * 12) + 2;
+    const hideMs = state.diff === 'easy' ? 3000 : (state.diff === 'medium' ? 2000 : 1200);
+    const a = Math.floor(Math.random() * 18) + 4;
+    const b = Math.floor(Math.random() * 14) + 3;
     const ans = a + b;
     game.currentAns = String(ans);
+    game.currentErrorType = 'memory';
     game.currentQuestionText = `記憶算式：${a} + ${b}`;
+    game.currentTip = `剛剛閃現的是 ${a} + ${b} = ${ans} 喔！`;
 
     stage.innerHTML = `
       <div style="text-align:center; padding:18px 8px;">
-        <div style="font-weight:800; color:var(--text-sub); margin-bottom:8px;">🧠 記住這個算式！（3 秒後隱藏）</div>
+        <div style="font-weight:800; color:var(--text-sub); margin-bottom:8px;">🧠 記住這個算式！（${(hideMs/1000).toFixed(1)} 秒後隱藏）</div>
         <div id="mem-flash" style="font-size:2.4rem; font-weight:900; color:#6C5CE7;">${a} + ${b} = ?</div>
       </div>
     `;
@@ -2247,23 +3667,26 @@
           ${opts.map((o, idx) => `<button class="choice-pill c${idx}" data-action="pick-choice" data-val="${o}">${o}</button>`).join('')}
         </div>
       `;
-    }, 2800);
+    }, hideMs);
   }
 
-  // 7. DISTRACTION BEE
   function renderDistractQuestion(stage) {
-    const a = Math.floor(Math.random() * 14) + 5;
+    const a = Math.floor(Math.random() * 16) + 6;
     const b = Math.floor(Math.random() * 9) + 2;
     const ans = a - b;
     game.currentAns = String(ans);
+    game.currentErrorType = 'attention';
     game.currentQuestionText = `${a} - ${b} = ?`;
+    game.currentTip = `忽略周圍的干擾數字，專心算中間的 ${a} - ${b} = ${ans}！`;
     const opts = [ans, ans + 1, ans + 2].sort(() => Math.random() - 0.5);
+    const extraBee = state.diff !== 'easy' ? `<span style="position:absolute; top:6px; right:14px; font-size:1.1rem; color:#E17055;">🐝 =${ans+5}</span>` : '';
 
     stage.innerHTML = `
       <div style="text-align:center; font-weight:800; color:#0984E3;">🐝 忽略調皮小蜜蜂，算出中間題目！</div>
-      <div style="position:relative; padding:18px; margin:10px 0; background:#F0F8FF; border-radius:18px; text-align:center;">
-        <span style="position:absolute; top:6px; left:12px; font-size:1.2rem;">🐝 99</span>
-        <span style="position:absolute; bottom:6px; right:14px; font-size:1.2rem;">🍯 +77</span>
+      <div style="position:relative; padding:22px 14px; margin:10px 0; background:#F0F8FF; border-radius:18px; text-align:center;">
+        <span style="position:absolute; top:6px; left:12px; font-size:1.1rem;">🐝 99</span>
+        ${extraBee}
+        <span style="position:absolute; bottom:6px; right:14px; font-size:1.1rem;">🍯 +77</span>
         <span style="font-size:2.2rem; font-weight:900; color:#2D3436;">${a} - ${b} = ?</span>
       </div>
       <div class="choice-list">
@@ -2272,17 +3695,19 @@
     `;
   }
 
-  // 8. MAKE 10 MATCH
   function renderMatchQuestion(stage) {
-    const a = Math.floor(Math.random() * 8) + 1;
-    const ans = 10 - a;
+    const targetSum = state.diff === 'hard' ? 20 : 10;
+    const a = Math.floor(Math.random() * (targetSum - 2)) + 1;
+    const ans = targetSum - a;
     game.currentAns = String(ans);
-    game.currentQuestionText = `${a} + ? = 10`;
-    const opts = [ans, (ans + 2) % 9 + 1, (ans + 4) % 9 + 1].sort(() => Math.random() - 0.5);
+    game.currentErrorType = 'calculation';
+    game.currentQuestionText = `${a} + ? = ${targetSum}`;
+    game.currentTip = `${a} 加上 ${ans} 剛好會等於 ${targetSum} 喔！`;
+    const opts = Array.from(new Set([ans, ans + 1, Math.max(1, ans - 1), ans + 2])).slice(0, 3).sort(() => Math.random() - 0.5);
 
     stage.innerHTML = `
       <div style="text-align:center; font-weight:900; font-size:1.1rem; margin:10px 0;">
-        🍬 湊十好朋友：<b>${a}</b> 要搭配哪個數字才會變成 <b style="color:#E84393;">10</b>？
+        🍬 湊數好朋友：<b>${a}</b> 要搭配哪個數字才會變成 <b style="color:#E84393;">${targetSum}</b>？
       </div>
       <div class="choice-list">
         ${opts.map((o, idx) => `<button class="choice-pill c${idx}" data-action="pick-choice" data-val="${o}">${o}</button>`).join('')}
@@ -2290,12 +3715,15 @@
     `;
   }
 
-  // 9. ODD ONE OUT EQUATION
   function renderOddOneQuestion(stage) {
-    const wrongEq = '7 + 6 = 14';
+    const a = Math.floor(Math.random() * 8) + 4;
+    const b = Math.floor(Math.random() * 7) + 3;
+    const wrongEq = `${a} + ${b} = ${a + b + 1}`;
     game.currentAns = wrongEq;
+    game.currentErrorType = 'attention';
     game.currentQuestionText = '找出算錯的算式';
-    const opts = ['5 + 4 = 9', '8 + 7 = 15', wrongEq].sort(() => Math.random() - 0.5);
+    game.currentTip = `${a} + ${b} 應該等於 ${a + b}，所以「${wrongEq}」算錯囉！`;
+    const opts = [`5 + 4 = 9`, `8 + 7 = 15`, wrongEq].sort(() => Math.random() - 0.5);
 
     stage.innerHTML = `
       <div style="text-align:center; font-weight:900; font-size:1.1rem; margin:10px 0;">
@@ -2307,17 +3735,18 @@
     `;
   }
 
-  // 10. FOREST BALANCE
   function renderBalanceQuestion(stage) {
-    const appleW = 3;
+    const appleW = state.diff === 'easy' ? 3 : 4;
     const count = Math.floor(Math.random() * 3) + 2;
     const ans = appleW * count;
     game.currentAns = String(ans);
+    game.currentErrorType = 'calculation';
     game.currentQuestionText = `${count} 顆蘋果多重？`;
-    const opts = [ans, ans + 3, ans - 2].sort(() => Math.random() - 0.5);
+    game.currentTip = `每顆蘋果 ${appleW} 公克，${count} 顆就是 ${appleW} × ${count} = ${ans} 公克！`;
+    const opts = [ans, ans + appleW, Math.max(1, ans - 2)].sort(() => Math.random() - 0.5);
 
     stage.innerHTML = `
-      <div style="text-align:center; font-weight:900; margin-bottom:8px;">⚖️ 1 顆 🍎 = 3 公克，天平右邊要放幾公克才會平衡？</div>
+      <div style="text-align:center; font-weight:900; margin-bottom:8px;">⚖️ 1 顆 🍎 = ${appleW} 公克，天平右邊要放幾公克才會平衡？</div>
       <div class="visual-aid-box" style="font-size:1.5rem;">
         ${'🍎'.repeat(count)}  ⚖️  [ ? 公克 ]
       </div>
@@ -2327,14 +3756,15 @@
     `;
   }
 
-  // 11. NUMBER TRAIN
   function renderTrainQuestion(stage) {
-    const step = state.diff === 'easy' ? 2 : 5;
+    const step = state.diff === 'easy' ? 2 : (state.diff === 'medium' ? 5 : 10);
     const start = Math.floor(Math.random() * 10) + 2;
     const seq = [start, start + step, start + step * 2];
     const ans = start + step * 3;
     game.currentAns = String(ans);
+    game.currentErrorType = 'calculation';
     game.currentQuestionText = `數列規律：${seq.join(', ')}, ?`;
+    game.currentTip = `每節車廂都比前一節多 ${step}，所以 ${seq[2]} + ${step} = ${ans}！`;
     const opts = [ans, ans + step, ans - 1].sort(() => Math.random() - 0.5);
 
     stage.innerHTML = `
@@ -2348,18 +3778,18 @@
     `;
   }
 
-  // 12. WHACK-A-MOLE GO/NO-GO
   function renderWhackQuestion(stage) {
-    const targetOdd = Math.random() > 0.5;
-    const nums = [2, 4, 7, 8, 10, 12];
-    if (!targetOdd) nums[2] = 5;
-    const ans = targetOdd ? '7' : '5';
+    const findBigOdd = state.diff === 'hard';
+    const nums = findBigOdd ? [4, 7, 12, 15, 18, 20] : [2, 4, 7, 8, 10, 12];
+    const ans = findBigOdd ? '15' : '7';
     game.currentAns = ans;
-    game.currentQuestionText = targetOdd ? '找出奇數地鼠' : '找出奇數地鼠';
+    game.currentErrorType = 'attention';
+    game.currentQuestionText = findBigOdd ? '找出大於 10 的奇數地鼠' : '找出奇數地鼠';
+    game.currentTip = `個位數是 1、3、5、7、9 的才是奇數（單數）喔！`;
 
     stage.innerHTML = `
       <div style="text-align:center; font-weight:900; margin-bottom:8px;">
-        🔨 雙重規則任務：只敲「<span style="color:#E84393;">奇數（單數）</span>」地鼠！
+        🔨 雙重規則：只敲「<span style="color:#E84393;">${findBigOdd ? '大於 10 的奇數' : '奇數（單數）'}</span>」地鼠！
       </div>
       <div class="schulte-grid" style="grid-template-columns: repeat(3, 1fr);">
         ${nums.sort(() => Math.random() - 0.5).map(n => `
@@ -2369,7 +3799,6 @@
     `;
   }
 
-  // Global Single Event Delegation (iOS Safari Rock-Solid)
   document.addEventListener('click', function(e) {
     const btn = e.target.closest('[data-action]');
     if (!btn) return;
@@ -2378,9 +3807,24 @@
     if (action === 'nav') {
       playTone(520, 'sine', 0.1);
       switchTab(btn.dataset.tab);
+    } else if (action === 'open-shop') {
+      playTone(620, 'triangle', 0.12);
+      openShopModal();
+    } else if (action === 'close-shop') {
+      document.getElementById('shop-modal').classList.remove('open');
+    } else if (action === 'set-shop-cat') {
+      activeShopCat = btn.dataset.cat;
+      renderShopModal();
+    } else if (action === 'buy-shop-item') {
+      buyShopItem(btn.dataset.shopId);
     } else if (action === 'toggle-theme') {
       const order = ['day', 'sunset', 'night'];
-      state.theme = order[(order.indexOf(state.theme) + 1) % order.length];
+      const nextTheme = order[(order.indexOf(state.theme) + 1) % order.length];
+      if (nextTheme !== 'day' && !(state.unlockedThemes || []).includes(nextTheme)) {
+        showToast('🛒 請先到商城解鎖這個主題喔！');
+        return;
+      }
+      state.theme = nextTheme;
       saveState();
       syncUI();
       showToast(state.theme === 'day' ? '☀️ 陽光森林背景' : state.theme === 'sunset' ? '🌅 粉彩夕陽背景' : '🌙 星空螢火蟲背景');
@@ -2402,11 +3846,33 @@
     } else if (action === 'close-modal') {
       document.getElementById('result-modal').classList.remove('open');
       switchTab('home');
+    } else if (action === 'claim-mission') {
+      claimDailyMission(btn.dataset.id, btn);
+    } else if (action === 'claim-challenge') {
+      claimChallengeReward(btn);
+    } else if (action === 'set-ach-filter') {
+      activeAchFilter = btn.dataset.filter;
+      renderProfile();
+    } else if (action === 'open-ach-detail') {
+      openAchievementDetail(btn.dataset.achId);
+    } else if (action === 'close-ach-detail') {
+      document.getElementById('ach-detail-modal').classList.remove('open');
+    } else if (action === 'claim-path') {
+      const code = btn.dataset.code;
+      if ((state.pathProgress[code] || 0) >= 100 && !state.pathClaimed[code]) {
+        state.pathClaimed[code] = true;
+        const got = grantCoins(50);
+        saveState();
+        renderPath();
+        syncUI();
+        playTone(880, 'triangle', 0.2);
+        showToast(`🎉 階段 ${code} 達標獎勵 +${got} 🍪！`);
+      }
     } else if (action === 'use-item') {
-      if (!game) return;
+      if (!game || game.lockedAnswer) return;
       const item = btn.dataset.item;
       if ((state.items[item] || 0) <= 0) {
-        showToast('🎒 這個道具用完囉，可到獎勵商城兌換！');
+        showToast('🎒 這個道具用完囉，可到商城補充！');
         return;
       }
       if (item === 'freeze') {
@@ -2417,21 +3883,9 @@
         updateTimerHUD();
       } else if (item === 'hint') {
         state.items.hint--;
+        game.usedHint = true;
         playTone(740, 'triangle', 0.16);
-        const choices = Array.from(document.querySelectorAll('.choice-pill'));
-        const wrong = choices.filter(b => String(b.dataset.val) !== String(game.currentAns) && b.style.opacity !== '0.25');
-        if (wrong.length > 1) {
-          const pick = wrong[Math.floor(Math.random() * wrong.length)];
-          pick.style.opacity = '0.25';
-          pick.style.pointerEvents = 'none';
-          showToast('💡 已幫你刪去一個錯誤選項！');
-        } else if (game.mode === 'schulte') {
-          const cell = document.querySelector(`.schulte-cell[data-num="${game.schulteNext}"]`);
-          if (cell) cell.style.borderColor = '#FF4757';
-          showToast(`💡 下一個數字是 ${game.schulteNext} 喔！`);
-        } else {
-          showToast(`💡 提示：正確答案的個位數是 ${String(game.currentAns).slice(-1)} 喔！`);
-        }
+        applyHintEffect(false);
       } else if (item === 'shield') {
         if (game.shieldActive) {
           showToast('🛡️ 目前已經開啟護盾囉！');
@@ -2441,11 +3895,12 @@
         game.shieldActive = true;
         playTone(620, 'triangle', 0.18);
         showToast('🛡️ 連擊護盾已啟動！答錯一次不中斷連擊');
+        updateComboAndPetHUD();
       }
       saveState();
       syncUI();
     } else if (action === 'pick-choice') {
-      handleAnswer(String(btn.dataset.val) === String(game.currentAns), btn.dataset.val);
+      handleAnswer(String(btn.dataset.val) === String(game.currentAns), btn.dataset.val, btn);
     } else if (action === 'key-num') {
       playTone(500, 'sine', 0.08);
       if (game.inputVal.length < 3) {
@@ -2459,7 +3914,7 @@
       if (slot) slot.textContent = game.inputVal || '?';
     } else if (action === 'key-ok') {
       if (!game.inputVal) return;
-      handleAnswer(game.inputVal === String(game.currentAns), game.inputVal);
+      handleAnswer(game.inputVal === String(game.currentAns), game.inputVal, btn);
     } else if (action === 'toggle-aid') {
       game.showAid = !game.showAid;
       renderSpeedQuestion(document.getElementById('game-stage'));
@@ -2467,13 +3922,19 @@
       game.useHandwritingInput = !game.useHandwritingInput;
       renderSpeedQuestion(document.getElementById('game-stage'));
     } else if (action === 'submit-hw-speed') {
-      if (strokeCount === 0) { showToast('✍️ 請先在畫布上寫出答案喔！'); return; }
-      handleAnswer(true, game.currentAns);
+      if (hwMetrics.points < 8) { showToast('✍️ 請先在畫布上寫出答案喔！'); return; }
+      handleAnswer(true, game.currentAns, btn);
     } else if (action === 'clear-hw') {
       initCanvasDraw(game.mode === 'handwriting' ? game.currentAns : '');
     } else if (action === 'finish-hw') {
-      if (strokeCount === 0) { showToast('✍️ 請先跟著虛線描寫一筆喔！'); return; }
-      handleAnswer(true, game.currentAns);
+      const spanW = hwMetrics.maxX - hwMetrics.minX;
+      const spanH = hwMetrics.maxY - hwMetrics.minY;
+      if (hwMetrics.points < (game.hwMinPoints || 15) || spanW < 25 || spanH < 20) {
+        playTone(240, 'sine', 0.15);
+        showToast('✍️ 筆畫還不夠完整喔！請沿著虛線再描仔細一點～');
+        return;
+      }
+      handleAnswer(true, game.currentAns, btn);
     } else if (action === 'speak-word') {
       speakWord(btn.dataset.word);
     } else if (action === 'set-clock-sub') {
@@ -2497,17 +3958,18 @@
       if (info) info.textContent = '目前設定：' + fmt;
     } else if (action === 'check-dial') {
       const fmt = `${String(game.dialH).padStart(2, '0')}:${String(game.dialM).padStart(2, '0')}`;
-      handleAnswer(fmt === game.currentAns, fmt);
+      handleAnswer(fmt === game.currentAns, fmt, btn);
     } else if (action === 'tap-schulte') {
       const num = parseInt(btn.dataset.num, 10);
       if (num === game.schulteNext) {
-        playTone(520 + num * 35, 'sine', 0.1);
+        playTone(520 + num * 30, 'sine', 0.1);
+        btn.classList.remove('hint-pulse');
         btn.classList.add('done');
         game.schulteNext++;
         const t = document.getElementById('schulte-target');
         if (t) t.textContent = game.schulteNext;
         if (game.schulteNext > game.schulteTotal) {
-          handleAnswer(true, '完成');
+          handleAnswer(true, '完成', btn);
         }
       } else {
         playTone(220, 'sawtooth', 0.15);
@@ -2533,9 +3995,8 @@
       state.unlockedPets.push(pet.id);
       state.activePet = pet.id;
       state.petAffection[pet.id] = 1;
-      saveState();
+      recordProgress({ type: 'petUnlocked' });
       renderPets();
-      syncUI();
       playTone(880, 'triangle', 0.2);
       showToast(`🎉 成功領養 ${pet.name}！`);
     } else if (action === 'feed-pet') {
@@ -2544,22 +4005,16 @@
         return;
       }
       state.coins -= 30;
-      recordPetFed();
+      const pid = state.activePet;
+      state.petAffection[pid] = (state.petAffection[pid] || 1) + 1;
+      recordProgress({ type: 'petFed' });
       renderPets();
-      syncUI();
       playTone(760, 'triangle', 0.16);
       showToast('🍓 夥伴吃得好開心，親密度提升了！');
-    } else if (action === 'claim-mission') {
-      claimMission(btn.dataset.id);
-      renderDailyMissions();
-    } else if (action === 'claim-challenge') {
-      claimChallenge();
-      renderDailyMissions();
-    } else if (action === 'buy-shop') {
-      buyShopItem(btn.dataset.id);
     } else if (action === 'reset-data') {
-      localStorage.removeItem('jojo_math_academy_v5');
-      state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+      localStorage.removeItem(STORAGE_KEY);
+      state = loadState();
+      updateDailyStreak();
       saveState();
       syncUI();
       renderProfile();
@@ -2567,8 +4022,9 @@
     }
   });
 
-  // Boot
-  ensureRewardSystems();
+  state = loadState();
+  updateDailyStreak();
+  saveState();
   syncUI();
 })();
 </script>
