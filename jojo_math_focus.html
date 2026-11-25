@@ -2013,9 +2013,9 @@
 
   function getQuestionDuration() {
     if (!game) return BASE_QUESTION_SECONDS;
-    if (game.eventType === 'rainbow') return 12; // Fast rainbow bonus question
+    if (game.eventType === 'rainbow') return 12;
     let sec = BASE_QUESTION_SECONDS;
-    if (state.activePet === 'bunny' && game.mode === 'clock') sec += 3; // Bunny skill
+    if (state.activePet === 'bunny' && game.mode === 'clock') sec += 3;
     return sec;
   }
 
@@ -2082,7 +2082,6 @@
 
     if (game.mode === 'review') return;
 
-    // Boss question on the final question (qIndex === totalQ - 1)
     if (game.qIndex === game.totalQ - 1) {
       game.eventType = 'boss';
       banner.className = 'event-banner active boss';
@@ -2090,7 +2089,6 @@
       return;
     }
 
-    // Random surprise event every 2-3 questions
     if (game.qIndex > 0 && game.qIndex % 3 === 1) {
       const pool = [
         { id: 'lucky', text: '🍀 幸運餅乾事件：本題答對獲得雙倍餅乾！' },
@@ -2155,7 +2153,6 @@
         updateTimerHUD();
         return;
       }
-      // Seal passive skill: last 5 seconds tick at half speed
       const tickRate = (state.activePet === 'seal' && game.timeLeft <= 5) ? 0.125 : 0.25;
       game.timeLeft -= tickRate;
       updateTimerHUD();
@@ -2241,7 +2238,6 @@
         else nextQuestion();
       }, 650);
     } else {
-      // Check Shield or Panda Passive
       let comboSaved = false;
       if (game.shieldActive) {
         game.shieldActive = false;
@@ -2254,7 +2250,6 @@
       if (game.eventType !== 'silent') playTone(200, 'sawtooth', 0.24);
       if (clickedBtnEl) clickedBtnEl.classList.add('wrong-shake');
 
-      // Highlight correct choice button if present
       document.querySelectorAll('.choice-pill').forEach(b => {
         if (String(b.dataset.val) === String(game.currentAns)) {
           b.classList.add('correct-glow');
@@ -2301,17 +2296,16 @@
     const acc = Math.round((game.correctCount / game.totalQ) * 100);
     const avgSec = (game.totalResponseSec / game.totalQ).toFixed(1);
 
-    // Grade S / A / B / C
     let grade = 'C';
     if (acc >= 90 && game.score >= 850) grade = 'S';
     else if (acc >= 75) grade = 'A';
     else if (acc >= 50) grade = 'B';
 
     let earnedCoins = Math.max(15, Math.round(game.score / 25));
-    if (state.activePet === 'shiba') earnedCoins = Math.round(earnedCoins * 1.2); // Shiba skill
+    if (state.activePet === 'shiba') earnedCoins = Math.round(earnedCoins * 1.2);
 
     let earnedXp = Math.max(35, Math.round(game.score / 11));
-    if (state.activePet === 'chick' && game.mode === 'review') earnedXp = Math.round(earnedXp * 1.5); // Chick skill
+    if (state.activePet === 'chick' && game.mode === 'review') earnedXp = Math.round(earnedXp * 1.5);
 
     state.coins += earnedCoins;
     state.xp += earnedXp;
@@ -2326,7 +2320,6 @@
       state.best[game.mode] = game.score;
     }
 
-    // Update Learning Path Progress dynamically
     const allNodes = [...PATH_NODES.math, ...PATH_NODES.eng];
     allNodes.forEach(n => {
       if (n.mode === game.mode) {
@@ -2345,7 +2338,6 @@
     });
     saveState();
 
-    // Render Result Report
     const stampArea = document.getElementById('result-stamp-area');
     if (game.mode === 'review') {
       stampArea.innerHTML = `<div class="stamp-100"><span style="font-size:0.65rem;">JO MATH</span><span style="font-size:1.6rem;">100</span><span style="font-size:0.65rem;">訂正滿分</span></div>`;
@@ -2403,11 +2395,9 @@
     else if (m === 'whack') renderWhackQuestion(stage);
     else renderSpeedQuestion(stage);
 
-    // Passive Hedgehog skill: auto hint on Schulte & OddOne
     if (state.activePet === 'hedgehog' && (m === 'schulte' || m === 'oddone')) {
       applyHintEffect(true);
     }
-    // Event pethelp: auto eliminate one wrong choice
     if (game.eventType === 'pethelp') {
       applyHintEffect(true);
     }
@@ -2613,7 +2603,7 @@
     `;
   }
 
-  // 3. HANDWRITING TRACING (With Bounding-Box & Stroke Coverage Validation)
+  // 3. HANDWRITING TRACING
   function renderHandwritingQuestion(stage) {
     const items = [
       { type: 'num', text: '10', minPoints: 25, hint: '🍎🍎🍎🍎🍎 🍎🍎🍎🍎🍎 (請沿著虛線完整描出 10)' },
@@ -2764,7 +2754,7 @@
     `;
   }
 
-  // 5. SCHULTE GRID (3x3 -> 4x4 -> 5x5 by difficulty)
+  // 5. SCHULTE GRID
   function renderSchulteQuestion(stage) {
     const size = state.diff === 'easy' ? 3 : (state.diff === 'medium' ? 4 : 5);
     const total = size * size;
@@ -2782,7 +2772,7 @@
     `;
   }
 
-  // 6. MEMORY EQUATION (3s -> 2s -> 1.2s by difficulty)
+  // 6. MEMORY EQUATION
   function renderMemoryQuestion(stage) {
     const hideMs = state.diff === 'easy' ? 3000 : (state.diff === 'medium' ? 2000 : 1200);
     const a = Math.floor(Math.random() * 18) + 4;
@@ -2810,7 +2800,7 @@
     }, hideMs);
   }
 
-  // 7. DISTRACTION BEE (More distractors on medium/hard)
+  // 7. DISTRACTION BEE
   function renderDistractQuestion(stage) {
     const a = Math.floor(Math.random() * 16) + 6;
     const b = Math.floor(Math.random() * 9) + 2;
