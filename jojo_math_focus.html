@@ -1,0 +1,2365 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>JOJO數學 - 森林小動物專注力學園</title>
+<style>
+  :root {
+    --bg-sky-top: #FFF9EB;
+    --bg-sky-mid: #FFEFF5;
+    --bg-sky-bot: #E8F9F2;
+    --hill-back: #BCEAD5;
+    --hill-front: #9ED5C5;
+    --card-bg: rgba(255, 255, 255, 0.96);
+    --text-main: #4A3B47;
+    --text-sub: #7D6B77;
+    --accent-pink: #FF6B9D;
+    --accent-orange: #FF9F43;
+    --accent-yellow: #FECA57;
+    --accent-green: #1DD1A1;
+    --accent-blue: #54A0FF;
+    --accent-purple: #9B59B6;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    font-size: 16px;
+    height: 100%;
+  }
+
+  @media (min-width: 600px) {
+    html { font-size: 18px; }
+  }
+  @media (min-width: 900px) {
+    html { font-size: 19px; }
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    min-height: 100dvh;
+    width: 100%;
+    font-family: "Rounded Mplus 1c", "PingFang TC", "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-main);
+    background: linear-gradient(180deg, var(--bg-sky-top) 0%, var(--bg-sky-mid) 52%, var(--bg-sky-bot) 100%);
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body.theme-sunset {
+    --bg-sky-top: #FFE5D9;
+    --bg-sky-mid: #FFCAD4;
+    --bg-sky-bot: #F4ACB7;
+    --hill-back: #D8E2DC;
+    --hill-front: #B8C0FF;
+  }
+
+  body.theme-night {
+    --bg-sky-top: #1E1B3A;
+    --bg-sky-mid: #2C2754;
+    --bg-sky-bot: #3A336E;
+    --hill-back: #283655;
+    --hill-front: #1E2942;
+    --card-bg: rgba(45, 40, 82, 0.94);
+    --text-main: #FFF8F0;
+    --text-sub: #D3CBE8;
+  }
+
+  /* Isolated Decorative Background */
+  .bg-decor {
+    position: fixed;
+    inset: 0;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    overflow: hidden;
+  }
+
+  .sun-rays {
+    position: absolute;
+    top: -110px;
+    right: -90px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 223, 107, 0.55) 0%, rgba(255, 223, 107, 0) 70%);
+    border-radius: 50%;
+    animation: pulseSun 6s ease-in-out infinite;
+  }
+
+  @keyframes pulseSun {
+    0%, 100% { transform: scale(1); opacity: 0.85; }
+    50% { transform: scale(1.12); opacity: 1; }
+  }
+
+  .cloud {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.72);
+    border-radius: 999px;
+    filter: blur(1px);
+  }
+  body.theme-night .cloud { background: rgba(255, 255, 255, 0.12); }
+
+  .hill-layer-1 {
+    position: absolute;
+    bottom: -40px;
+    left: -10%;
+    width: 120%;
+    height: 160px;
+    background: var(--hill-back);
+    border-radius: 50% 50% 0 0;
+  }
+
+  .hill-layer-2 {
+    position: absolute;
+    bottom: -60px;
+    left: -15%;
+    width: 130%;
+    height: 140px;
+    background: var(--hill-front);
+    border-radius: 55% 45% 0 0;
+  }
+
+  /* Main Responsive Shell */
+  #app-shell {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 840px;
+    margin: 0 auto;
+    min-height: 100dvh;
+    padding-top: calc(var(--safe-top) + 8px);
+    padding-bottom: calc(var(--safe-bottom) + 92px);
+    padding-left: 12px;
+    padding-right: 12px;
+    display: block;
+  }
+
+  @media (min-width: 600px) {
+    #app-shell {
+      padding-left: 22px;
+      padding-right: 22px;
+      padding-bottom: calc(var(--safe-bottom) + 105px);
+    }
+  }
+
+  /* Touch-safe buttons */
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    border: none;
+    outline: none;
+  }
+  button * {
+    pointer-events: none;
+  }
+
+  /* Top Status Bar */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 10px;
+    flex-wrap: nowrap;
+  }
+
+  .brand-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--card-bg);
+    padding: 6px 11px;
+    border-radius: 999px;
+    box-shadow: 0 3px 0 rgba(255, 107, 157, 0.2);
+    border: 2px solid #FFD6E5;
+    font-weight: 800;
+    font-size: 0.92rem;
+    white-space: nowrap;
+  }
+
+  .lv-badge {
+    background: linear-gradient(135deg, #A29BFE, #6C5CE7);
+    color: #fff;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 0.76rem;
+  }
+
+  .stat-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--card-bg);
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 0.84rem;
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.06);
+    border: 2px solid #FFEAA7;
+    white-space: nowrap;
+  }
+
+  .icon-btn {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.08);
+    border: 2px solid #F1F2F6;
+    transition: transform 0.12s;
+  }
+  .icon-btn:active { transform: translateY(2px) scale(0.95); }
+
+  /* Strict Block Vertical Flow for Views */
+  .app-main {
+    display: block;
+    width: 100%;
+  }
+
+  .view-pane {
+    display: none;
+    width: 100%;
+  }
+  .view-pane.active {
+    display: block;
+  }
+
+  /* Companion Banner */
+  .companion-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    background: var(--card-bg);
+    border-radius: 22px;
+    padding: 11px 14px;
+    margin-bottom: 10px;
+    border: 2.5px dashed #FFB8D0;
+    box-shadow: 0 5px 0 rgba(255, 184, 208, 0.32);
+  }
+
+  .pet-avatar-wrap {
+    position: relative;
+    width: 62px;
+    height: 62px;
+    min-width: 62px;
+    background: #FFF3F8;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #FFD1E3;
+  }
+
+  .pet-lv-tag {
+    position: absolute;
+    bottom: -6px;
+    background: #FF6B9D;
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 1px 7px;
+    border-radius: 999px;
+  }
+
+  .companion-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .companion-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  .pet-name {
+    font-weight: 900;
+    font-size: 0.98rem;
+    color: #E84393;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .switch-pet-btn {
+    background: #FFF0F6;
+    color: #D63031;
+    border: 1.5px solid #FFCCE0;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 0.76rem;
+    font-weight: 800;
+    min-height: 30px;
+    white-space: nowrap;
+  }
+
+  .pet-speech {
+    background: #F8F9FA;
+    color: #57606F;
+    border-radius: 12px;
+    padding: 5px 9px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  body.theme-night .pet-speech {
+    background: rgba(255,255,255,0.1);
+    color: #F5F6FA;
+  }
+
+  .xp-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.74rem;
+    font-weight: 800;
+    color: var(--text-sub);
+  }
+
+  .xp-bar-bg {
+    flex: 1;
+    height: 8px;
+    background: #ECEFF4;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .xp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #FF9F43, #FF6B9D, #54A0FF);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+  }
+
+  /* Difficulty Strip */
+  .diff-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    width: 100%;
+    background: var(--card-bg);
+    padding: 7px 10px;
+    border-radius: 16px;
+    margin-bottom: 10px;
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  .diff-label {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--text-sub);
+    white-space: nowrap;
+  }
+
+  .diff-btns {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+    justify-content: flex-end;
+  }
+
+  .diff-btn {
+    padding: 6px 12px;
+    min-height: 36px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 0.82rem;
+    background: #F1F2F6;
+    color: #57606F;
+    border-bottom: 3px solid #DFE4EA;
+  }
+  .diff-btn.active {
+    background: linear-gradient(180deg, #FFEAA7, #FDCB6E);
+    color: #7F5500;
+    border-bottom-color: #E1B12C;
+  }
+
+  /* Section Title */
+  .sec-heading {
+    font-size: 0.86rem;
+    font-weight: 900;
+    color: var(--text-sub);
+    margin: 4px 2px 7px 2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Uniform 3-Column Equal-Size Card Rows */
+  .uniform-row-3 {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  @media (min-width: 600px) {
+    .uniform-row-3 { gap: 12px; margin-bottom: 12px; }
+  }
+
+  .uniform-card {
+    flex: 1 1 0%;
+    width: 0;
+    min-width: 0;
+    height: 106px;
+    background: var(--card-bg);
+    border-radius: 18px;
+    padding: 8px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    position: relative;
+    border: 2px solid #F1F2F6;
+    border-bottom-width: 4px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
+    transition: transform 0.12s;
+  }
+  .uniform-card:active {
+    transform: translateY(2px) scale(0.97);
+  }
+
+  @media (min-width: 600px) {
+    .uniform-card {
+      height: 126px;
+      padding: 12px 10px;
+      border-radius: 22px;
+    }
+  }
+
+  .card-top-meta {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.66rem;
+    font-weight: 800;
+    color: var(--text-sub);
+    line-height: 1;
+  }
+
+  .card-tag {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 2px 5px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  body.theme-night .card-tag { background: rgba(255,255,255,0.12); }
+
+  .card-best {
+    white-space: nowrap;
+  }
+
+  .card-icon-pill {
+    width: 52px;
+    height: 36px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: #fff;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.45), 0 3px 0 rgba(0,0,0,0.12);
+  }
+
+  @media (min-width: 600px) {
+    .card-icon-pill {
+      width: 64px;
+      height: 44px;
+      font-size: 1.45rem;
+    }
+  }
+
+  .card-title {
+    font-size: 0.86rem;
+    font-weight: 900;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    line-height: 1.15;
+  }
+
+  .badge-float {
+    position: absolute;
+    top: -6px;
+    right: -4px;
+    background: #FF4757;
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: 900;
+    padding: 2px 6px;
+    border-radius: 999px;
+    box-shadow: 0 2px 4px rgba(255, 71, 87, 0.4);
+  }
+
+  /* Card Accent Borders & Icon Pill Colors */
+  .c-clock { border-color: #70A1FF; border-bottom-color: #1E90FF; }
+  .c-clock .card-icon-pill { background: linear-gradient(180deg, #54A0FF, #2E86DE); }
+
+  .c-write { border-color: #FECA57; border-bottom-color: #FF9F43; }
+  .c-write .card-icon-pill { background: linear-gradient(180deg, #FECA57, #FF9F43); }
+
+  .c-review { border-color: #FF7675; border-bottom-color: #D63031; }
+  .c-review .card-icon-pill { background: linear-gradient(180deg, #FF7675, #E17055); }
+
+  .c-speed { border-color: #A29BFE; border-bottom-color: #6C5CE7; }
+  .c-speed .card-icon-pill { background: linear-gradient(180deg, #A29BFE, #6C5CE7); }
+
+  .c-schulte { border-color: #FAB1A0; border-bottom-color: #E17055; }
+  .c-schulte .card-icon-pill { background: linear-gradient(180deg, #FF9F43, #EE5253); }
+
+  .c-memory { border-color: #55EFC4; border-bottom-color: #00B894; }
+  .c-memory .card-icon-pill { background: linear-gradient(180deg, #1DD1A1, #10AC84); }
+
+  .c-distract { border-color: #74B9FF; border-bottom-color: #0984E3; }
+  .c-distract .card-icon-pill { background: linear-gradient(180deg, #48DBFB, #0ABDE3); }
+
+  .c-match { border-color: #FD79A8; border-bottom-color: #E84393; }
+  .c-match .card-icon-pill { background: linear-gradient(180deg, #FF6B81, #EE5253); }
+
+  .c-oddone { border-color: #FFEAA7; border-bottom-color: #FDCB6E; }
+  .c-oddone .card-icon-pill { background: linear-gradient(180deg, #FECA57, #FF9F43); }
+
+  .c-balance { border-color: #81ECEC; border-bottom-color: #00CEC9; }
+  .c-balance .card-icon-pill { background: linear-gradient(180deg, #1DD1A1, #00B894); }
+
+  .c-train { border-color: #82CCDD; border-bottom-color: #3C6382; }
+  .c-train .card-icon-pill { background: linear-gradient(180deg, #54A0FF, #341F97); }
+
+  .c-whack { border-color: #FFCCCC; border-bottom-color: #FF6B81; }
+  .c-whack .card-icon-pill { background: linear-gradient(180deg, #FF9FF3, #F368E0); }
+
+  /* Bottom Navigation */
+  .bottom-nav {
+    position: fixed;
+    bottom: calc(var(--safe-bottom) + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 20px);
+    max-width: 720px;
+    background: var(--card-bg);
+    border-radius: 999px;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    box-shadow: 0 8px 24px rgba(74, 59, 71, 0.16);
+    border: 2.5px solid #FFD6E5;
+    z-index: 50;
+  }
+
+  .nav-btn {
+    flex: 1;
+    min-height: 48px;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-sub);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-size: 0.74rem;
+    font-weight: 800;
+    transition: all 0.15s;
+  }
+  .nav-btn .nav-ico { font-size: 1.15rem; }
+  .nav-btn.active {
+    background: linear-gradient(180deg, #FFF0F6, #FFE3EE);
+    color: #E84393;
+    box-shadow: inset 0 1px 0 #fff, 0 2px 0 #FFB8D0;
+  }
+
+  /* Game Stage Overlay / View */
+  .game-hud {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    background: var(--card-bg);
+    padding: 8px 10px;
+    border-radius: 18px;
+    margin-bottom: 8px;
+    border: 2px solid #FFD6E5;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  .quit-btn {
+    background: #FFF0F3;
+    color: #E84393;
+    border: 1.5px solid #FFC2D4;
+    border-radius: 12px;
+    padding: 6px 10px;
+    min-height: 38px;
+    font-weight: 900;
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+
+  .timer-pill {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #FFF8E7;
+    border: 2px solid #FECA57;
+    color: #B36B00;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 900;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+  .timer-pill.urgent {
+    background: #FFE5E5;
+    border-color: #FF4757;
+    color: #D63031;
+    animation: shakeMild 0.4s infinite;
+  }
+  .timer-pill.frozen {
+    background: #E0F7FA;
+    border-color: #00CEC9;
+    color: #00838F;
+  }
+
+  @keyframes shakeMild {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+  }
+
+  .hud-metrics {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 900;
+    font-size: 0.84rem;
+  }
+
+  .combo-chip {
+    background: #FF9F43;
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+  }
+
+  .time-progress-wrap {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    border: 1px solid #FFD6E5;
+  }
+  .time-progress-bar {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #1DD1A1, #FECA57, #FF6B9D);
+    transition: width 0.2s linear;
+  }
+
+  .game-arena {
+    width: 100%;
+    background: var(--card-bg);
+    border-radius: 24px;
+    padding: 14px;
+    border: 2.5px solid #FFD6E5;
+    box-shadow: 0 6px 0 rgba(255, 184, 208, 0.25);
+    margin-bottom: 10px;
+  }
+
+  /* Powerups Bar */
+  .powerups-bar {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .powerup-btn {
+    flex: 1;
+    min-height: 46px;
+    border-radius: 16px;
+    background: var(--card-bg);
+    border: 2px solid #DFE4EA;
+    border-bottom-width: 4px;
+    font-weight: 800;
+    font-size: 0.8rem;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .powerup-btn:active { transform: translateY(2px); }
+
+  /* Keypad & Options */
+  .keypad-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .key-btn {
+    min-height: 52px;
+    border-radius: 16px;
+    font-size: 1.3rem;
+    font-weight: 900;
+    background: #FFF9FB;
+    color: var(--text-main);
+    border: 2px solid #FFD6E5;
+    border-bottom: 4px solid #FFB8D0;
+  }
+  body.theme-night .key-btn {
+    background: #3B346E;
+    border-color: #574B90;
+    border-bottom-color: #2C2754;
+  }
+  .key-btn:active { transform: translateY(2px); }
+  .key-btn.del { background: #FFEAA7; border-color: #FDCB6E; color: #7F5500; }
+  .key-btn.ok { background: #55EFC4; border-color: #00B894; color: #004D3D; }
+
+  .choice-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .choice-pill {
+    width: 100%;
+    min-height: 54px;
+    border-radius: 999px;
+    font-size: 1.22rem;
+    font-weight: 900;
+    color: #2D3436;
+    border: 2.5px solid rgba(0, 0, 0, 0.08);
+    border-bottom-width: 5px;
+    transition: transform 0.1s;
+  }
+  .choice-pill:active { transform: translateY(2px); }
+  .choice-pill.c0 { background: linear-gradient(180deg, #D6EAFF, #AED6FF); border-bottom-color: #54A0FF; }
+  .choice-pill.c1 { background: linear-gradient(180deg, #FFF3BF, #FFE066); border-bottom-color: #FECA57; }
+  .choice-pill.c2 { background: linear-gradient(180deg, #FFD8E8, #FFB3D1); border-bottom-color: #FF6B9D; }
+  .choice-pill.c3 { background: linear-gradient(180deg, #D3F9D8, #96F2D7); border-bottom-color: #1DD1A1; }
+
+  /* Clock Module Styles */
+  .clock-subtabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .clock-tab {
+    flex: 1;
+    min-height: 40px;
+    border-radius: 14px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    background: #F1F2F6;
+    color: #57606F;
+    border-bottom: 3px solid #DFE4EA;
+  }
+  .clock-tab.active {
+    background: #54A0FF;
+    color: #fff;
+    border-bottom-color: #2E86DE;
+  }
+
+  .clock-controls-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .clock-svg-box {
+    width: 260px;
+    height: 260px;
+    margin: 4px auto 10px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: none;
+  }
+  @media (min-width: 600px) {
+    .clock-svg-box {
+      width: 350px;
+      height: 350px;
+    }
+  }
+
+  .dial-btns-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 8px;
+  }
+  .dial-adj-btn {
+    min-height: 44px;
+    padding: 6px 12px;
+    border-radius: 14px;
+    font-weight: 900;
+    font-size: 0.86rem;
+    background: #E8F4FD;
+    color: #0984E3;
+    border: 2px solid #74B9FF;
+    border-bottom-width: 4px;
+  }
+
+  /* Schulte & Match & OddOne Grids */
+  .schulte-grid {
+    display: grid;
+    gap: 8px;
+    margin: 10px auto;
+    max-width: 380px;
+  }
+  .schulte-cell {
+    aspect-ratio: 1 / 1;
+    min-height: 54px;
+    border-radius: 16px;
+    font-size: 1.35rem;
+    font-weight: 900;
+    background: #FFF5E4;
+    color: #6D4C41;
+    border: 2px solid #FFCC80;
+    border-bottom-width: 4px;
+  }
+  .schulte-cell.done {
+    background: #C8E6C9;
+    border-color: #81C784;
+    color: #2E7D32;
+    opacity: 0.55;
+  }
+
+  /* Canvas Handwriting */
+  .hw-canvas-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    height: 210px;
+    margin: 10px auto;
+    background: #FFFDF9;
+    border: 3px dashed #FECA57;
+    border-radius: 20px;
+    overflow: hidden;
+    touch-action: none;
+  }
+  .hw-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+  }
+
+  /* Visual Aids (Apples & Blocks) */
+  .visual-aid-box {
+    background: #FFF9EC;
+    border: 2px solid #FFEAA7;
+    border-radius: 16px;
+    padding: 8px 10px;
+    margin: 8px 0;
+    font-size: 1.15rem;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  /* Learning Path Cards */
+  .path-node {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 14px;
+    margin-bottom: 10px;
+    border: 2.5px solid #BDE0FE;
+    border-bottom-width: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .path-badge {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #FF9F43, #FF6B9D);
+    color: #fff;
+    font-weight: 900;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Pet House & Profile Cards */
+  .pet-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  @media (min-width: 600px) {
+    .pet-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  .pet-item-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 12px;
+    text-align: center;
+    border: 2.5px solid #FFD6E5;
+    border-bottom-width: 4px;
+  }
+  .pet-item-card.selected {
+    border-color: #FF6B9D;
+    background: #FFF5F8;
+  }
+  body.theme-night .pet-item-card.selected {
+    background: rgba(255, 107, 157, 0.2);
+  }
+
+  /* Result Stamp & Modal */
+  .modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(30, 27, 58, 0.55);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .modal-backdrop.open {
+    display: flex;
+  }
+  .modal-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--card-bg);
+    border-radius: 28px;
+    padding: 22px 18px;
+    text-align: center;
+    border: 3px solid #FFD6E5;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  }
+
+  .stamp-100 {
+    width: 96px;
+    height: 96px;
+    margin: 8px auto;
+    border-radius: 50%;
+    border: 5px double #FF4757;
+    color: #FF4757;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    transform: rotate(-12deg);
+    animation: stampPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  @keyframes stampPop {
+    0% { transform: scale(2.4) rotate(-25deg); opacity: 0; }
+    100% { transform: scale(1) rotate(-12deg); opacity: 1; }
+  }
+
+  .primary-action-btn {
+    width: 100%;
+    min-height: 50px;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #FF7EB3, #FF6B9D);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 900;
+    border-bottom: 4px solid #D63068;
+    margin-top: 10px;
+  }
+
+  .floating-toast {
+    position: fixed;
+    top: 64px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2D3436;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    z-index: 120;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .floating-toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="bg-decor">
+  <div class="sun-rays"></div>
+  <div class="cloud" style="top: 55px; left: 8%; width: 110px; height: 34px;"></div>
+  <div class="cloud" style="top: 105px; right: 10%; width: 130px; height: 38px;"></div>
+  <div class="hill-layer-1"></div>
+  <div class="hill-layer-2"></div>
+</div>
+
+<div id="toast" class="floating-toast"></div>
+
+<div id="app-shell">
+  <!-- Top Status Bar -->
+  <header class="top-bar">
+    <div class="brand-pill">
+      <span>🐾 JOJO數學</span>
+      <span id="ui-lv" class="lv-badge">Lv.1</span>
+    </div>
+    <div class="stat-group">
+      <div class="stat-pill">🍪 <span id="ui-coins">200</span></div>
+      <div class="stat-pill">🔥 <span id="ui-streak">1</span></div>
+      <button class="icon-btn" data-action="toggle-theme" title="切換日夜背景">☀️</button>
+      <button class="icon-btn" data-action="toggle-sound" id="btn-sound" title="音效開關">🔊</button>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <!-- TAB 1: HOME TRAINING -->
+    <section id="view-home" class="view-pane active">
+      <!-- Companion Card -->
+      <div class="companion-card">
+        <div class="pet-avatar-wrap" id="home-pet-avatar">
+          <span style="font-size:2.1rem;">🐼</span>
+          <span class="pet-lv-tag" id="home-pet-lv">Lv.1</span>
+        </div>
+        <div class="companion-info">
+          <div class="companion-top">
+            <span class="pet-name" id="home-pet-name">JOJO 小熊貓</span>
+            <button class="switch-pet-btn" data-action="nav" data-tab="pets">換夥伴 ›</button>
+          </div>
+          <div class="pet-speech" id="home-pet-speech">「啾啾～每題都有 30 秒可以慢慢想喔！」</div>
+          <div class="xp-row">
+            <span id="home-rank">森林見習生</span>
+            <div class="xp-bar-bg"><div class="xp-bar-fill" id="home-xp-bar" style="width: 20%;"></div></div>
+            <span id="home-xp-text">60/300</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Difficulty Strip -->
+      <div class="diff-strip">
+        <span class="diff-label">🎯 難度分級</span>
+        <div class="diff-btns">
+          <button class="diff-btn active" data-action="set-diff" data-diff="easy">🌱 簡單</button>
+          <button class="diff-btn" data-action="set-diff" data-diff="medium">🌿 進階</button>
+          <button class="diff-btn" data-action="set-diff" data-diff="hard">🔥 挑戰</button>
+        </div>
+      </div>
+
+      <!-- Special Learning Features (Equal 3-Column Row) -->
+      <div class="sec-heading">
+        <span>✨ 特色互動學堂（每題 30 秒）</span>
+        <span>均等大卡片</span>
+      </div>
+      <div class="uniform-row-3">
+        <button class="uniform-card c-clock" data-action="start-game" data-mode="clock">
+          <span class="badge-float">NEW</span>
+          <div class="card-top-meta">
+            <span class="card-tag">時鐘小達人</span>
+            <span class="card-best">🏆<span id="best-clock">0</span></span>
+          </div>
+          <div class="card-icon-pill">🕐</div>
+          <div class="card-title">認識鐘表</div>
+        </button>
+
+        <button class="uniform-card c-write" data-action="start-game" data-mode="handwriting">
+          <div class="card-top-meta">
+            <span class="card-tag">數/英四線格</span>
+            <span class="card-best">🏆<span id="best-handwriting">0</span></span>
+          </div>
+          <div class="card-icon-pill">✍️</div>
+          <div class="card-title">手寫描字</div>
+        </button>
+
+        <button class="uniform-card c-review" data-action="start-game" data-mode="review">
+          <span class="badge-float" id="wrong-count-badge" style="display:none;">0</span>
+          <div class="card-top-meta">
+            <span class="card-tag">鬧鐘複習</span>
+            <span class="card-best">🏆<span id="best-review">0</span></span>
+          </div>
+          <div class="card-icon-pill">⏰</div>
+          <div class="card-title">錯題訂正</div>
+        </button>
+      </div>
+
+      <!-- 9 Focus Modes (3 Uniform Rows x 3 Equal Cards) -->
+      <div class="sec-heading">
+        <span>🎮 九大專注力訓練關卡</span>
+        <span>⏱️ 30s / 題</span>
+      </div>
+
+      <div class="uniform-row-3">
+        <button class="uniform-card c-speed" data-action="start-game" data-mode="speed">
+          <div class="card-top-meta">
+            <span class="card-tag">教具/心算</span>
+            <span class="card-best">🏆<span id="best-speed">0</span></span>
+          </div>
+          <div class="card-icon-pill">⚡</div>
+          <div class="card-title">閃電速算</div>
+        </button>
+
+        <button class="uniform-card c-schulte" data-action="start-game" data-mode="schulte">
+          <div class="card-top-meta">
+            <span class="card-tag">視覺搜尋</span>
+            <span class="card-best">🏆<span id="best-schulte">0</span></span>
+          </div>
+          <div class="card-icon-pill">🍪</div>
+          <div class="card-title">舒爾特餅乾</div>
+        </button>
+
+        <button class="uniform-card c-memory" data-action="start-game" data-mode="memory">
+          <div class="card-top-meta">
+            <span class="card-tag">工作記憶</span>
+            <span class="card-best">🏆<span id="best-memory">0</span></span>
+          </div>
+          <div class="card-icon-pill">🧠</div>
+          <div class="card-title">記憶算式</div>
+        </button>
+      </div>
+
+      <div class="uniform-row-3">
+        <button class="uniform-card c-distract" data-action="start-game" data-mode="distract">
+          <div class="card-top-meta">
+            <span class="card-tag">抗干擾力</span>
+            <span class="card-best">🏆<span id="best-distract">0</span></span>
+          </div>
+          <div class="card-icon-pill">🐝</div>
+          <div class="card-title">蜜蜂抗干擾</div>
+        </button>
+
+        <button class="uniform-card c-match" data-action="start-game" data-mode="match">
+          <div class="card-top-meta">
+            <span class="card-tag">湊十配對</span>
+            <span class="card-best">🏆<span id="best-match">0</span></span>
+          </div>
+          <div class="card-icon-pill">🍬</div>
+          <div class="card-title">果凍消消樂</div>
+        </button>
+
+        <button class="uniform-card c-oddone" data-action="start-game" data-mode="oddone">
+          <div class="card-top-meta">
+            <span class="card-tag">細節辨識</span>
+            <span class="card-best">🏆<span id="best-oddone">0</span></span>
+          </div>
+          <div class="card-icon-pill">🔍</div>
+          <div class="card-title">算式找碴</div>
+        </button>
+      </div>
+
+      <div class="uniform-row-3">
+        <button class="uniform-card c-balance" data-action="start-game" data-mode="balance">
+          <div class="card-top-meta">
+            <span class="card-tag">重量平衡</span>
+            <span class="card-best">🏆<span id="best-balance">0</span></span>
+          </div>
+          <div class="card-icon-pill">⚖️</div>
+          <div class="card-title">森林天平</div>
+        </button>
+
+        <button class="uniform-card c-train" data-action="start-game" data-mode="train">
+          <div class="card-top-meta">
+            <span class="card-tag">數列規律</span>
+            <span class="card-best">🏆<span id="best-train">0</span></span>
+          </div>
+          <div class="card-icon-pill">🚂</div>
+          <div class="card-title">數字小火車</div>
+        </button>
+
+        <button class="uniform-card c-whack" data-action="start-game" data-mode="whack">
+          <div class="card-top-meta">
+            <span class="card-tag">反應抑制</span>
+            <span class="card-best">🏆<span id="best-whack">0</span></span>
+          </div>
+          <div class="card-icon-pill">🔨</div>
+          <div class="card-title">打地鼠任務</div>
+        </button>
+      </div>
+    </section>
+
+    <!-- TAB 2: LEARNING PATH -->
+    <section id="view-path" class="view-pane">
+      <div class="game-arena">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="margin:0; font-size:1.05rem;">🗺️ 客製化階梯學習路徑</h3>
+          <div style="display:flex; gap:6px;">
+            <button class="diff-btn active" data-action="set-path-subj" data-subj="math">📐 數學</button>
+            <button class="diff-btn" data-action="set-path-subj" data-subj="eng">🔤 英文拼讀</button>
+          </div>
+        </div>
+        <div id="path-list-container"></div>
+      </div>
+    </section>
+
+    <!-- TAB 3: PET HOUSE -->
+    <section id="view-pets" class="view-pane">
+      <div class="game-arena">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="margin:0; font-size:1.05rem;">🏡 森林小動物小屋</h3>
+          <button class="switch-pet-btn" data-action="feed-pet">🍓 餵食餅乾 (-30🍪)</button>
+        </div>
+        <div class="pet-grid" id="pet-grid-container"></div>
+      </div>
+    </section>
+
+    <!-- TAB 4: PROFILE & ACHIEVEMENTS -->
+    <section id="view-profile" class="view-pane">
+      <div class="game-arena">
+        <h3 style="margin:0 0 10px 0; font-size:1.05rem;">📊 專注力成長與系統檢測</h3>
+        <div id="stats-summary-box" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; margin-bottom:12px;"></div>
+        <button class="quit-btn" style="width:100%;" data-action="reset-data">🔧 重設本機存檔（修復異常狀態）</button>
+      </div>
+    </section>
+
+    <!-- ACTIVE GAMEPLAY VIEW -->
+    <section id="view-game" class="view-pane">
+      <div class="game-hud">
+        <button class="quit-btn" data-action="quit-game">✕ 離開</button>
+        <div id="game-timer-pill" class="timer-pill">⏱️ <span id="game-timer-val">30</span>s</div>
+        <div class="hud-metrics">
+          <span class="combo-chip">🔥 <span id="game-combo">0</span></span>
+          <span>⭐ <span id="game-score">0</span></span>
+        </div>
+      </div>
+
+      <div class="time-progress-wrap">
+        <div id="game-time-bar" class="time-progress-bar"></div>
+      </div>
+
+      <div class="game-arena" id="game-stage"></div>
+
+      <div class="powerups-bar">
+        <button class="powerup-btn" data-action="use-item" data-item="freeze">❄️ 凍結 (<span id="item-freeze">2</span>)</button>
+        <button class="powerup-btn" data-action="use-item" data-item="hint">💡 提示 (<span id="item-hint">2</span>)</button>
+        <button class="powerup-btn" data-action="use-item" data-item="shield">🛡️ 護盾 (<span id="item-shield">2</span>)</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom 4-Tab Navigation -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <button class="nav-btn active" data-action="nav" data-tab="home">
+      <span class="nav-ico">🎮</span>
+      <span>專注訓練</span>
+    </button>
+    <button class="nav-btn" data-action="nav" data-tab="path">
+      <span class="nav-ico">🗺️</span>
+      <span>學習路徑</span>
+    </button>
+    <button class="nav-btn" data-action="nav" data-tab="pets">
+      <span class="nav-ico">🏡</span>
+      <span>動物小屋</span>
+    </button>
+    <button class="nav-btn" data-action="nav" data-tab="profile">
+      <span class="nav-ico">📊</span>
+      <span>成長成就</span>
+    </button>
+  </nav>
+</div>
+
+<!-- Round Over Modal -->
+<div id="result-modal" class="modal-backdrop">
+  <div class="modal-card">
+    <div id="result-stamp-area"></div>
+    <h2 id="result-title" style="margin:6px 0;">訓練完成！</h2>
+    <p id="result-desc" style="color:var(--text-sub); font-weight:700; margin:6px 0 12px 0;"></p>
+    <div style="display:flex; justify-content:center; gap:14px; font-weight:900; margin-bottom:12px;">
+      <span>⭐ 得分：<b id="res-score">0</b></span>
+      <span>🍪 獎勵：+<b id="res-coins">0</b></span>
+    </div>
+    <button class="primary-action-btn" data-action="close-modal">回到學園首頁</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const QUESTION_SECONDS = 30; // Every question / round gets 30 full seconds!
+
+  const PETS = [
+    { id: 'panda', name: 'JOJO 小熊貓', emoji: '🐼', cost: 0, quote: '「啾啾～每題都有 30 秒，看清楚再出手喔！」' },
+    { id: 'chick', name: '披風小雞隊長', emoji: '🐥', cost: 120, quote: '「滴滴！我們一起把錯題全部訂正成 100 分！」' },
+    { id: 'bunny', name: '麻糬小兔', emoji: '🐰', cost: 180, quote: '「跳跳～時鐘的短針看小時、長針看分鐘喔！」' },
+    { id: 'shiba', name: '布丁小柴犬', emoji: '🐶', cost: 250, quote: '「汪汪！專注力滿分，餅乾獎勵拿不完！」' },
+    { id: 'seal', name: '泡泡小海豹', emoji: '🦭', cost: 320, quote: '「呼嚕～心平氣和，30 秒一定算得出來！」' },
+    { id: 'hedgehog', name: '奇異果小刺蝟', emoji: '🦔', cost: 400, quote: '「沙沙～細心觀察每一個數字與指針位置！」' }
+  ];
+
+  const DEFAULT_STATE = {
+    coins: 200,
+    xp: 60,
+    level: 1,
+    streak: 1,
+    sound: true,
+    theme: 'day',
+    diff: 'easy',
+    activePet: 'panda',
+    unlockedPets: ['panda'],
+    petAffection: { panda: 1 },
+    items: { freeze: 2, hint: 2, shield: 2 },
+    best: {
+      clock: 0, handwriting: 0, review: 0,
+      speed: 0, schulte: 0, memory: 0,
+      distract: 0, match: 0, oddone: 0,
+      balance: 0, train: 0, whack: 0
+    },
+    wrongBank: [
+      { q: '16 + 2 = ?', ans: '18', user: '19' },
+      { q: '12 + 8 = ?', ans: '20', user: '21' }
+    ],
+    pathSubj: 'math',
+    pathProgress: { A1: 80, A2: 40, B1: 20, B2: 0, C1: 0 }
+  };
+
+  let state = loadState();
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem('jojo_math_academy_v5');
+      if (!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE));
+      const parsed = JSON.parse(raw);
+      return Object.assign(JSON.parse(JSON.stringify(DEFAULT_STATE)), parsed, {
+        best: Object.assign({}, DEFAULT_STATE.best, parsed.best || {}),
+        items: Object.assign({}, DEFAULT_STATE.items, parsed.items || {})
+      });
+    } catch (e) {
+      return JSON.parse(JSON.stringify(DEFAULT_STATE));
+    }
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem('jojo_math_academy_v5', JSON.stringify(state));
+    } catch (e) {}
+  }
+
+  // Audio helper (iOS Safari safe)
+  let audioCtx = null;
+  function playTone(freq, type, dur) {
+    if (!state.sound) return;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!audioCtx) audioCtx = new AC();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type || 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (dur || 0.16));
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + (dur || 0.16));
+    } catch (e) {}
+  }
+
+  function speakWord(text) {
+    try {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US';
+        u.rate = 0.85;
+        window.speechSynthesis.speak(u);
+      }
+    } catch (e) {}
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._tid);
+    t._tid = setTimeout(() => t.classList.remove('show'), 1900);
+  }
+
+  // Render Top & Home UI
+  function syncUI() {
+    document.getElementById('ui-lv').textContent = 'Lv.' + state.level;
+    document.getElementById('ui-coins').textContent = state.coins;
+    document.getElementById('ui-streak').textContent = state.streak;
+    document.getElementById('btn-sound').textContent = state.sound ? '🔊' : '🔇';
+
+    document.body.classList.remove('theme-sunset', 'theme-night');
+    if (state.theme === 'sunset') document.body.classList.add('theme-sunset');
+    if (state.theme === 'night') document.body.classList.add('theme-night');
+
+    const pet = PETS.find(p => p.id === state.activePet) || PETS[0];
+    document.getElementById('home-pet-avatar').innerHTML =
+      `<span style="font-size:2.1rem;">${pet.emoji}</span><span class="pet-lv-tag">Lv.${state.petAffection[pet.id] || 1}</span>`;
+    document.getElementById('home-pet-name').textContent = pet.name;
+    document.getElementById('home-pet-speech').textContent = pet.quote;
+
+    const needXp = state.level * 300;
+    const pct = Math.min(100, Math.round((state.xp / needXp) * 100));
+    document.getElementById('home-xp-bar').style.width = pct + '%';
+    document.getElementById('home-xp-text').textContent = `${state.xp}/${needXp}`;
+
+    document.querySelectorAll('[data-action="set-diff"]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.diff === state.diff);
+    });
+
+    Object.keys(state.best).forEach(k => {
+      const el = document.getElementById('best-' + k);
+      if (el) el.textContent = state.best[k];
+    });
+
+    const wb = document.getElementById('wrong-count-badge');
+    if (state.wrongBank.length > 0) {
+      wb.style.display = 'inline-block';
+      wb.textContent = state.wrongBank.length;
+    } else {
+      wb.style.display = 'none';
+    }
+
+    document.getElementById('item-freeze').textContent = state.items.freeze;
+    document.getElementById('item-hint').textContent = state.items.hint;
+    document.getElementById('item-shield').textContent = state.items.shield;
+  }
+
+  function switchTab(tab) {
+    stopGameTimer();
+    document.querySelectorAll('.view-pane').forEach(v => v.classList.remove('active'));
+    document.getElementById('bottom-nav').style.display = 'flex';
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+
+    const target = document.getElementById('view-' + tab);
+    if (target) target.classList.add('active');
+
+    if (tab === 'path') renderPath();
+    if (tab === 'pets') renderPets();
+    if (tab === 'profile') renderProfile();
+    syncUI();
+  }
+
+  function renderPath() {
+    const c = document.getElementById('path-list-container');
+    const isMath = state.pathSubj === 'math';
+    document.querySelectorAll('[data-action="set-path-subj"]').forEach(b => {
+      b.classList.toggle('active', b.dataset.subj === state.pathSubj);
+    });
+    const nodes = isMath ? [
+      { code: 'A1', title: '認識 1～10 與蘋果計數', mode: 'speed', prog: 80 },
+      { code: 'A2', title: '合十的方法與湊十消消樂', mode: 'match', prog: 50 },
+      { code: 'B1', title: '認識鐘表：整點與半點', mode: 'clock', prog: 35 },
+      { code: 'B2', title: '加減進退位與天平平衡', mode: 'balance', prog: 15 },
+      { code: 'C1', title: '手寫數字筆畫專注力小考', mode: 'handwriting', prog: 0 }
+    ] : [
+      { code: 'E1', title: '自然發音 /c/ /a/ /t/ 拼寫', mode: 'handwriting', prog: 60 },
+      { code: 'E2', title: '水果單字 banana 描寫', mode: 'handwriting', prog: 30 },
+      { code: 'E3', title: '英文時間 O'clock 認識鐘表', mode: 'clock', prog: 10 }
+    ];
+
+    c.innerHTML = nodes.map(n => `
+      <div class="path-node">
+        <div class="path-badge">${n.code}</div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-weight:900; font-size:0.94rem; margin-bottom:4px;">${n.title}</div>
+          <div class="xp-bar-bg"><div class="xp-bar-fill" style="width:${n.prog}%;"></div></div>
+        </div>
+        <button class="switch-pet-btn" data-action="start-game" data-mode="${n.mode}">開始練習</button>
+      </div>
+    `).join('');
+  }
+
+  function renderPets() {
+    const c = document.getElementById('pet-grid-container');
+    c.innerHTML = PETS.map(p => {
+      const unlocked = state.unlockedPets.includes(p.id);
+      const selected = state.activePet === p.id;
+      return `
+        <div class="pet-item-card ${selected ? 'selected' : ''}">
+          <div style="font-size:2.6rem; margin-bottom:4px;">${p.emoji}</div>
+          <div style="font-weight:900; font-size:0.9rem;">${p.name}</div>
+          <div style="font-size:0.74rem; color:var(--text-sub); margin:4px 0 8px 0;">
+            ${unlocked ? '親密度 Lv.' + (state.petAffection[p.id] || 1) : '需要 ' + p.cost + ' 🍪'}
+          </div>
+          ${unlocked
+            ? `<button class="switch-pet-btn" style="width:100%;" data-action="select-pet" data-pet="${p.id}">${selected ? '✓ 陪伴中' : '選為夥伴'}</button>`
+            : `<button class="diff-btn active" style="width:100%;" data-action="unlock-pet" data-pet="${p.id}">解鎖領養</button>`
+          }
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderProfile() {
+    const box = document.getElementById('stats-summary-box');
+    const totalBest = Object.values(state.best).reduce((a, b) => a + b, 0);
+    box.innerHTML = `
+      <div class="stat-pill" style="justify-content:center; padding:12px;">🏆 總最高分：${totalBest}</div>
+      <div class="stat-pill" style="justify-content:center; padding:12px;">🐾 夥伴數：${state.unlockedPets.length}/${PETS.length}</div>
+      <div class="stat-pill" style="justify-content:center; padding:12px;">⏰ 待訂正：${state.wrongBank.length} 題</div>
+      <div class="stat-pill" style="justify-content:center; padding:12px;">⏱️ 每題時限：30 秒</div>
+    `;
+  }
+
+  // Active Game Engine (30-Second Per-Question Timer)
+  let game = null;
+  let timerInterval = null;
+
+  function stopGameTimer() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+  }
+
+  function resetQuestionTimer() {
+    if (!game) return;
+    game.timeLeft = QUESTION_SECONDS;
+    game.frozenUntil = 0;
+    updateTimerHUD();
+  }
+
+  function updateTimerHUD() {
+    if (!game) return;
+    const pill = document.getElementById('game-timer-pill');
+    const val = document.getElementById('game-timer-val');
+    const bar = document.getElementById('game-time-bar');
+    const now = Date.now();
+    const isFrozen = now < game.frozenUntil;
+
+    val.textContent = Math.max(0, Math.ceil(game.timeLeft));
+    bar.style.width = Math.max(0, (game.timeLeft / QUESTION_SECONDS) * 100) + '%';
+
+    pill.classList.remove('urgent', 'frozen');
+    if (isFrozen) pill.classList.add('frozen');
+    else if (game.timeLeft <= 7) pill.classList.add('urgent');
+  }
+
+  function startGame(mode) {
+    stopGameTimer();
+    document.querySelectorAll('.view-pane').forEach(v => v.classList.remove('active'));
+    document.getElementById('bottom-nav').style.display = 'none';
+    document.getElementById('view-game').classList.add('active');
+
+    game = {
+      mode: mode,
+      score: 0,
+      combo: 0,
+      qIndex: 0,
+      totalQ: mode === 'review' ? Math.max(1, state.wrongBank.length) : 8,
+      timeLeft: QUESTION_SECONDS,
+      frozenUntil: 0,
+      shieldActive: false,
+      inputVal: '',
+      showAid: true,
+      useHandwritingInput: false,
+      clockSubMode: 'read', // 'read' | 'dial' | 'calc'
+      clockHelp: true,
+      dialH: 3,
+      dialM: 0,
+      hwTargetIdx: 0,
+      currentAns: null,
+      currentQuestionText: ''
+    };
+
+    document.getElementById('game-score').textContent = '0';
+    document.getElementById('game-combo').textContent = '0';
+
+    timerInterval = setInterval(() => {
+      if (!game) return;
+      if (Date.now() < game.frozenUntil) {
+        updateTimerHUD();
+        return;
+      }
+      game.timeLeft -= 0.25;
+      updateTimerHUD();
+      if (game.timeLeft <= 0) {
+        onTimeOutQuestion();
+      }
+    }, 250);
+
+    nextQuestion();
+  }
+
+  function onTimeOutQuestion() {
+    playTone(220, 'sawtooth', 0.25);
+    showToast('⏰ 30 秒時間到！換下一題繼續加油～');
+    game.combo = 0;
+    document.getElementById('game-combo').textContent = '0';
+    game.qIndex++;
+    if (game.qIndex >= game.totalQ) {
+      finishGame();
+    } else {
+      nextQuestion();
+    }
+  }
+
+  function handleAnswer(isCorrect, userGiven) {
+    if (!game) return;
+    if (isCorrect) {
+      playTone(660, 'triangle', 0.14);
+      setTimeout(() => playTone(880, 'triangle', 0.16), 90);
+      game.combo++;
+      const bonus = 100 + game.combo * 15 + Math.round(game.timeLeft * 2);
+      game.score += bonus;
+      document.getElementById('game-score').textContent = game.score;
+      document.getElementById('game-combo').textContent = game.combo;
+      showToast(`✨ 答對了！+${bonus} 分`);
+
+      if (game.mode === 'review' && state.wrongBank.length > 0) {
+        state.wrongBank.shift();
+        saveState();
+      }
+    } else {
+      if (game.shieldActive) {
+        game.shieldActive = false;
+        showToast('🛡️ 連擊護盾抵擋了一次失誤！再試一次');
+        playTone(440, 'sine', 0.2);
+        return;
+      }
+      playTone(200, 'sawtooth', 0.24);
+      game.combo = 0;
+      document.getElementById('game-combo').textContent = '0';
+      showToast(`💡 正確答案是 ${game.currentAns}`);
+      if (game.mode !== 'review' && game.currentQuestionText) {
+        state.wrongBank.push({
+          q: game.currentQuestionText,
+          ans: String(game.currentAns),
+          user: String(userGiven || '?')
+        });
+        if (state.wrongBank.length > 15) state.wrongBank.shift();
+        saveState();
+      }
+    }
+
+    game.qIndex++;
+    if (game.qIndex >= game.totalQ) {
+      finishGame();
+    } else {
+      nextQuestion();
+    }
+  }
+
+  function finishGame() {
+    stopGameTimer();
+    const earnedCoins = Math.max(15, Math.round(game.score / 25));
+    state.coins += earnedCoins;
+    state.xp += Math.max(30, Math.round(game.score / 12));
+    while (state.xp >= state.level * 300) {
+      state.xp -= state.level * 300;
+      state.level++;
+    }
+    if (game.score > (state.best[game.mode] || 0)) {
+      state.best[game.mode] = game.score;
+    }
+    saveState();
+
+    document.getElementById('res-score').textContent = game.score;
+    document.getElementById('res-coins').textContent = earnedCoins;
+
+    const stampArea = document.getElementById('result-stamp-area');
+    if (game.mode === 'review') {
+      stampArea.innerHTML = `<div class="stamp-100"><span style="font-size:0.65rem;">JO MATH</span><span style="font-size:1.6rem;">100</span><span style="font-size:0.65rem;">訂正滿分</span></div>`;
+      document.getElementById('result-title').textContent = '訂正大成功！';
+      document.getElementById('result-desc').textContent = '所有錯題都重新學會了，獲得 100 分紅印章！';
+    } else {
+      stampArea.innerHTML = `<div style="font-size:3.2rem;">🏆</div>`;
+      document.getElementById('result-title').textContent = '專注力訓練完成！';
+      document.getElementById('result-desc').textContent = '表現太棒了！小動物夥伴為你歡呼～';
+    }
+
+    document.getElementById('result-modal').classList.add('open');
+    game = null;
+    syncUI();
+  }
+
+  // Question Generators
+  function nextQuestion() {
+    resetQuestionTimer();
+    game.inputVal = '';
+    const stage = document.getElementById('game-stage');
+    const m = game.mode;
+
+    if (m === 'clock') renderClockQuestion(stage);
+    else if (m === 'handwriting') renderHandwritingQuestion(stage);
+    else if (m === 'review') renderReviewQuestion(stage);
+    else if (m === 'schulte') renderSchulteQuestion(stage);
+    else if (m === 'memory') renderMemoryQuestion(stage);
+    else if (m === 'distract') renderDistractQuestion(stage);
+    else if (m === 'match') renderMatchQuestion(stage);
+    else if (m === 'oddone') renderOddOneQuestion(stage);
+    else if (m === 'balance') renderBalanceQuestion(stage);
+    else if (m === 'train') renderTrainQuestion(stage);
+    else if (m === 'whack') renderWhackQuestion(stage);
+    else renderSpeedQuestion(stage);
+  }
+
+  // 1. SPEED MATH (With Apple/Block Visual Aid + Keypad / Handwriting toggle)
+  function renderSpeedQuestion(stage) {
+    const maxN = state.diff === 'easy' ? 12 : (state.diff === 'medium' ? 30 : 60);
+    const isAdd = Math.random() > 0.4;
+    let a = Math.floor(Math.random() * maxN) + 2;
+    let b = Math.floor(Math.random() * Math.min(15, maxN)) + 1;
+    if (!isAdd && a < b) [a, b] = [b, a];
+    const ans = isAdd ? a + b : a - b;
+    const op = isAdd ? '+' : '-';
+
+    game.currentAns = String(ans);
+    game.currentQuestionText = `${a} ${op} ${b} = ?`;
+
+    let visualHtml = '';
+    if (game.showAid && a <= 25 && b <= 15) {
+      if (isAdd) {
+        const tens = Math.floor(ans / 10);
+        const ones = ans % 10;
+        visualHtml = `<div class="visual-aid-box">🧱 十位積木：${'🟨'.repeat(tens) || '無'} ｜ 個位：${'🟦'.repeat(ones) || '無'}</div>`;
+      } else {
+        const stay = '🍎'.repeat(ans);
+        const gone = '🍏'.repeat(b);
+        visualHtml = `<div class="visual-aid-box">${stay}${gone}<div style="font-size:0.75rem; color:var(--text-sub);">紅蘋果留下、青蘋果拿走 ${b} 顆</div></div>`;
+      }
+    }
+
+    stage.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <span style="font-weight:800; font-size:0.82rem; color:var(--text-sub);">第 ${game.qIndex + 1} / ${game.totalQ} 題</span>
+        <div style="display:flex; gap:6px;">
+          <button class="switch-pet-btn" data-action="toggle-aid">🍎 具象教具</button>
+          <button class="switch-pet-btn" data-action="toggle-hw-input">${game.useHandwritingInput ? '🔢 數字鍵盤' : '✍️ 手寫作答'}</button>
+        </div>
+      </div>
+      <div style="text-align:center; font-size:2.2rem; font-weight:900; margin:10px 0;">
+        ${a} ${op} ${b} = <span id="speed-ans-slot" style="color:#E84393; border-bottom:3px solid #E84393; padding:0 12px;">?</span>
+      </div>
+      ${visualHtml}
+      ${game.useHandwritingInput ? `
+        <div class="hw-canvas-wrap"><canvas id="hw-canvas" class="hw-canvas"></canvas></div>
+        <div style="display:flex; gap:8px;">
+          <button class="diff-btn" style="flex:1;" data-action="clear-hw">🧹 清除重寫</button>
+          <button class="primary-action-btn" style="flex:2; margin-top:0;" data-action="submit-hw-speed">✓ 送出答案 (${ans})</button>
+        </div>
+      ` : `
+        <div class="keypad-grid">
+          ${[1,2,3,4,5,6,7,8,9].map(n => `<button class="key-btn" data-action="key-num" data-val="${n}">${n}</button>`).join('')}
+          <button class="key-btn del" data-action="key-del">⌫</button>
+          <button class="key-btn" data-action="key-num" data-val="0">0</button>
+          <button class="key-btn ok" data-action="key-ok">OK</button>
+        </div>
+      `}
+    `;
+    if (game.useHandwritingInput) initCanvasDraw('');
+  }
+
+  // 2. CLOCK MODULE (Read, Dial, Time Calc + Teaching Ring)
+  function buildClockSVG(h, m, showHelp) {
+    const minAngle = m * 6;
+    const hourAngle = ((h % 12) + m / 60) * 30;
+    let marks = '';
+    for (let i = 1; i <= 12; i++) {
+      const ang = (i * 30 - 90) * Math.PI / 180;
+      const nx = 150 + Math.cos(ang) * 96;
+      const ny = 150 + Math.sin(ang) * 96;
+      marks += `<text x="${nx}" y="${ny}" text-anchor="middle" dominant-baseline="central" font-size="18" font-weight="900" fill="#2D3436">${i}</text>`;
+      if (showHelp) {
+        const mx = 150 + Math.cos(ang) * 126;
+        const my = 150 + Math.sin(ang) * 126;
+        const minLabel = String((i * 5) % 60).padStart(2, '0');
+        marks += `<circle cx="${mx}" cy="${my}" r="11" fill="#FFEAA7" stroke="#FDCB6E" stroke-width="1.5"/>`;
+        marks += `<text x="${mx}" y="${my}" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="900" fill="#B36B00">${minLabel}</text>`;
+      }
+    }
+    return `
+      <svg viewBox="0 0 300 300" style="width:100%; height:100%;">
+        <!-- Alarm Bells -->
+        <circle cx="62" cy="52" r="28" fill="#A3CB38" stroke="#6AB04C" stroke-width="4"/>
+        <circle cx="238" cy="52" r="28" fill="#A3CB38" stroke="#6AB04C" stroke-width="4"/>
+        <!-- Body -->
+        <circle cx="150" cy="155" r="134" fill="#54A0FF" stroke="#2E86DE" stroke-width="5"/>
+        <circle cx="150" cy="155" r="114" fill="#FFFFFF"/>
+        <g transform="translate(0, 5)">
+          ${marks}
+          <!-- Minute Hand (Blue) -->
+          <line x1="150" y1="150" x2="150" y2="54" stroke="#0984E3" stroke-width="6" stroke-linecap="round" transform="rotate(${minAngle} 150 150)"/>
+          <!-- Hour Hand (Orange-Red) -->
+          <line x1="150" y1="150" x2="150" y2="86" stroke="#FF6B6B" stroke-width="9" stroke-linecap="round" transform="rotate(${hourAngle} 150 150)"/>
+          <circle cx="150" cy="150" r="8" fill="#2D3436"/>
+        </g>
+      </svg>
+    `;
+  }
+
+  function renderClockQuestion(stage) {
+    const step = state.diff === 'easy' ? 30 : (state.diff === 'medium' ? 15 : 5);
+    const h = Math.floor(Math.random() * 12) + 1;
+    const m = (Math.floor(Math.random() * (60 / step)) * step) % 60;
+    const fmt = (hh, mm) => `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+
+    const sub = game.clockSubMode;
+    let bodyHtml = '';
+
+    if (sub === 'read') {
+      const ans = fmt(h, m);
+      game.currentAns = ans;
+      game.currentQuestionText = `看鐘面認時間 (${ans})`;
+      const opts = new Set([ans]);
+      while (opts.size < 3) {
+        const fh = Math.floor(Math.random() * 12) + 1;
+        const fm = (Math.floor(Math.random() * (60 / step)) * step) % 60;
+        opts.add(fmt(fh, fm));
+      }
+      const arr = Array.from(opts).sort(() => Math.random() - 0.5);
+      bodyHtml = `
+        <div style="text-align:center; font-weight:900; font-size:1rem; margin:4px 0;">👀 看一看，現在鐘面上是幾點幾分？</div>
+        <div class="clock-svg-box">${buildClockSVG(h, m, game.clockHelp)}</div>
+        <div class="choice-list">
+          ${arr.map((o, idx) => `<button class="choice-pill c${idx}" data-action="pick-choice" data-val="${o}">${o}</button>`).join('')}
+        </div>
+      `;
+    } else if (sub === 'dial') {
+      const target = fmt(h, m);
+      game.currentAns = target;
+      game.currentQuestionText = `動手撥指針到 ${target}`;
+      bodyHtml = `
+        <div style="text-align:center; font-weight:900; font-size:1.05rem; margin:4px 0;">
+          🖐️ 請把時鐘撥到 <span style="color:#E84393; font-size:1.3rem;">${target}</span>
+        </div>
+        <div class="clock-svg-box" id="dial-clock-box">${buildClockSVG(game.dialH, game.dialM, game.clockHelp)}</div>
+        <div style="text-align:center; font-weight:800; font-size:0.88rem; color:var(--text-sub);">目前設定：${fmt(game.dialH, game.dialM)}</div>
+        <div class="dial-btns-row">
+          <button class="dial-adj-btn" data-action="adj-dial" data-dh="-1" data-dm="0">-1 時</button>
+          <button class="dial-adj-btn" data-action="adj-dial" data-dh="1" data-dm="0">+1 時</button>
+          <button class="dial-adj-btn" data-action="adj-dial" data-dh="0" data-dm="-5">-5 分</button>
+          <button class="dial-adj-btn" data-action="adj-dial" data-dh="0" data-dm="5">+5 分</button>
+          <button class="dial-adj-btn" data-action="adj-dial" data-dh="0" data-dm="1">+1 分</button>
+        </div>
+        <button class="primary-action-btn" data-action="check-dial">✓ 撥好了，送出答案</button>
+      `;
+    } else {
+      const addM = state.diff === 'easy' ? 30 : 15;
+      const totalMin = h * 60 + m + addM;
+      const nh = ((Math.floor(totalMin / 60) - 1 + 12) % 12) + 1;
+      const nm = totalMin % 60;
+      const ans = fmt(nh, nm);
+      game.currentAns = ans;
+      game.currentQuestionText = `${fmt(h, m)} 再過 ${addM} 分鐘是？`;
+      const opts = new Set([ans, fmt(h, m), fmt(nh, (nm + 15) % 60)]);
+      while (opts.size < 3) opts.add(fmt(Math.floor(Math.random() * 12) + 1, nm));
+      const arr = Array.from(opts).sort(() => Math.random() - 0.5);
+      bodyHtml = `
+        <div style="text-align:center; font-weight:900; font-size:0.98rem; margin:4px 0;">
+          ⏳ 現在是 <b>${fmt(h, m)}</b>，再過 <b style="color:#E84393;">${addM} 分鐘</b> 是幾點？
+        </div>
+        <div class="clock-svg-box">${buildClockSVG(h, m, game.clockHelp)}</div>
+        <div class="choice-list">
+          ${arr.map((o, idx) => `<button class="choice-pill c${idx}" data-action="pick-choice" data-val="${o}">${o}</button>`).join('')}
+        </div>
+      `;
+    }
+
+    stage.innerHTML = `
+      <div class="clock-subtabs">
+        <button class="clock-tab ${sub === 'read' ? 'active' : ''}" data-action="set-clock-sub" data-sub="read">👀 看鐘選時間</button>
+        <button class="clock-tab ${sub === 'dial' ? 'active' : ''}" data-action="set-clock-sub" data-sub="dial">🖐️ 動手撥指針</button>
+        <button class="clock-tab ${sub === 'calc' ? 'active' : ''}" data-action="set-clock-sub" data-sub="calc">⏳ 時間計算機</button>
+      </div>
+      <div class="clock-controls-row">
+        <span style="font-size:0.78rem; font-weight:800; color:#FF6B6B;">🔴 短針=時 ｜ 🔵 長針=分</span>
+        <button class="switch-pet-btn" data-action="toggle-clock-help">🎓 教學輔助：${game.clockHelp ? '開' : '關'}</button>
+      </div>
+      ${bodyHtml}
+    `;
+  }
+
+  // 3. HANDWRITING TRACING (Math Numbers + English Phonics)
+  function renderHandwritingQuestion(stage) {
+    const items = [
+      { type: 'num', text: '10', hint: '🍎🍎🍎🍎🍎 🍎🍎🍎🍎🍎 (十顆蘋果)' },
+      { type: 'eng', text: 'cat', hint: '🐱 /c/ /a/ /t/ — 點擊可聽英語發音' },
+      { type: 'num', text: '6', hint: '🍓🍓🍓🍓🍓 🍓 (六顆草莓)' },
+      { type: 'eng', text: 'banana', hint: '🍌 /b/ /a/ /n/ /a/ /n/ /a/ — 香蕉' },
+      { type: 'num', text: '25', hint: '🧱 2 個十與 5 個一' },
+      { type: 'eng', text: 'butterfly', hint: '🦋 蝴蝶 — 一筆一畫練專注' }
+    ];
+    const item = items[game.qIndex % items.length];
+    game.currentAns = item.text;
+    game.currentQuestionText = `手寫描字：${item.text}`;
+
+    stage.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <span style="font-weight:900;">✍️ 一筆一畫專注描寫 (${game.qIndex + 1}/${game.totalQ})</span>
+        ${item.type === 'eng' ? `<button class="switch-pet-btn" data-action="speak-word" data-word="${item.text}">🔊 聽發音</button>` : ''}
+      </div>
+      <div class="visual-aid-box" style="font-size:0.9rem;">${item.hint}</div>
+      <div class="hw-canvas-wrap">
+        <canvas id="hw-canvas" class="hw-canvas"></canvas>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="diff-btn" style="flex:1;" data-action="clear-hw">🧹 清除重寫</button>
+        <button class="primary-action-btn" style="flex:2; margin-top:0;" data-action="finish-hw">✨ 完成描寫 (+150分)</button>
+      </div>
+    `;
+    initCanvasDraw(item.text);
+  }
+
+  let strokeCount = 0;
+  function initCanvasDraw(watermark) {
+    strokeCount = 0;
+    const canvas = document.getElementById('hw-canvas');
+    if (!canvas) return;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = Math.max(280, rect.width);
+    canvas.height = Math.max(180, rect.height);
+    const ctx = canvas.getContext('2d');
+
+    // Four-line guide + watermark
+    ctx.strokeStyle = '#FFD6E5';
+    ctx.lineWidth = 2;
+    [45, 95, 145, 185].forEach(y => {
+      ctx.beginPath();
+      ctx.moveTo(16, y);
+      ctx.lineTo(canvas.width - 16, y);
+      ctx.stroke();
+    });
+
+    if (watermark) {
+      ctx.fillStyle = 'rgba(130, 140, 160, 0.25)';
+      ctx.font = '900 74px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(watermark, canvas.width / 2, canvas.height / 2 + 4);
+    }
+
+    let drawing = false;
+    function getPos(e) {
+      const r = canvas.getBoundingClientRect();
+      const pt = e.touches ? e.touches[0] : e;
+      return { x: pt.clientX - r.left, y: pt.clientY - r.top };
+    }
+
+    const start = (e) => {
+      e.preventDefault();
+      drawing = true;
+      strokeCount++;
+      const p = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.strokeStyle = '#2D3436';
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+    };
+    const move = (e) => {
+      if (!drawing) return;
+      e.preventDefault();
+      const p = getPos(e);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+    };
+    const end = () => { drawing = false; };
+
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', end);
+    canvas.addEventListener('touchstart', start, { passive: false });
+    canvas.addEventListener('touchmove', move, { passive: false });
+    canvas.addEventListener('touchend', end);
+  }
+
+  // 4. REVIEW WRONG ANSWERS (Alarm Clock Mode)
+  function renderReviewQuestion(stage) {
+    if (state.wrongBank.length === 0) {
+      stage.innerHTML = `
+        <div style="text-align:center; padding:24px 10px;">
+          <div style="font-size:3.2rem;">🐥🎉</div>
+          <h3>目前沒有待訂正的錯題喔！</h3>
+          <p style="color:var(--text-sub);">所有題目都已經訂正完成了，太厲害啦！</p>
+          <button class="primary-action-btn" data-action="quit-game">返回首頁</button>
+        </div>
+      `;
+      stopGameTimer();
+      return;
+    }
+    const item = state.wrongBank[0];
+    game.currentAns = item.ans;
+    game.currentQuestionText = item.q;
+
+    const numAns = parseInt(item.ans, 10);
+    const opts = new Set([item.ans]);
+    if (!isNaN(numAns)) {
+      opts.add(String(numAns + 1));
+      opts.add(String(Math.max(0, numAns - 1)));
+    } else {
+      opts.add('03:30');
+      opts.add('06:00');
+    }
+    const arr = Array.from(opts).sort(() => Math.random() - 0.5);
+
+    stage.innerHTML = `
+      <div style="text-align:center;">
+        <div style="display:inline-block; background:#FFE5E5; color:#D63031; padding:4px 12px; border-radius:999px; font-weight:900; font-size:0.82rem; margin-bottom:8px;">
+          ⏰ 訂正計時器（剩餘 ${state.wrongBank.length} 題）
+        </div>
+        <div style="background:#FFF8F8; border:2px dashed #FF7675; border-radius:18px; padding:14px; margin-bottom:10px;">
+          <div style="font-size:0.82rem; color:#D63031; font-weight:800;">上次答錯：<span style="text-decoration:line-through; border:2px solid #FF4757; border-radius:50%; padding:1px 6px;">${item.user}</span></div>
+          <div style="font-size:1.7rem; font-weight:900; margin-top:6px;">${item.q}</div>
+        </div>
+      </div>
+      <div class="choice-list">
+        ${arr.map((o, idx) => `<button class="choice-pill c${idx}" data-action="pick-choice" data-val="${o}">${o}</button>`).join('')}
+      </div>
+    `;
+  }
+
+  // 5. SCHULTE GRID
+  function renderSchulteQuestion(stage) {
+    const size = state.diff === 'easy' ? 3 : 4;
+    const total = size * size;
+    const nums = Array.from({ length: total }, (_, i) => i + 1).sort(() => Math.random() - 0.5);
+    game.schulteNext = 1;
+    game.schulteTotal = total;
+
+    stage.innerHTML = `
+      <div style="text-align:center; font-weight:900; margin-bottom:6px;">
+        🍪 請依序點擊數字：下一個 <span id="schulte-target" style="color:#E84393; font-size:1.3rem;">1</span> / ${total}
+      </div>
+      <div class="schulte-grid" style="grid-template-columns: repeat(${size}, 1fr);">
+        ${nums.map(n => `<button class="schulte-cell" data-action="tap-schulte" data-num="${n}">${n}</button>`).join('')}
+      </div>
+    `;
+  }
+
+  // 6. MEMORY EQUATION
+  function renderMemoryQuestion(stage) {
+    const a = Math.floor(Math.random() * 15) + 3;
+    const b = Math.floor(Math.random() * 12) + 2;
+    const ans = a + b;
+    game.currentAns = String(ans);
+    game.currentQuestionText = `記憶算式：${a} + ${b}`;
+
+    stage.innerHTML = `
+      <div style="text-align:center; padding:18px 8px;">
+        <div style="font-weight:800; color:var(--text-sub); margin-bottom:8px;">🧠 記住這個算式！（3 秒後隱藏）</div>
+        <div id="mem-flash" style="font-size:2.4rem; font-weight:900; color:#6C5CE7;">${a} + ${b} = ?</div>
+      </div>
+    `;
+    setTimeout(() => {
+      if (!game || game.mode !== 'memory') return;
+      const opts = [ans, ans + 1, ans - 1, ans + 2].sort(() => Math.random() - 0.5);
+      stage.innerHTML = `
+        <div style="text-align:center; font-weight:900; font-size:1.15rem; margin-bottom:8px;">🧠 剛剛的算式答案是多少？</div>
+        <div class="choice-list">
+          ${opts.map((o, idx) => `<button class="choice-pill c${idx}" data-action="pick-choice" data-val="${o}">${o}</button>`).join('')}
+        </div>
+      `;
+    }, 2800);
+  }
+
+  // 7. DISTRACTION BEE
+  function renderDistractQuestion(stage) {
+    const a = Math.floor(Math.random() * 14) + 5;
+    const b = Math.floor(Math.random() * 9) + 2;
+    const ans = a - b;
+    game.currentAns = String(ans);
+    game.currentQuestionText = `${a} - ${b} = ?`;
+    const opts = [ans, ans + 1, ans + 2].sort(() => Math.random() - 0.5);
+
+    stage.innerHTML = `
+      <div style="text-align:center; font-weight:800; color:#0984E3;">🐝 忽略調皮小蜜蜂，算出中間題目！</div>
+      <div style="position:relative; padding:18px; margin:10px 0; background:#F0F8FF; border-radius:18px; text-align:center;">
+        <span style="position:absolute; top:6px; left:12px; font-size:1.2rem;">🐝 99</span>
+        <span style="position:absolute; bottom:6px; right:14px; font-size:1.2rem;">🍯 +77</span>
+        <span style="font-size:2.2rem; font-weight:900; color:#2D3436;">${a} - ${b} = ?</span>
+      </div>
+      <div class="choice-list">
+        ${opts.map((o, idx) => `<button class="choice-pill c${idx}" data-action="pick-choice" data-val="${o}">${o}</button>`).join('')}
+      </div>
+    `;
+  }
+
+  // 8. MAKE 10 MATCH
+  function renderMatchQuestion(stage) {
+    const a = Math.floor(Math.random() * 8) + 1;
+    const ans = 10 - a;
+    game.currentAns = String(ans);
+    game.currentQuestionText = `${a} + ? = 10`;
+    const opts = [ans, (ans + 2) % 9 + 1, (ans + 4) % 9 + 1].sort(() => Math.random() - 0.5);
+
+    stage.innerHTML = `
+      <div style="text-align:center; font-weight:900; font-size:1.1rem; margin:10px 0;">
+        🍬 湊十好朋友：<b>${a}</b> 要搭配哪個數字才會變成 <b style="color:#E84393;">10</b>？
+      </div>
+      <div class="choice-list">
+        ${opts.map((o, idx) => `<button class="choice-pill c${idx}" data-action="pick-choice" data-val="${o}">${o}</button>`).join('')}
+      </div>
+    `;
+  }
+
+  // 9. ODD ONE OUT EQUATION
+  function renderOddOneQuestion(stage) {
+    const wrongEq = '7 + 6 = 14';
+    game.currentAns = wrongEq;
+    game.currentQuestionText = '找出算錯的算式';
+    const opts = ['5 + 4 = 9', '8 + 7 = 15', wrongEq].sort(() => Math.random() - 0.5);
+
+    stage.innerHTML = `
+      <div style="text-align:center; font-weight:900; font-size:1.1rem; margin:10px 0;">
+        🔍 火眼金睛：哪一個算式「算錯了」？
+      </div>
+      <div class="choice-list">
+        ${opts.map((o, idx) => `<button class="choice-pill c${idx}" data-action="pick-choice" data-val="${o}">${o}</button>`).join('')}
+      </div>
+    `;
+  }
+
+  // 10. FOREST BALANCE
+  function renderBalanceQuestion(stage) {
+    const appleW = 3;
+    const count = Math.floor(Math.random() * 3) + 2;
+    const ans = appleW * count;
+    game.currentAns = String(ans);
+    game.currentQuestionText = `${count} 顆蘋果多重？`;
+    const opts = [ans, ans + 3, ans - 2].sort(() => Math.random() - 0.5);
+
+    stage.innerHTML = `
+      <div style="text-align:center; font-weight:900; margin-bottom:8px;">⚖️ 1 顆 🍎 = 3 公克，天平右邊要放幾公克才會平衡？</div>
+      <div class="visual-aid-box" style="font-size:1.5rem;">
+        ${'🍎'.repeat(count)}  ⚖️  [ ? 公克 ]
+      </div>
+      <div class="choice-list">
+        ${opts.map((o, idx) => `<button class="choice-pill c${idx}" data-action="pick-choice" data-val="${o}">${o} 公克</button>`).join('')}
+      </div>
+    `;
+  }
+
+  // 11. NUMBER TRAIN
+  function renderTrainQuestion(stage) {
+    const step = state.diff === 'easy' ? 2 : 5;
+    const start = Math.floor(Math.random() * 10) + 2;
+    const seq = [start, start + step, start + step * 2];
+    const ans = start + step * 3;
+    game.currentAns = String(ans);
+    game.currentQuestionText = `數列規律：${seq.join(', ')}, ?`;
+    const opts = [ans, ans + step, ans - 1].sort(() => Math.random() - 0.5);
+
+    stage.innerHTML = `
+      <div style="text-align:center; font-weight:900; margin-bottom:8px;">🚂 觀察車廂規律，下一節車廂是幾號？</div>
+      <div class="visual-aid-box" style="font-size:1.35rem; font-weight:900;">
+        🚂 [${seq[0]}] - [${seq[1]}] - [${seq[2]}] - [ ? ]
+      </div>
+      <div class="choice-list">
+        ${opts.map((o, idx) => `<button class="choice-pill c${idx}" data-action="pick-choice" data-val="${o}">${o}</button>`).join('')}
+      </div>
+    `;
+  }
+
+  // 12. WHACK-A-MOLE GO/NO-GO
+  function renderWhackQuestion(stage) {
+    const targetOdd = Math.random() > 0.5;
+    const nums = [2, 4, 7, 8, 10, 12];
+    if (!targetOdd) nums[2] = 5;
+    const ans = targetOdd ? '7' : '5';
+    game.currentAns = ans;
+    game.currentQuestionText = targetOdd ? '找出奇數地鼠' : '找出奇數地鼠';
+
+    stage.innerHTML = `
+      <div style="text-align:center; font-weight:900; margin-bottom:8px;">
+        🔨 雙重規則任務：只敲「<span style="color:#E84393;">奇數（單數）</span>」地鼠！
+      </div>
+      <div class="schulte-grid" style="grid-template-columns: repeat(3, 1fr);">
+        ${nums.sort(() => Math.random() - 0.5).map(n => `
+          <button class="schulte-cell" data-action="pick-choice" data-val="${n}">🐹<br>${n}</button>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  // Global Single Event Delegation (iOS Safari Rock-Solid)
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const action = btn.dataset.action;
+
+    if (action === 'nav') {
+      playTone(520, 'sine', 0.1);
+      switchTab(btn.dataset.tab);
+    } else if (action === 'toggle-theme') {
+      const order = ['day', 'sunset', 'night'];
+      state.theme = order[(order.indexOf(state.theme) + 1) % order.length];
+      saveState();
+      syncUI();
+      showToast(state.theme === 'day' ? '☀️ 陽光森林背景' : state.theme === 'sunset' ? '🌅 粉彩夕陽背景' : '🌙 星空螢火蟲背景');
+    } else if (action === 'toggle-sound') {
+      state.sound = !state.sound;
+      saveState();
+      syncUI();
+      if (state.sound) playTone(660, 'sine', 0.12);
+    } else if (action === 'set-diff') {
+      state.diff = btn.dataset.diff;
+      saveState();
+      syncUI();
+      playTone(580, 'sine', 0.1);
+    } else if (action === 'start-game') {
+      playTone(660, 'triangle', 0.14);
+      startGame(btn.dataset.mode);
+    } else if (action === 'quit-game') {
+      switchTab('home');
+    } else if (action === 'close-modal') {
+      document.getElementById('result-modal').classList.remove('open');
+      switchTab('home');
+    } else if (action === 'pick-choice') {
+      handleAnswer(String(btn.dataset.val) === String(game.currentAns), btn.dataset.val);
+    } else if (action === 'key-num') {
+      playTone(500, 'sine', 0.08);
+      if (game.inputVal.length < 3) {
+        game.inputVal += btn.dataset.val;
+        const slot = document.getElementById('speed-ans-slot');
+        if (slot) slot.textContent = game.inputVal;
+      }
+    } else if (action === 'key-del') {
+      game.inputVal = game.inputVal.slice(0, -1);
+      const slot = document.getElementById('speed-ans-slot');
+      if (slot) slot.textContent = game.inputVal || '?';
+    } else if (action === 'key-ok') {
+      if (!game.inputVal) return;
+      handleAnswer(game.inputVal === String(game.currentAns), game.inputVal);
+    } else if (action === 'toggle-aid') {
+      game.showAid = !game.showAid;
+      renderSpeedQuestion(document.getElementById('game-stage'));
+    } else if (action === 'toggle-hw-input') {
+      game.useHandwritingInput = !game.useHandwritingInput;
+      renderSpeedQuestion(document.getElementById('game-stage'));
+    } else if (action === 'submit-hw-speed') {
+      if (strokeCount === 0) { showToast('✍️ 請先在畫布上寫出答案喔！'); return; }
+      handleAnswer(true, game.currentAns);
+    } else if (action === 'clear-hw') {
+      initCanvasDraw(game.mode === 'handwriting' ? game.currentAns : '');
+    } else if (action === 'finish-hw') {
+      if (strokeCount === 0) { showToast('✍️ 請先跟著虛線描寫一筆喔！'); return; }
+      handleAnswer(true, game.currentAns);
+    } else if (action === 'speak-word') {
+      speakWord(btn.dataset.word);
+    } else if (action === 'set-clock-sub') {
+      game.clockSubMode = btn.dataset.sub;
+      nextQuestion();
+    } else if (action === 'toggle-clock-help') {
+      game.clockHelp = !game.clockHelp;
+      nextQuestion();
+    } else if (action === 'adj-dial') {
+      const dh = parseInt(btn.dataset.dh, 10);
+      const dm = parseInt(btn.dataset.dm, 10);
+      let totalM = game.dialH * 60 + game.dialM + dh * 60 + dm;
+      totalM = (totalM + 720) % 720;
+      game.dialH = Math.floor(totalM / 60) || 12;
+      game.dialM = totalM % 60;
+      playTone(620, 'sine', 0.08);
+      const box = document.getElementById('dial-clock-box');
+      if (box) box.innerHTML = buildClockSVG(game.dialH, game.dialM, game.clockHelp);
+      const fmt = `${String(game.dialH).padStart(2, '0')}:${String(game.dialM).padStart(2, '0')}`;
+      const info = box && box.nextElementSibling;
+      if (info) info.textContent = '目前設定：' + fmt;
+    } else if (action === 'check-dial') {
+      const fmt = `${String(game.dialH).padStart(2, '0')}:${String(game.dialM).padStart(2, '0')}`;
+      handleAnswer(fmt === game.currentAns, fmt);
+    } else if (action === 'tap-schulte') {
+      const num = parseInt(btn.dataset.num, 10);
+      if (num === game.schulteNext) {
+        playTone(520 + num * 35, 'sine', 0.1);
+        btn.classList.add('done');
+        game.schulteNext++;
+        const t = document.getElementById('schulte-target');
+        if (t) t.textContent = game.schulteNext;
+        if (game.schulteNext > game.schulteTotal) {
+          handleAnswer(true, '完成');
+        }
+      } else {
+        playTone(220, 'sawtooth', 0.15);
+        showToast(`👀 要先找數字 ${game.schulteNext} 喔！`);
+      }
+    } else if (action === 'set-path-subj') {
+      state.pathSubj = btn.dataset.subj;
+      renderPath();
+    } else if (action === 'select-pet') {
+      state.activePet = btn.dataset.pet;
+      saveState();
+      renderPets();
+      syncUI();
+      playTone(660, 'triangle', 0.14);
+    } else if (action === 'unlock-pet') {
+      const pet = PETS.find(p => p.id === btn.dataset.pet);
+      if (!pet) return;
+      if (state.coins < pet.cost) {
+        showToast(`🍪 餅乾還差 ${pet.cost - state.coins} 個喔！`);
+        return;
+      }
+      state.coins -= pet.cost;
+      state.unlockedPets.push(pet.id);
+      state.activePet = pet.id;
+      state.petAffection[pet.id] = 1;
+      saveState();
+      renderPets();
+      syncUI();
+      playTone(880, 'triangle', 0.2);
+      showToast(`🎉 成功領養 ${pet.name}！`);
+    } else if (action === 'feed-pet') {
+      if (state.coins < 30) {
+        showToast('🍪 餅乾不足 30 個，快去玩遊戲賺餅乾吧！');
+        return;
+      }
+      state.coins -= 30;
+      const pid = state.activePet;
+      state.petAffection[pid] = (state.petAffection[pid] || 1) + 1;
+      saveState();
+      renderPets();
+      syncUI();
+      playTone(760, 'triangle', 0.16);
+      showToast('🍓 夥伴吃得好開心，親密度提升了！');
+    } else if (action === 'reset-data') {
+      localStorage.removeItem('jojo_math_academy_v5');
+      state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+      saveState();
+      syncUI();
+      renderProfile();
+      showToast('✅ 存檔已重設為全新狀態！');
+    }
+  });
+
+  // Boot
+  syncUI();
+})();
+</script>
+</body>
+</html>
