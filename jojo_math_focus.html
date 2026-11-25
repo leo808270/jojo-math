@@ -127,6 +127,27 @@
     border-radius: 55% 45% 0 0;
   }
 
+  /* Combo 10 Screen Flash */
+  .screen-flash {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255, 234, 167, 0.75), rgba(255, 107, 157, 0.35));
+    pointer-events: none !important;
+    z-index: 110;
+    opacity: 0;
+    transition: opacity 0.35s ease-out;
+  }
+  .screen-flash.active { opacity: 1; }
+
+  /* Flying Reward Particle */
+  .fly-reward {
+    position: fixed;
+    font-size: 1.5rem;
+    z-index: 130;
+    pointer-events: none !important;
+    transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.65s ease-in;
+  }
+
   /* Main Responsive Shell */
   #app-shell {
     position: relative;
@@ -271,6 +292,15 @@
     align-items: center;
     justify-content: center;
     border: 2px solid #FFD1E3;
+    transition: transform 0.2s;
+  }
+  .pet-avatar-wrap.hop {
+    animation: petHop 0.5s ease;
+  }
+  @keyframes petHop {
+    0%, 100% { transform: translateY(0) scale(1); }
+    40% { transform: translateY(-10px) scale(1.12); }
+    70% { transform: translateY(2px) scale(0.95); }
   }
 
   .pet-lv-tag {
@@ -299,11 +329,22 @@
 
   .pet-name {
     font-weight: 900;
-    font-size: 0.98rem;
+    font-size: 0.96rem;
     color: #E84393;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .pet-skill-tag {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #0984E3;
+    background: #E8F4FD;
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-bottom: 4px;
+    display: inline-block;
   }
 
   .switch-pet-btn {
@@ -322,8 +363,8 @@
     background: #F8F9FA;
     color: #57606F;
     border-radius: 12px;
-    padding: 5px 9px;
-    font-size: 0.8rem;
+    padding: 4px 9px;
+    font-size: 0.78rem;
     font-weight: 700;
     margin-bottom: 6px;
     white-space: nowrap;
@@ -356,6 +397,65 @@
     background: linear-gradient(90deg, #FF9F43, #FF6B9D, #54A0FF);
     border-radius: 999px;
     transition: width 0.3s ease;
+  }
+
+  /* Daily Quests Panel */
+  .quest-box {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    border: 2px solid #FFEAA7;
+    box-shadow: 0 4px 0 rgba(253, 203, 110, 0.25);
+  }
+  .quest-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.84rem;
+    font-weight: 900;
+    margin-bottom: 6px;
+    color: #B36B00;
+  }
+  body.theme-night .quest-header { color: #FFEAA7; }
+
+  .quest-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 12px;
+    background: rgba(255, 249, 235, 0.7);
+    margin-bottom: 5px;
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+  body.theme-night .quest-row { background: rgba(255, 255, 255, 0.08); }
+  .quest-row:last-child { margin-bottom: 0; }
+
+  .quest-claim-btn {
+    padding: 4px 10px;
+    min-height: 28px;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 900;
+    background: #DFE4EA;
+    color: #747D8C;
+    white-space: nowrap;
+  }
+  .quest-claim-btn.ready {
+    background: linear-gradient(180deg, #55EFC4, #00B894);
+    color: #fff;
+    animation: pulseClaim 1.2s infinite;
+  }
+  .quest-claim-btn.claimed {
+    background: transparent;
+    color: #1DD1A1;
+  }
+  @keyframes pulseClaim {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
   }
 
   /* Difficulty Strip */
@@ -673,7 +773,46 @@
     padding: 3px 8px;
     border-radius: 999px;
     font-size: 0.78rem;
+    transition: all 0.2s;
   }
+  .combo-chip.tier2 { background: linear-gradient(90deg, #FF6B6B, #FF9F43); }
+  .combo-chip.tier3 { background: linear-gradient(90deg, #6C5CE7, #E84393); }
+  .combo-chip.tier4 { background: linear-gradient(90deg, #FF6B9D, #FECA57, #1DD1A1); color: #2D3436; }
+
+  /* Random Stage Event Banner */
+  .event-banner {
+    background: linear-gradient(90deg, #FFF3BF, #FFE8CC);
+    border: 2px solid #FFA94D;
+    color: #8C4A00;
+    border-radius: 14px;
+    padding: 6px 12px;
+    margin-bottom: 8px;
+    font-size: 0.82rem;
+    font-weight: 900;
+    text-align: center;
+    display: none;
+  }
+  .event-banner.active { display: block; }
+  .event-banner.boss {
+    background: linear-gradient(90deg, #FFE3E3, #FFC9C9);
+    border-color: #FF6B6B;
+    color: #A61E4D;
+  }
+
+  /* Companion Live Reaction Strip in Game */
+  .game-pet-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 14px;
+    padding: 5px 10px;
+    margin-bottom: 8px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--text-main);
+  }
+  body.theme-night .game-pet-bar { background: rgba(255, 255, 255, 0.1); }
 
   .time-progress-wrap {
     width: 100%;
@@ -681,7 +820,7 @@
     background: rgba(255, 255, 255, 0.7);
     border-radius: 999px;
     overflow: hidden;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     border: 1px solid #FFD6E5;
   }
   .time-progress-bar {
@@ -724,6 +863,11 @@
     gap: 4px;
   }
   .powerup-btn:active { transform: translateY(2px); }
+  .powerup-btn.active-shield {
+    border-color: #1DD1A1;
+    background: #E6FCF5;
+    color: #087F5B;
+  }
 
   /* Keypad & Options */
   .keypad-grid {
@@ -766,13 +910,42 @@
     color: #2D3436;
     border: 2.5px solid rgba(0, 0, 0, 0.08);
     border-bottom-width: 5px;
-    transition: transform 0.1s;
+    transition: all 0.15s;
   }
   .choice-pill:active { transform: translateY(2px); }
   .choice-pill.c0 { background: linear-gradient(180deg, #D6EAFF, #AED6FF); border-bottom-color: #54A0FF; }
   .choice-pill.c1 { background: linear-gradient(180deg, #FFF3BF, #FFE066); border-bottom-color: #FECA57; }
   .choice-pill.c2 { background: linear-gradient(180deg, #FFD8E8, #FFB3D1); border-bottom-color: #FF6B9D; }
   .choice-pill.c3 { background: linear-gradient(180deg, #D3F9D8, #96F2D7); border-bottom-color: #1DD1A1; }
+  .choice-pill.eliminated {
+    opacity: 0.25;
+    pointer-events: none;
+    text-decoration: line-through;
+  }
+  .choice-pill.correct-glow {
+    background: linear-gradient(180deg, #69DB7C, #38D9A9) !important;
+    border-color: #2B8A3E !important;
+    color: #fff !important;
+    transform: scale(1.03);
+  }
+  .choice-pill.wrong-shake {
+    background: linear-gradient(180deg, #FFA8A8, #FF6B6B) !important;
+    border-color: #C92A2A !important;
+    color: #fff !important;
+  }
+
+  /* Feedback Inline Card */
+  .feedback-callout {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 16px;
+    background: #FFF5F5;
+    border: 2px solid #FFA8A8;
+    color: #C92A2A;
+    font-size: 0.86rem;
+    font-weight: 800;
+    text-align: center;
+  }
 
   /* Clock Module Styles */
   .clock-subtabs {
@@ -849,9 +1022,9 @@
   }
   .schulte-cell {
     aspect-ratio: 1 / 1;
-    min-height: 54px;
+    min-height: 50px;
     border-radius: 16px;
-    font-size: 1.35rem;
+    font-size: 1.25rem;
     font-weight: 900;
     background: #FFF5E4;
     color: #6D4C41;
@@ -863,6 +1036,11 @@
     border-color: #81C784;
     color: #2E7D32;
     opacity: 0.55;
+  }
+  .schulte-cell.hint-pulse {
+    border-color: #FF4757;
+    background: #FFE3E3;
+    animation: pulseClaim 0.8s infinite;
   }
 
   /* Canvas Handwriting */
@@ -896,6 +1074,10 @@
     line-height: 1.4;
     text-align: center;
   }
+  body.theme-night .visual-aid-box {
+    background: rgba(255, 255, 255, 0.1);
+    color: #FFF8F0;
+  }
 
   /* Learning Path Cards */
   .path-node {
@@ -909,6 +1091,10 @@
     align-items: center;
     justify-content: space-between;
     gap: 10px;
+  }
+  .path-node.completed {
+    border-color: #55EFC4;
+    border-bottom-color: #00B894;
   }
   .path-badge {
     width: 52px;
@@ -949,6 +1135,30 @@
     background: rgba(255, 107, 157, 0.2);
   }
 
+  /* Badges Grid */
+  .badge-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .ach-card {
+    background: rgba(0, 0, 0, 0.03);
+    border: 2px solid #ECEFF4;
+    border-radius: 16px;
+    padding: 8px 6px;
+    text-align: center;
+    opacity: 0.45;
+  }
+  .ach-card.unlocked {
+    opacity: 1;
+    background: #FFF9EB;
+    border-color: #FECA57;
+  }
+  body.theme-night .ach-card.unlocked {
+    background: rgba(254, 202, 87, 0.16);
+  }
+
   /* Result Stamp & Modal */
   .modal-backdrop {
     display: none;
@@ -965,14 +1175,48 @@
   }
   .modal-card {
     width: 100%;
-    max-width: 420px;
+    max-width: 430px;
     background: var(--card-bg);
     border-radius: 28px;
-    padding: 22px 18px;
+    padding: 20px 18px;
     text-align: center;
     border: 3px solid #FFD6E5;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
   }
+
+  .rank-medal {
+    width: 78px;
+    height: 78px;
+    margin: 4px auto 8px auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.3rem;
+    font-weight: 900;
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+  }
+  .rank-S { background: linear-gradient(135deg, #FECA57, #FF6B9D); }
+  .rank-A { background: linear-gradient(135deg, #54A0FF, #5F27CD); }
+  .rank-B { background: linear-gradient(135deg, #1DD1A1, #10AC84); }
+  .rank-C { background: linear-gradient(135deg, #A4B0BE, #747D8C); }
+
+  .report-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin: 10px 0;
+    text-align: center;
+  }
+  .report-cell {
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 14px;
+    padding: 8px;
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+  body.theme-night .report-cell { background: rgba(255, 255, 255, 0.08); }
 
   .stamp-100 {
     width: 96px;
@@ -1003,7 +1247,7 @@
     font-size: 1rem;
     font-weight: 900;
     border-bottom: 4px solid #D63068;
-    margin-top: 10px;
+    margin-top: 8px;
   }
 
   .floating-toast {
@@ -1015,12 +1259,13 @@
     color: #fff;
     padding: 8px 16px;
     border-radius: 999px;
-    font-size: 0.85rem;
+    font-size: 0.84rem;
     font-weight: 800;
     z-index: 120;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s;
+    white-space: nowrap;
   }
   .floating-toast.show { opacity: 1; }
 </style>
@@ -1035,6 +1280,7 @@
   <div class="hill-layer-2"></div>
 </div>
 
+<div id="screen-flash" class="screen-flash"></div>
 <div id="toast" class="floating-toast"></div>
 
 <div id="app-shell">
@@ -1045,8 +1291,8 @@
       <span id="ui-lv" class="lv-badge">Lv.1</span>
     </div>
     <div class="stat-group">
-      <div class="stat-pill">🍪 <span id="ui-coins">200</span></div>
-      <div class="stat-pill">🔥 <span id="ui-streak">1</span></div>
+      <div class="stat-pill" id="coin-target-pill">🍪 <span id="ui-coins">200</span></div>
+      <div class="stat-pill">🔥 <span id="ui-streak">1</span>天</div>
       <button class="icon-btn" data-action="toggle-theme" title="切換日夜背景">☀️</button>
       <button class="icon-btn" data-action="toggle-sound" id="btn-sound" title="音效開關">🔊</button>
     </div>
@@ -1066,6 +1312,7 @@
             <span class="pet-name" id="home-pet-name">JOJO 小熊貓</span>
             <button class="switch-pet-btn" data-action="nav" data-tab="pets">換夥伴 ›</button>
           </div>
+          <div class="pet-skill-tag" id="home-pet-skill">✨ 技能：首錯保留連擊</div>
           <div class="pet-speech" id="home-pet-speech">「啾啾～每題都有 30 秒可以慢慢想喔！」</div>
           <div class="xp-row">
             <span id="home-rank">森林見習生</span>
@@ -1073,6 +1320,15 @@
             <span id="home-xp-text">60/300</span>
           </div>
         </div>
+      </div>
+
+      <!-- Daily Quests -->
+      <div class="quest-box">
+        <div class="quest-header">
+          <span>📋 今日森林小任務</span>
+          <span id="quest-date-tag" style="font-size:0.74rem; opacity:0.8;">每日更新</span>
+        </div>
+        <div id="daily-quests-list"></div>
       </div>
 
       <!-- Difficulty Strip -->
@@ -1225,6 +1481,9 @@
             <button class="diff-btn" data-action="set-path-subj" data-subj="eng">🔤 英文拼讀</button>
           </div>
         </div>
+        <div style="font-size:0.78rem; color:var(--text-sub); margin-bottom:10px; font-weight:700;">
+          完成對應關卡即可累積進度（滿 100% 自動領取 50 🍪 達標獎勵）
+        </div>
         <div id="path-list-container"></div>
       </div>
     </section>
@@ -1234,7 +1493,10 @@
       <div class="game-arena">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
           <h3 style="margin:0; font-size:1.05rem;">🏡 森林小動物小屋</h3>
-          <button class="switch-pet-btn" data-action="feed-pet">🍓 餵食餅乾 (-30🍪)</button>
+          <div style="display:flex; gap:6px;">
+            <button class="switch-pet-btn" data-action="buy-items">🎒 補道具 (-50🍪)</button>
+            <button class="switch-pet-btn" data-action="feed-pet">🍓 餵食 (-30🍪)</button>
+          </div>
         </div>
         <div class="pet-grid" id="pet-grid-container"></div>
       </div>
@@ -1243,9 +1505,11 @@
     <!-- TAB 4: PROFILE & ACHIEVEMENTS -->
     <section id="view-profile" class="view-pane">
       <div class="game-arena">
-        <h3 style="margin:0 0 10px 0; font-size:1.05rem;">📊 專注力成長與系統檢測</h3>
+        <h3 style="margin:0 0 10px 0; font-size:1.05rem;">📊 專注力成長與成就徽章牆</h3>
         <div id="stats-summary-box" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; margin-bottom:12px;"></div>
-        <button class="quit-btn" style="width:100%;" data-action="reset-data">🔧 重設本機存檔（修復異常狀態）</button>
+        <div style="font-weight:900; font-size:0.9rem; margin-bottom:6px;">🏅 森林榮譽徽章（已解鎖 <span id="ach-count">0</span>/9）</div>
+        <div class="badge-grid" id="ach-grid-container"></div>
+        <button class="quit-btn" style="width:100%; margin-top:14px;" data-action="reset-data">🔧 重設本機存檔（修復異常狀態）</button>
       </div>
     </section>
 
@@ -1255,7 +1519,7 @@
         <button class="quit-btn" data-action="quit-game">✕ 離開</button>
         <div id="game-timer-pill" class="timer-pill">⏱️ <span id="game-timer-val">30</span>s</div>
         <div class="hud-metrics">
-          <span class="combo-chip">🔥 <span id="game-combo">0</span></span>
+          <span id="game-combo-chip" class="combo-chip">🔥 0</span>
           <span>⭐ <span id="game-score">0</span></span>
         </div>
       </div>
@@ -1264,12 +1528,19 @@
         <div id="game-time-bar" class="time-progress-bar"></div>
       </div>
 
+      <div id="game-event-banner" class="event-banner"></div>
+
+      <div class="game-pet-bar">
+        <span id="game-pet-ico" style="font-size:1.35rem;">🐼</span>
+        <span id="game-pet-line" style="flex:1;">「專心看題目，我們一定可以的！」</span>
+      </div>
+
       <div class="game-arena" id="game-stage"></div>
 
       <div class="powerups-bar">
-        <button class="powerup-btn" data-action="use-item" data-item="freeze">❄️ 凍結 (<span id="item-freeze">2</span>)</button>
-        <button class="powerup-btn" data-action="use-item" data-item="hint">💡 提示 (<span id="item-hint">2</span>)</button>
-        <button class="powerup-btn" data-action="use-item" data-item="shield">🛡️ 護盾 (<span id="item-shield">2</span>)</button>
+        <button class="powerup-btn" id="btn-item-freeze" data-action="use-item" data-item="freeze">❄️ 凍結 (<span id="item-freeze">2</span>)</button>
+        <button class="powerup-btn" id="btn-item-hint" data-action="use-item" data-item="hint">💡 提示 (<span id="item-hint">2</span>)</button>
+        <button class="powerup-btn" id="btn-item-shield" data-action="use-item" data-item="shield">🛡️ 護盾 (<span id="item-shield">2</span>)</button>
       </div>
     </section>
   </main>
@@ -1299,12 +1570,9 @@
 <div id="result-modal" class="modal-backdrop">
   <div class="modal-card">
     <div id="result-stamp-area"></div>
-    <h2 id="result-title" style="margin:6px 0;">訓練完成！</h2>
-    <p id="result-desc" style="color:var(--text-sub); font-weight:700; margin:6px 0 12px 0;"></p>
-    <div style="display:flex; justify-content:center; gap:14px; font-weight:900; margin-bottom:12px;">
-      <span>⭐ 得分：<b id="res-score">0</b></span>
-      <span>🍪 獎勵：+<b id="res-coins">0</b></span>
-    </div>
+    <h2 id="result-title" style="margin:4px 0;">訓練完成！</h2>
+    <p id="result-desc" style="color:var(--text-sub); font-weight:700; font-size:0.86rem; margin:4px 0 8px 0;"></p>
+    <div class="report-grid" id="result-report-grid"></div>
     <button class="primary-action-btn" data-action="close-modal">回到學園首頁</button>
   </div>
 </div>
@@ -1313,22 +1581,55 @@
 (function() {
   'use strict';
 
-  const QUESTION_SECONDS = 30; // Every question / round gets 30 full seconds!
+  const BASE_QUESTION_SECONDS = 30;
 
   const PETS = [
-    { id: 'panda', name: 'JOJO 小熊貓', emoji: '🐼', cost: 0, quote: '「啾啾～每題都有 30 秒，看清楚再出手喔！」' },
-    { id: 'chick', name: '披風小雞隊長', emoji: '🐥', cost: 120, quote: '「滴滴！我們一起把錯題全部訂正成 100 分！」' },
-    { id: 'bunny', name: '麻糬小兔', emoji: '🐰', cost: 180, quote: '「跳跳～時鐘的短針看小時、長針看分鐘喔！」' },
-    { id: 'shiba', name: '布丁小柴犬', emoji: '🐶', cost: 250, quote: '「汪汪！專注力滿分，餅乾獎勵拿不完！」' },
-    { id: 'seal', name: '泡泡小海豹', emoji: '🦭', cost: 320, quote: '「呼嚕～心平氣和，30 秒一定算得出來！」' },
-    { id: 'hedgehog', name: '奇異果小刺蝟', emoji: '🦔', cost: 400, quote: '「沙沙～細心觀察每一個數字與指針位置！」' }
+    { id: 'panda', name: 'JOJO 小熊貓', emoji: '🐼', cost: 0, skill: '每局首錯保留連擊', quote: '「啾啾～每題都有 30 秒，看清楚再出手喔！」' },
+    { id: 'chick', name: '披風小雞隊長', emoji: '🐥', cost: 120, skill: '錯題訂正經驗 +50%', quote: '「滴滴！我們一起把錯題全部訂正成 100 分！」' },
+    { id: 'bunny', name: '麻糬小兔', emoji: '🐰', cost: 180, skill: '認識鐘表每題多 +3 秒', quote: '「跳跳～時鐘的短針看小時、長針看分鐘喔！」' },
+    { id: 'shiba', name: '布丁小柴犬', emoji: '🐶', cost: 250, skill: '通關餅乾獎勵 +20%', quote: '「汪汪！專注力滿分，餅乾獎勵拿不完！」' },
+    { id: 'seal', name: '泡泡小海豹', emoji: '🦭', cost: 320, skill: '最後 5 秒倒數減速一半', quote: '「呼嚕～心平氣和，最後幾秒也能穩穩算完！」' },
+    { id: 'hedgehog', name: '奇異果小刺蝟', emoji: '🦔', cost: 400, skill: '舒爾特/找碴開局免費提示', quote: '「沙沙～細心觀察每一個數字與算式細節！」' }
   ];
+
+  const ACHIEVEMENTS = [
+    { id: 'first10', ico: '🌟', title: '初試啼聲', desc: '累積答對 10 題' },
+    { id: 'combo8', ico: '⚡', title: '超專注狀態', desc: '單局連續答對 8 題' },
+    { id: 'allmodes', ico: '🎮', title: '全能小玩家', desc: '體驗全部 12 種模式' },
+    { id: 'rev10', ico: '⏰', title: '訂正小達人', desc: '完成 5 題錯題訂正' },
+    { id: 'nohint', ico: '🧠', title: '獨立思考王', desc: '不使用提示完成一局' },
+    { id: 'streak3', ico: '🔥', title: '三日好習慣', desc: '連續登入 3 天' },
+    { id: 'pets3', ico: '🐾', title: '森林好朋友', desc: '收集 3 隻以上寵物' },
+    { id: 'clutch', ico: '⏱️', title: '壓秒神射手', desc: '在最後 5 秒答對題目' },
+    { id: 'score1k', ico: '👑', title: '千分王者', desc: '任一模式突破 1,000 分' }
+  ];
+
+  const PATH_NODES = {
+    math: [
+      { code: 'A1', title: '認識 1～10 與蘋果計數', mode: 'speed' },
+      { code: 'A2', title: '合十的方法與湊十消消樂', mode: 'match' },
+      { code: 'B1', title: '認識鐘表：整點與半點', mode: 'clock' },
+      { code: 'B2', title: '加減進退位與天平平衡', mode: 'balance' },
+      { code: 'C1', title: '手寫數字筆畫專注力小考', mode: 'handwriting' }
+    ],
+    eng: [
+      { code: 'E1', title: '自然發音 /c/ /a/ /t/ 拼寫', mode: 'handwriting' },
+      { code: 'E2', title: '水果單字 banana 描寫', mode: 'handwriting' },
+      { code: 'E3', title: '英文時間 O'clock 認識鐘表', mode: 'clock' }
+    ]
+  };
+
+  function getTodayStr() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
 
   const DEFAULT_STATE = {
     coins: 200,
     xp: 60,
     level: 1,
     streak: 1,
+    lastPlayDate: '',
     sound: true,
     theme: 'day',
     diff: 'easy',
@@ -1342,37 +1643,127 @@
       distract: 0, match: 0, oddone: 0,
       balance: 0, train: 0, whack: 0
     },
+    playedModes: [],
+    totalCorrect: 0,
+    totalReviewed: 0,
+    unlockedAch: [],
     wrongBank: [
-      { q: '16 + 2 = ?', ans: '18', user: '19' },
-      { q: '12 + 8 = ?', ans: '20', user: '21' }
+      { q: '16 + 2 = ?', ans: '18', user: '19', tip: '先算個位數 6 + 2 = 8，再加上 10 喔！' },
+      { q: '12 + 8 = ?', ans: '20', user: '21', tip: '2 和 8 剛好湊成 10，10 + 10 = 20！' }
     ],
     pathSubj: 'math',
-    pathProgress: { A1: 80, A2: 40, B1: 20, B2: 0, C1: 0 }
+    pathProgress: { A1: 40, A2: 20, B1: 0, B2: 0, C1: 0, E1: 30, E2: 0, E3: 0 },
+    pathClaimed: {},
+    daily: {
+      date: '',
+      quests: []
+    }
   };
 
   let state = loadState();
 
+  function generateDailyQuests(today) {
+    return [
+      { id: 'q_games', title: '完成 2 局專注訓練', target: 2, prog: 0, rewardCoins: 40, rewardXp: 60, claimed: false },
+      { id: 'q_combo', title: '單局達成 5 連擊', target: 5, prog: 0, rewardCoins: 50, rewardXp: 80, claimed: false },
+      { id: 'q_item_or_rev', title: '使用 1 次道具或完成 1 題訂正', target: 1, prog: 0, rewardCoins: 45, rewardXp: 70, claimed: false }
+    ];
+  }
+
   function loadState() {
     try {
-      const raw = localStorage.getItem('jojo_math_academy_v5');
-      if (!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE));
+      const raw = localStorage.getItem('jojo_math_academy_v6');
+      if (!raw) return initFreshState();
       const parsed = JSON.parse(raw);
-      return Object.assign(JSON.parse(JSON.stringify(DEFAULT_STATE)), parsed, {
+      const merged = Object.assign(JSON.parse(JSON.stringify(DEFAULT_STATE)), parsed, {
         best: Object.assign({}, DEFAULT_STATE.best, parsed.best || {}),
-        items: Object.assign({}, DEFAULT_STATE.items, parsed.items || {})
+        items: Object.assign({}, DEFAULT_STATE.items, parsed.items || {}),
+        pathProgress: Object.assign({}, DEFAULT_STATE.pathProgress, parsed.pathProgress || {}),
+        pathClaimed: parsed.pathClaimed || {}
       });
+      ensureDailyQuests(merged);
+      return merged;
     } catch (e) {
-      return JSON.parse(JSON.stringify(DEFAULT_STATE));
+      return initFreshState();
+    }
+  }
+
+  function initFreshState() {
+    const s = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    ensureDailyQuests(s);
+    return s;
+  }
+
+  function ensureDailyQuests(s) {
+    const today = getTodayStr();
+    if (!s.daily || s.daily.date !== today || !Array.isArray(s.daily.quests) || s.daily.quests.length === 0) {
+      s.daily = {
+        date: today,
+        quests: generateDailyQuests(today)
+      };
     }
   }
 
   function saveState() {
     try {
-      localStorage.setItem('jojo_math_academy_v5', JSON.stringify(state));
+      localStorage.setItem('jojo_math_academy_v6', JSON.stringify(state));
     } catch (e) {}
   }
 
-  // Audio helper (iOS Safari safe)
+  // Daily Streak Check on Play Completion
+  function updateDailyStreak() {
+    const today = getTodayStr();
+    if (state.lastPlayDate === today) return false;
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
+
+    if (state.lastPlayDate === yStr) {
+      state.streak += 1;
+    } else {
+      state.streak = 1;
+    }
+    state.lastPlayDate = today;
+
+    if (state.streak === 3 || state.streak === 7 || state.streak === 14) {
+      state.coins += 80;
+      showToast(`🔥 連續學習 ${state.streak} 天達成！額外獲得 +80 🍪`);
+    }
+    return true;
+  }
+
+  function updateQuestProgress(questId, amount, isMaxMode) {
+    ensureDailyQuests(state);
+    const q = state.daily.quests.find(item => item.id === questId);
+    if (!q || q.claimed) return;
+    if (isMaxMode) {
+      q.prog = Math.max(q.prog, Math.min(q.target, amount));
+    } else {
+      q.prog = Math.min(q.target, q.prog + amount);
+    }
+  }
+
+  function checkAchievements(extra) {
+    const unlock = (id) => {
+      if (!state.unlockedAch.includes(id)) {
+        state.unlockedAch.push(id);
+        const info = ACHIEVEMENTS.find(a => a.id === id);
+        if (info) showToast(`🏅 解鎖新徽章：【${info.title}】！`);
+      }
+    };
+    if (state.totalCorrect >= 10) unlock('first10');
+    if (extra && extra.maxCombo >= 8) unlock('combo8');
+    if (state.playedModes.length >= 12) unlock('allmodes');
+    if (state.totalReviewed >= 5) unlock('rev10');
+    if (extra && extra.usedHint === false && extra.correctCount >= 5) unlock('nohint');
+    if (state.streak >= 3) unlock('streak3');
+    if (state.unlockedPets.length >= 3) unlock('pets3');
+    if (extra && extra.clutchHit) unlock('clutch');
+    if (Object.values(state.best).some(v => v >= 1000)) unlock('score1k');
+  }
+
+  // Audio Helper
   let audioCtx = null;
   function playTone(freq, type, dur) {
     if (!state.sound) return;
@@ -1411,11 +1802,42 @@
     t.textContent = msg;
     t.classList.add('show');
     clearTimeout(t._tid);
-    t._tid = setTimeout(() => t.classList.remove('show'), 1900);
+    t._tid = setTimeout(() => t.classList.remove('show'), 2100);
   }
 
-  // Render Top & Home UI
+  function spawnFlyingReward(sourceEl, emoji) {
+    try {
+      const target = document.getElementById('coin-target-pill');
+      if (!target) return;
+      const startRect = sourceEl ? sourceEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight / 2 };
+      const endRect = target.getBoundingClientRect();
+
+      const el = document.createElement('div');
+      el.className = 'fly-reward';
+      el.textContent = emoji || '🍪';
+      el.style.left = startRect.left + 'px';
+      el.style.top = startRect.top + 'px';
+      document.body.appendChild(el);
+
+      requestAnimationFrame(() => {
+        const dx = endRect.left - startRect.left;
+        const dy = endRect.top - startRect.top;
+        el.style.transform = `translate(${dx}px, ${dy}px) scale(0.5)`;
+        el.style.opacity = '0.2';
+      });
+      setTimeout(() => el.remove(), 700);
+    } catch (e) {}
+  }
+
+  function triggerScreenFlash() {
+    const fl = document.getElementById('screen-flash');
+    fl.classList.add('active');
+    setTimeout(() => fl.classList.remove('active'), 420);
+  }
+
+  // Render UI
   function syncUI() {
+    ensureDailyQuests(state);
     document.getElementById('ui-lv').textContent = 'Lv.' + state.level;
     document.getElementById('ui-coins').textContent = state.coins;
     document.getElementById('ui-streak').textContent = state.streak;
@@ -1429,12 +1851,18 @@
     document.getElementById('home-pet-avatar').innerHTML =
       `<span style="font-size:2.1rem;">${pet.emoji}</span><span class="pet-lv-tag">Lv.${state.petAffection[pet.id] || 1}</span>`;
     document.getElementById('home-pet-name').textContent = pet.name;
+    document.getElementById('home-pet-skill').textContent = '✨ 技能：' + pet.skill;
     document.getElementById('home-pet-speech').textContent = pet.quote;
+
+    const ranks = ['森林見習生', '專注小尖兵', '算術小博士', '森林守護者', '傳說大導師'];
+    document.getElementById('home-rank').textContent = ranks[Math.min(ranks.length - 1, Math.floor((state.level - 1) / 2))];
 
     const needXp = state.level * 300;
     const pct = Math.min(100, Math.round((state.xp / needXp) * 100));
     document.getElementById('home-xp-bar').style.width = pct + '%';
     document.getElementById('home-xp-text').textContent = `${state.xp}/${needXp}`;
+
+    renderDailyQuests();
 
     document.querySelectorAll('[data-action="set-diff"]').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.diff === state.diff);
@@ -1458,6 +1886,28 @@
     document.getElementById('item-shield').textContent = state.items.shield;
   }
 
+  function renderDailyQuests() {
+    const list = document.getElementById('daily-quests-list');
+    document.getElementById('quest-date-tag').textContent = state.daily.date;
+    list.innerHTML = state.daily.quests.map(q => {
+      const done = q.prog >= q.target;
+      let btnHtml = '';
+      if (q.claimed) {
+        btnHtml = `<span class="quest-claim-btn claimed">✓ 已領獎</span>`;
+      } else if (done) {
+        btnHtml = `<button class="quest-claim-btn ready" data-action="claim-quest" data-qid="${q.id}">領取 +${q.rewardCoins}🍪</button>`;
+      } else {
+        btnHtml = `<span class="quest-claim-btn">${q.prog}/${q.target}</span>`;
+      }
+      return `
+        <div class="quest-row">
+          <span>${done ? '🌟' : '🔸'} ${q.title}</span>
+          ${btnHtml}
+        </div>
+      `;
+    }).join('');
+  }
+
   function switchTab(tab) {
     stopGameTimer();
     document.querySelectorAll('.view-pane').forEach(v => v.classList.remove('active'));
@@ -1475,32 +1925,33 @@
 
   function renderPath() {
     const c = document.getElementById('path-list-container');
-    const isMath = state.pathSubj === 'math';
+    const subj = state.pathSubj;
     document.querySelectorAll('[data-action="set-path-subj"]').forEach(b => {
-      b.classList.toggle('active', b.dataset.subj === state.pathSubj);
+      b.classList.toggle('active', b.dataset.subj === subj);
     });
-    const nodes = isMath ? [
-      { code: 'A1', title: '認識 1～10 與蘋果計數', mode: 'speed', prog: 80 },
-      { code: 'A2', title: '合十的方法與湊十消消樂', mode: 'match', prog: 50 },
-      { code: 'B1', title: '認識鐘表：整點與半點', mode: 'clock', prog: 35 },
-      { code: 'B2', title: '加減進退位與天平平衡', mode: 'balance', prog: 15 },
-      { code: 'C1', title: '手寫數字筆畫專注力小考', mode: 'handwriting', prog: 0 }
-    ] : [
-      { code: 'E1', title: '自然發音 /c/ /a/ /t/ 拼寫', mode: 'handwriting', prog: 60 },
-      { code: 'E2', title: '水果單字 banana 描寫', mode: 'handwriting', prog: 30 },
-      { code: 'E3', title: '英文時間 O'clock 認識鐘表', mode: 'clock', prog: 10 }
-    ];
+    const nodes = PATH_NODES[subj] || PATH_NODES.math;
 
-    c.innerHTML = nodes.map(n => `
-      <div class="path-node">
-        <div class="path-badge">${n.code}</div>
-        <div style="flex:1; min-width:0;">
-          <div style="font-weight:900; font-size:0.94rem; margin-bottom:4px;">${n.title}</div>
-          <div class="xp-bar-bg"><div class="xp-bar-fill" style="width:${n.prog}%;"></div></div>
+    c.innerHTML = nodes.map(n => {
+      const prog = Math.min(100, state.pathProgress[n.code] || 0);
+      const isDone = prog >= 100;
+      const claimed = !!state.pathClaimed[n.code];
+      let actionBtn = `<button class="switch-pet-btn" data-action="start-game" data-mode="${n.mode}">開始練習</button>`;
+      if (isDone && !claimed) {
+        actionBtn = `<button class="quest-claim-btn ready" data-action="claim-path" data-code="${n.code}">領 +50🍪</button>`;
+      } else if (isDone && claimed) {
+        actionBtn = `<button class="switch-pet-btn" data-action="start-game" data-mode="${n.mode}">✓ 已通關</button>`;
+      }
+      return `
+        <div class="path-node ${isDone ? 'completed' : ''}">
+          <div class="path-badge">${n.code}</div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-weight:900; font-size:0.92rem; margin-bottom:4px;">${n.title} (${prog}%)</div>
+            <div class="xp-bar-bg"><div class="xp-bar-fill" style="width:${prog}%;"></div></div>
+          </div>
+          ${actionBtn}
         </div>
-        <button class="switch-pet-btn" data-action="start-game" data-mode="${n.mode}">開始練習</button>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   }
 
   function renderPets() {
@@ -1510,9 +1961,10 @@
       const selected = state.activePet === p.id;
       return `
         <div class="pet-item-card ${selected ? 'selected' : ''}">
-          <div style="font-size:2.6rem; margin-bottom:4px;">${p.emoji}</div>
+          <div style="font-size:2.5rem; margin-bottom:2px;">${p.emoji}</div>
           <div style="font-weight:900; font-size:0.9rem;">${p.name}</div>
-          <div style="font-size:0.74rem; color:var(--text-sub); margin:4px 0 8px 0;">
+          <div style="font-size:0.72rem; color:#0984E3; font-weight:800; margin:2px 0;">✨ ${p.skill}</div>
+          <div style="font-size:0.72rem; color:var(--text-sub); margin:2px 0 8px 0;">
             ${unlocked ? '親密度 Lv.' + (state.petAffection[p.id] || 1) : '需要 ' + p.cost + ' 🍪'}
           </div>
           ${unlocked
@@ -1529,13 +1981,26 @@
     const totalBest = Object.values(state.best).reduce((a, b) => a + b, 0);
     box.innerHTML = `
       <div class="stat-pill" style="justify-content:center; padding:12px;">🏆 總最高分：${totalBest}</div>
+      <div class="stat-pill" style="justify-content:center; padding:12px;">✅ 累積答對：${state.totalCorrect} 題</div>
       <div class="stat-pill" style="justify-content:center; padding:12px;">🐾 夥伴數：${state.unlockedPets.length}/${PETS.length}</div>
-      <div class="stat-pill" style="justify-content:center; padding:12px;">⏰ 待訂正：${state.wrongBank.length} 題</div>
-      <div class="stat-pill" style="justify-content:center; padding:12px;">⏱️ 每題時限：30 秒</div>
+      <div class="stat-pill" style="justify-content:center; padding:12px;">🔥 連續學習：${state.streak} 天</div>
     `;
+
+    document.getElementById('ach-count').textContent = state.unlockedAch.length;
+    const achGrid = document.getElementById('ach-grid-container');
+    achGrid.innerHTML = ACHIEVEMENTS.map(a => {
+      const ok = state.unlockedAch.includes(a.id);
+      return `
+        <div class="ach-card ${ok ? 'unlocked' : ''}">
+          <div style="font-size:1.6rem;">${a.ico}</div>
+          <div style="font-weight:900; font-size:0.76rem; margin:2px 0;">${a.title}</div>
+          <div style="font-size:0.66rem; color:var(--text-sub);">${a.desc}</div>
+        </div>
+      `;
+    }).join('');
   }
 
-  // Active Game Engine (30-Second Per-Question Timer)
+  // Active Game Engine
   let game = null;
   let timerInterval = null;
 
@@ -1546,10 +2011,20 @@
     }
   }
 
+  function getQuestionDuration() {
+    if (!game) return BASE_QUESTION_SECONDS;
+    if (game.eventType === 'rainbow') return 12; // Fast rainbow bonus question
+    let sec = BASE_QUESTION_SECONDS;
+    if (state.activePet === 'bunny' && game.mode === 'clock') sec += 3; // Bunny skill
+    return sec;
+  }
+
   function resetQuestionTimer() {
     if (!game) return;
-    game.timeLeft = QUESTION_SECONDS;
+    game.maxTime = getQuestionDuration();
+    game.timeLeft = game.maxTime;
     game.frozenUntil = 0;
+    game.qStartTime = Date.now();
     updateTimerHUD();
   }
 
@@ -1558,19 +2033,85 @@
     const pill = document.getElementById('game-timer-pill');
     const val = document.getElementById('game-timer-val');
     const bar = document.getElementById('game-time-bar');
-    const now = Date.now();
-    const isFrozen = now < game.frozenUntil;
+    const isFrozen = Date.now() < game.frozenUntil;
 
     val.textContent = Math.max(0, Math.ceil(game.timeLeft));
-    bar.style.width = Math.max(0, (game.timeLeft / QUESTION_SECONDS) * 100) + '%';
+    bar.style.width = Math.max(0, (game.timeLeft / game.maxTime) * 100) + '%';
 
     pill.classList.remove('urgent', 'frozen');
     if (isFrozen) pill.classList.add('frozen');
-    else if (game.timeLeft <= 7) pill.classList.add('urgent');
+    else if (game.timeLeft <= 6) pill.classList.add('urgent');
+  }
+
+  function updateComboAndPetHUD() {
+    if (!game) return;
+    const chip = document.getElementById('game-combo-chip');
+    const pet = PETS.find(p => p.id === state.activePet) || PETS[0];
+    document.getElementById('game-pet-ico').textContent = pet.emoji;
+    const lineEl = document.getElementById('game-pet-line');
+
+    chip.classList.remove('tier2', 'tier3', 'tier4');
+    if (game.combo >= 10) {
+      chip.classList.add('tier4');
+      chip.textContent = `🌈 ${game.combo} 彩虹極限!`;
+      lineEl.textContent = `「太神啦！${pet.name} 進入傳說彩虹專注狀態！」`;
+    } else if (game.combo >= 8) {
+      chip.classList.add('tier3');
+      chip.textContent = `⚡ ${game.combo} 超專注`;
+      lineEl.textContent = `「再兩題就能發動彩虹閃光獎勵囉！」`;
+    } else if (game.combo >= 5) {
+      chip.classList.add('tier2');
+      chip.textContent = `🔥 ${game.combo} 專注火焰`;
+      lineEl.textContent = `「進入心流狀態了！速度又快又準！」`;
+    } else if (game.combo >= 3) {
+      chip.textContent = `✨ ${game.combo} 小小連擊`;
+      lineEl.textContent = `「好棒的節奏！繼續保持專注喔～」`;
+    } else {
+      chip.textContent = `🔥 ${game.combo}`;
+      lineEl.textContent = pet.quote;
+    }
+
+    const shieldBtn = document.getElementById('btn-item-shield');
+    if (shieldBtn) shieldBtn.classList.toggle('active-shield', game.shieldActive);
+  }
+
+  function rollStageEvent() {
+    game.eventType = null;
+    const banner = document.getElementById('game-event-banner');
+    banner.className = 'event-banner';
+
+    if (game.mode === 'review') return;
+
+    // Boss question on the final question (qIndex === totalQ - 1)
+    if (game.qIndex === game.totalQ - 1) {
+      game.eventType = 'boss';
+      banner.className = 'event-banner active boss';
+      banner.textContent = '👑 最終 BOSS 題！答對獲得 3 倍超高分數！';
+      return;
+    }
+
+    // Random surprise event every 2-3 questions
+    if (game.qIndex > 0 && game.qIndex % 3 === 1) {
+      const pool = [
+        { id: 'lucky', text: '🍀 幸運餅乾事件：本題答對獲得雙倍餅乾！' },
+        { id: 'pethelp', text: '🐾 寵物神助攻：夥伴幫你刪掉一個錯誤選項！' },
+        { id: 'rainbow', text: '🌈 彩虹閃電題：限時 12 秒，答對分數翻倍！' },
+        { id: 'silent', text: '🌲 安靜森林考驗：本題靜音倒數，考驗內在專注！' }
+      ];
+      const chosen = pool[Math.floor(Math.random() * pool.length)];
+      game.eventType = chosen.id;
+      banner.className = 'event-banner active';
+      banner.textContent = chosen.text;
+    }
   }
 
   function startGame(mode) {
     stopGameTimer();
+    if (!state.playedModes.includes(mode)) {
+      state.playedModes.push(mode);
+      saveState();
+    }
+
     document.querySelectorAll('.view-pane').forEach(v => v.classList.remove('active'));
     document.getElementById('bottom-nav').style.display = 'none';
     document.getElementById('view-game').classList.add('active');
@@ -1579,33 +2120,44 @@
       mode: mode,
       score: 0,
       combo: 0,
+      maxCombo: 0,
+      correctCount: 0,
+      totalResponseSec: 0,
       qIndex: 0,
       totalQ: mode === 'review' ? Math.max(1, state.wrongBank.length) : 8,
-      timeLeft: QUESTION_SECONDS,
+      maxTime: BASE_QUESTION_SECONDS,
+      timeLeft: BASE_QUESTION_SECONDS,
       frozenUntil: 0,
       shieldActive: false,
+      pandaFreeSaveUsed: false,
+      usedHint: false,
+      clutchHit: false,
+      lockedAnswer: false,
       inputVal: '',
       showAid: true,
       useHandwritingInput: false,
-      clockSubMode: 'read', // 'read' | 'dial' | 'calc'
+      clockSubMode: 'read',
       clockHelp: true,
       dialH: 3,
       dialM: 0,
-      hwTargetIdx: 0,
       currentAns: null,
-      currentQuestionText: ''
+      currentQuestionText: '',
+      currentTip: '',
+      eventType: null
     };
 
     document.getElementById('game-score').textContent = '0';
-    document.getElementById('game-combo').textContent = '0';
+    updateComboAndPetHUD();
 
     timerInterval = setInterval(() => {
-      if (!game) return;
+      if (!game || game.lockedAnswer) return;
       if (Date.now() < game.frozenUntil) {
         updateTimerHUD();
         return;
       }
-      game.timeLeft -= 0.25;
+      // Seal passive skill: last 5 seconds tick at half speed
+      const tickRate = (state.activePet === 'seal' && game.timeLeft <= 5) ? 0.125 : 0.25;
+      game.timeLeft -= tickRate;
       updateTimerHUD();
       if (game.timeLeft <= 0) {
         onTimeOutQuestion();
@@ -1616,90 +2168,210 @@
   }
 
   function onTimeOutQuestion() {
-    playTone(220, 'sawtooth', 0.25);
-    showToast('⏰ 30 秒時間到！換下一題繼續加油～');
+    if (game.lockedAnswer) return;
+    game.lockedAnswer = true;
+    if (game.eventType !== 'silent') playTone(220, 'sawtooth', 0.25);
+    showToast(`⏰ 時間到！正確答案是 ${game.currentAns}`);
     game.combo = 0;
-    document.getElementById('game-combo').textContent = '0';
-    game.qIndex++;
-    if (game.qIndex >= game.totalQ) {
-      finishGame();
-    } else {
-      nextQuestion();
-    }
+    updateComboAndPetHUD();
+
+    setTimeout(() => {
+      if (!game) return;
+      game.qIndex++;
+      if (game.qIndex >= game.totalQ) finishGame();
+      else nextQuestion();
+    }, 1100);
   }
 
-  function handleAnswer(isCorrect, userGiven) {
-    if (!game) return;
+  function handleAnswer(isCorrect, userGiven, clickedBtnEl) {
+    if (!game || game.lockedAnswer) return;
+    game.lockedAnswer = true;
+
+    const elapsed = Math.max(1, (Date.now() - game.qStartTime) / 1000);
+    game.totalResponseSec += elapsed;
+
     if (isCorrect) {
-      playTone(660, 'triangle', 0.14);
-      setTimeout(() => playTone(880, 'triangle', 0.16), 90);
+      if (game.eventType !== 'silent') {
+        playTone(660, 'triangle', 0.13);
+        setTimeout(() => playTone(880, 'triangle', 0.15), 85);
+      }
+      if (clickedBtnEl) clickedBtnEl.classList.add('correct-glow');
+      spawnFlyingReward(clickedBtnEl, game.eventType === 'lucky' ? '🍀' : '⭐');
+
       game.combo++;
-      const bonus = 100 + game.combo * 15 + Math.round(game.timeLeft * 2);
+      game.maxCombo = Math.max(game.maxCombo, game.combo);
+      game.correctCount++;
+      state.totalCorrect++;
+
+      if (game.timeLeft <= 5) game.clutchHit = true;
+
+      let mult = 1;
+      if (game.eventType === 'boss') mult = 3;
+      else if (game.eventType === 'rainbow') mult = 2;
+
+      const bonus = (100 + game.combo * 15 + Math.round(game.timeLeft * 2)) * mult;
       game.score += bonus;
       document.getElementById('game-score').textContent = game.score;
-      document.getElementById('game-combo').textContent = game.combo;
-      showToast(`✨ 答對了！+${bonus} 分`);
+
+      if (game.eventType === 'lucky') {
+        state.coins += 15;
+        showToast(`🍀 幸運餅乾雙倍！+${bonus} 分 & +15 🍪`);
+      } else if (game.combo === 10) {
+        triggerScreenFlash();
+        state.coins += 25;
+        showToast(`🌈 10 連擊彩虹爆發！額外 +25 🍪`);
+      } else {
+        showToast(`✨ 答對了！+${bonus} 分`);
+      }
+
+      updateComboAndPetHUD();
+      updateQuestProgress('q_combo', game.combo, true);
 
       if (game.mode === 'review' && state.wrongBank.length > 0) {
         state.wrongBank.shift();
-        saveState();
+        state.totalReviewed++;
+        updateQuestProgress('q_item_or_rev', 1, false);
       }
+      saveState();
+
+      setTimeout(() => {
+        if (!game) return;
+        game.qIndex++;
+        if (game.qIndex >= game.totalQ) finishGame();
+        else nextQuestion();
+      }, 650);
     } else {
+      // Check Shield or Panda Passive
+      let comboSaved = false;
       if (game.shieldActive) {
         game.shieldActive = false;
-        showToast('🛡️ 連擊護盾抵擋了一次失誤！再試一次');
-        playTone(440, 'sine', 0.2);
-        return;
+        comboSaved = true;
+      } else if (state.activePet === 'panda' && !game.pandaFreeSaveUsed && game.combo > 0) {
+        game.pandaFreeSaveUsed = true;
+        comboSaved = true;
       }
-      playTone(200, 'sawtooth', 0.24);
-      game.combo = 0;
-      document.getElementById('game-combo').textContent = '0';
-      showToast(`💡 正確答案是 ${game.currentAns}`);
+
+      if (game.eventType !== 'silent') playTone(200, 'sawtooth', 0.24);
+      if (clickedBtnEl) clickedBtnEl.classList.add('wrong-shake');
+
+      // Highlight correct choice button if present
+      document.querySelectorAll('.choice-pill').forEach(b => {
+        if (String(b.dataset.val) === String(game.currentAns)) {
+          b.classList.add('correct-glow');
+        }
+      });
+
+      if (!comboSaved) {
+        game.combo = 0;
+      }
+      updateComboAndPetHUD();
+
+      const stage = document.getElementById('game-stage');
+      const tipText = game.currentTip || `正確答案是 ${game.currentAns}，下次再注意細節喔！`;
+      const callout = document.createElement('div');
+      callout.className = 'feedback-callout';
+      callout.innerHTML = `
+        <div>💡 差一點點！正確答案是 <b>${game.currentAns}</b> ${comboSaved ? '（🛡️ 夥伴護盾保住了連擊！）' : ''}</div>
+        <div style="font-size:0.78rem; margin-top:3px; color:#57606F;">${tipText}</div>
+      `;
+      stage.appendChild(callout);
+
       if (game.mode !== 'review' && game.currentQuestionText) {
         state.wrongBank.push({
           q: game.currentQuestionText,
           ans: String(game.currentAns),
-          user: String(userGiven || '?')
+          user: String(userGiven || '?'),
+          tip: tipText
         });
         if (state.wrongBank.length > 15) state.wrongBank.shift();
         saveState();
       }
-    }
 
-    game.qIndex++;
-    if (game.qIndex >= game.totalQ) {
-      finishGame();
-    } else {
-      nextQuestion();
+      setTimeout(() => {
+        if (!game) return;
+        game.qIndex++;
+        if (game.qIndex >= game.totalQ) finishGame();
+        else nextQuestion();
+      }, 1550);
     }
   }
 
   function finishGame() {
     stopGameTimer();
-    const earnedCoins = Math.max(15, Math.round(game.score / 25));
+    const acc = Math.round((game.correctCount / game.totalQ) * 100);
+    const avgSec = (game.totalResponseSec / game.totalQ).toFixed(1);
+
+    // Grade S / A / B / C
+    let grade = 'C';
+    if (acc >= 90 && game.score >= 850) grade = 'S';
+    else if (acc >= 75) grade = 'A';
+    else if (acc >= 50) grade = 'B';
+
+    let earnedCoins = Math.max(15, Math.round(game.score / 25));
+    if (state.activePet === 'shiba') earnedCoins = Math.round(earnedCoins * 1.2); // Shiba skill
+
+    let earnedXp = Math.max(35, Math.round(game.score / 11));
+    if (state.activePet === 'chick' && game.mode === 'review') earnedXp = Math.round(earnedXp * 1.5); // Chick skill
+
     state.coins += earnedCoins;
-    state.xp += Math.max(30, Math.round(game.score / 12));
+    state.xp += earnedXp;
     while (state.xp >= state.level * 300) {
       state.xp -= state.level * 300;
       state.level++;
     }
-    if (game.score > (state.best[game.mode] || 0)) {
+
+    const prevBest = state.best[game.mode] || 0;
+    const isNewRecord = game.score > prevBest;
+    if (isNewRecord) {
       state.best[game.mode] = game.score;
     }
+
+    // Update Learning Path Progress dynamically
+    const allNodes = [...PATH_NODES.math, ...PATH_NODES.eng];
+    allNodes.forEach(n => {
+      if (n.mode === game.mode) {
+        const gain = acc >= 80 ? 25 : (acc >= 60 ? 15 : 5);
+        state.pathProgress[n.code] = Math.min(100, (state.pathProgress[n.code] || 0) + gain);
+      }
+    });
+
+    updateDailyStreak();
+    updateQuestProgress('q_games', 1, false);
+    checkAchievements({
+      maxCombo: game.maxCombo,
+      usedHint: game.usedHint,
+      correctCount: game.correctCount,
+      clutchHit: game.clutchHit
+    });
     saveState();
 
-    document.getElementById('res-score').textContent = game.score;
-    document.getElementById('res-coins').textContent = earnedCoins;
-
+    // Render Result Report
     const stampArea = document.getElementById('result-stamp-area');
     if (game.mode === 'review') {
       stampArea.innerHTML = `<div class="stamp-100"><span style="font-size:0.65rem;">JO MATH</span><span style="font-size:1.6rem;">100</span><span style="font-size:0.65rem;">訂正滿分</span></div>`;
-      document.getElementById('result-title').textContent = '訂正大成功！';
+      document.getElementById('result-title').textContent = '錯題訂正大成功！';
       document.getElementById('result-desc').textContent = '所有錯題都重新學會了，獲得 100 分紅印章！';
     } else {
-      stampArea.innerHTML = `<div style="font-size:3.2rem;">🏆</div>`;
-      document.getElementById('result-title').textContent = '專注力訓練完成！';
-      document.getElementById('result-desc').textContent = '表現太棒了！小動物夥伴為你歡呼～';
+      stampArea.innerHTML = `<div class="rank-medal rank-${grade}">${grade}</div>`;
+      document.getElementById('result-title').textContent = isNewRecord ? '🎉 突破個人最高紀錄！' : '專注力訓練報告';
+      document.getElementById('result-desc').textContent = isNewRecord
+        ? `比上次紀錄（${prevBest} 分）進步了 +${game.score - prevBest} 分！`
+        : `距離個人紀錄（${prevBest} 分）越來越近囉！`;
+    }
+
+    document.getElementById('result-report-grid').innerHTML = `
+      <div class="report-cell">⭐ 本局得分：<b>${game.score}</b></div>
+      <div class="report-cell">🎯 正確率：<b>${acc}%</b></div>
+      <div class="report-cell">🔥 最高連擊：<b>${game.maxCombo}</b></div>
+      <div class="report-cell">⏱️ 平均作答：<b>${avgSec}s</b></div>
+      <div class="report-cell">🍪 獲得餅乾：<b>+${earnedCoins}</b></div>
+      <div class="report-cell">✨ 獲得經驗：<b>+${earnedXp}</b></div>
+    `;
+
+    if (isNewRecord || grade === 'S') {
+      playTone(523, 'triangle', 0.12);
+      setTimeout(() => playTone(659, 'triangle', 0.12), 110);
+      setTimeout(() => playTone(784, 'triangle', 0.2), 220);
     }
 
     document.getElementById('result-modal').classList.add('open');
@@ -1710,7 +2382,11 @@
   // Question Generators
   function nextQuestion() {
     resetQuestionTimer();
+    game.lockedAnswer = false;
     game.inputVal = '';
+    rollStageEvent();
+    updateComboAndPetHUD();
+
     const stage = document.getElementById('game-stage');
     const m = game.mode;
 
@@ -1726,20 +2402,54 @@
     else if (m === 'train') renderTrainQuestion(stage);
     else if (m === 'whack') renderWhackQuestion(stage);
     else renderSpeedQuestion(stage);
+
+    // Passive Hedgehog skill: auto hint on Schulte & OddOne
+    if (state.activePet === 'hedgehog' && (m === 'schulte' || m === 'oddone')) {
+      applyHintEffect(true);
+    }
+    // Event pethelp: auto eliminate one wrong choice
+    if (game.eventType === 'pethelp') {
+      applyHintEffect(true);
+    }
   }
 
-  // 1. SPEED MATH (With Apple/Block Visual Aid + Keypad / Handwriting toggle)
+  function applyHintEffect(isFree) {
+    if (!game) return;
+    const choices = Array.from(document.querySelectorAll('.choice-pill:not(.eliminated)'));
+    const wrongChoices = choices.filter(b => String(b.dataset.val) !== String(game.currentAns));
+    if (wrongChoices.length > 1) {
+      const target = wrongChoices[Math.floor(Math.random() * wrongChoices.length)];
+      target.classList.add('eliminated');
+      if (!isFree) showToast('💡 已幫你刪去一個錯誤選項！');
+      return true;
+    }
+    if (game.mode === 'schulte') {
+      const cell = document.querySelector(`.schulte-cell[data-num="${game.schulteNext}"]`);
+      if (cell) {
+        cell.classList.add('hint-pulse');
+        if (!isFree) showToast(`💡 下一個數字 ${game.schulteNext} 正在閃爍喔！`);
+        return true;
+      }
+    }
+    if (!isFree) {
+      showToast(`💡 提示：${game.currentTip || '仔細檢查十位數與個位數喔！'}`);
+    }
+    return true;
+  }
+
+  // 1. SPEED MATH
   function renderSpeedQuestion(stage) {
-    const maxN = state.diff === 'easy' ? 12 : (state.diff === 'medium' ? 30 : 60);
+    const maxN = state.diff === 'easy' ? 12 : (state.diff === 'medium' ? 35 : 80);
     const isAdd = Math.random() > 0.4;
     let a = Math.floor(Math.random() * maxN) + 2;
-    let b = Math.floor(Math.random() * Math.min(15, maxN)) + 1;
+    let b = Math.floor(Math.random() * Math.min(20, maxN)) + 1;
     if (!isAdd && a < b) [a, b] = [b, a];
     const ans = isAdd ? a + b : a - b;
     const op = isAdd ? '+' : '-';
 
     game.currentAns = String(ans);
     game.currentQuestionText = `${a} ${op} ${b} = ?`;
+    game.currentTip = isAdd ? `先算個位數 ${a % 10} + ${b % 10}，有滿 10 要進位喔！` : `從 ${a} 往回數 ${b} 個就是答案囉！`;
 
     let visualHtml = '';
     if (game.showAid && a <= 25 && b <= 15) {
@@ -1784,7 +2494,7 @@
     if (game.useHandwritingInput) initCanvasDraw('');
   }
 
-  // 2. CLOCK MODULE (Read, Dial, Time Calc + Teaching Ring)
+  // 2. CLOCK MODULE
   function buildClockSVG(h, m, showHelp) {
     const minAngle = m * 6;
     const hourAngle = ((h % 12) + m / 60) * 30;
@@ -1804,17 +2514,13 @@
     }
     return `
       <svg viewBox="0 0 300 300" style="width:100%; height:100%;">
-        <!-- Alarm Bells -->
         <circle cx="62" cy="52" r="28" fill="#A3CB38" stroke="#6AB04C" stroke-width="4"/>
         <circle cx="238" cy="52" r="28" fill="#A3CB38" stroke="#6AB04C" stroke-width="4"/>
-        <!-- Body -->
         <circle cx="150" cy="155" r="134" fill="#54A0FF" stroke="#2E86DE" stroke-width="5"/>
         <circle cx="150" cy="155" r="114" fill="#FFFFFF"/>
         <g transform="translate(0, 5)">
           ${marks}
-          <!-- Minute Hand (Blue) -->
           <line x1="150" y1="150" x2="150" y2="54" stroke="#0984E3" stroke-width="6" stroke-linecap="round" transform="rotate(${minAngle} 150 150)"/>
-          <!-- Hour Hand (Orange-Red) -->
           <line x1="150" y1="150" x2="150" y2="86" stroke="#FF6B6B" stroke-width="9" stroke-linecap="round" transform="rotate(${hourAngle} 150 150)"/>
           <circle cx="150" cy="150" r="8" fill="#2D3436"/>
         </g>
@@ -1835,6 +2541,7 @@
       const ans = fmt(h, m);
       game.currentAns = ans;
       game.currentQuestionText = `看鐘面認時間 (${ans})`;
+      game.currentTip = `短針指在 ${h} 的位置，長針指在 ${m === 0 ? 12 : m / 5}（${String(m).padStart(2,'0')}分）！`;
       const opts = new Set([ans]);
       while (opts.size < 3) {
         const fh = Math.floor(Math.random() * 12) + 1;
@@ -1853,6 +2560,7 @@
       const target = fmt(h, m);
       game.currentAns = target;
       game.currentQuestionText = `動手撥指針到 ${target}`;
+      game.currentTip = `先用 +1時/-1時 調好短針到 ${h}，再用 +5分/+1分 調長針！`;
       bodyHtml = `
         <div style="text-align:center; font-weight:900; font-size:1.05rem; margin:4px 0;">
           🖐️ 請把時鐘撥到 <span style="color:#E84393; font-size:1.3rem;">${target}</span>
@@ -1876,6 +2584,7 @@
       const ans = fmt(nh, nm);
       game.currentAns = ans;
       game.currentQuestionText = `${fmt(h, m)} 再過 ${addM} 分鐘是？`;
+      game.currentTip = `從 ${m} 分加上 ${addM} 分，滿 60 分要進位 1 小時喔！`;
       const opts = new Set([ans, fmt(h, m), fmt(nh, (nm + 15) % 60)]);
       while (opts.size < 3) opts.add(fmt(Math.floor(Math.random() * 12) + 1, nm));
       const arr = Array.from(opts).sort(() => Math.random() - 0.5);
@@ -1904,40 +2613,42 @@
     `;
   }
 
-  // 3. HANDWRITING TRACING (Math Numbers + English Phonics)
+  // 3. HANDWRITING TRACING (With Bounding-Box & Stroke Coverage Validation)
   function renderHandwritingQuestion(stage) {
     const items = [
-      { type: 'num', text: '10', hint: '🍎🍎🍎🍎🍎 🍎🍎🍎🍎🍎 (十顆蘋果)' },
-      { type: 'eng', text: 'cat', hint: '🐱 /c/ /a/ /t/ — 點擊可聽英語發音' },
-      { type: 'num', text: '6', hint: '🍓🍓🍓🍓🍓 🍓 (六顆草莓)' },
-      { type: 'eng', text: 'banana', hint: '🍌 /b/ /a/ /n/ /a/ /n/ /a/ — 香蕉' },
-      { type: 'num', text: '25', hint: '🧱 2 個十與 5 個一' },
-      { type: 'eng', text: 'butterfly', hint: '🦋 蝴蝶 — 一筆一畫練專注' }
+      { type: 'num', text: '10', minPoints: 25, hint: '🍎🍎🍎🍎🍎 🍎🍎🍎🍎🍎 (請沿著虛線完整描出 10)' },
+      { type: 'eng', text: 'cat', minPoints: 35, hint: '🐱 /c/ /a/ /t/ — 點擊右上角可聽英語發音' },
+      { type: 'num', text: '6', minPoints: 18, hint: '🍓🍓🍓🍓🍓 🍓 (一筆畫從上往下繞圈描出 6)' },
+      { type: 'eng', text: 'banana', minPoints: 50, hint: '🍌 /b/ /a/ /n/ /a/ /n/ /a/ — 香蕉' },
+      { type: 'num', text: '25', minPoints: 30, hint: '🧱 2 個十與 5 個一，完整描出 2 和 5' },
+      { type: 'eng', text: 'butterfly', minPoints: 55, hint: '🦋 蝴蝶 — 一筆一畫耐心描完' }
     ];
     const item = items[game.qIndex % items.length];
     game.currentAns = item.text;
+    game.hwMinPoints = item.minPoints;
     game.currentQuestionText = `手寫描字：${item.text}`;
+    game.currentTip = '請把每個數字或英文字母完整描過一遍再送出喔！';
 
     stage.innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
         <span style="font-weight:900;">✍️ 一筆一畫專注描寫 (${game.qIndex + 1}/${game.totalQ})</span>
         ${item.type === 'eng' ? `<button class="switch-pet-btn" data-action="speak-word" data-word="${item.text}">🔊 聽發音</button>` : ''}
       </div>
-      <div class="visual-aid-box" style="font-size:0.9rem;">${item.hint}</div>
+      <div class="visual-aid-box" style="font-size:0.88rem;">${item.hint}</div>
       <div class="hw-canvas-wrap">
         <canvas id="hw-canvas" class="hw-canvas"></canvas>
       </div>
       <div style="display:flex; gap:8px;">
         <button class="diff-btn" style="flex:1;" data-action="clear-hw">🧹 清除重寫</button>
-        <button class="primary-action-btn" style="flex:2; margin-top:0;" data-action="finish-hw">✨ 完成描寫 (+150分)</button>
+        <button class="primary-action-btn" style="flex:2; margin-top:0;" data-action="finish-hw">✨ 檢查並送出</button>
       </div>
     `;
     initCanvasDraw(item.text);
   }
 
-  let strokeCount = 0;
+  let hwMetrics = { points: 0, minX: 9999, maxX: 0, minY: 9999, maxY: 0 };
   function initCanvasDraw(watermark) {
-    strokeCount = 0;
+    hwMetrics = { points: 0, minX: 9999, maxX: 0, minY: 9999, maxY: 0 };
     const canvas = document.getElementById('hw-canvas');
     if (!canvas) return;
     const rect = canvas.parentElement.getBoundingClientRect();
@@ -1945,7 +2656,6 @@
     canvas.height = Math.max(180, rect.height);
     const ctx = canvas.getContext('2d');
 
-    // Four-line guide + watermark
     ctx.strokeStyle = '#FFD6E5';
     ctx.lineWidth = 2;
     [45, 95, 145, 185].forEach(y => {
@@ -1957,7 +2667,7 @@
 
     if (watermark) {
       ctx.fillStyle = 'rgba(130, 140, 160, 0.25)';
-      ctx.font = '900 74px sans-serif';
+      ctx.font = '900 72px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(watermark, canvas.width / 2, canvas.height / 2 + 4);
@@ -1970,11 +2680,19 @@
       return { x: pt.clientX - r.left, y: pt.clientY - r.top };
     }
 
+    function recordPt(p) {
+      hwMetrics.points++;
+      if (p.x < hwMetrics.minX) hwMetrics.minX = p.x;
+      if (p.x > hwMetrics.maxX) hwMetrics.maxX = p.x;
+      if (p.y < hwMetrics.minY) hwMetrics.minY = p.y;
+      if (p.y > hwMetrics.maxY) hwMetrics.maxY = p.y;
+    }
+
     const start = (e) => {
       e.preventDefault();
       drawing = true;
-      strokeCount++;
       const p = getPos(e);
+      recordPt(p);
       ctx.beginPath();
       ctx.moveTo(p.x, p.y);
       ctx.strokeStyle = '#2D3436';
@@ -1986,6 +2704,7 @@
       if (!drawing) return;
       e.preventDefault();
       const p = getPos(e);
+      recordPt(p);
       ctx.lineTo(p.x, p.y);
       ctx.stroke();
     };
@@ -1999,7 +2718,7 @@
     canvas.addEventListener('touchend', end);
   }
 
-  // 4. REVIEW WRONG ANSWERS (Alarm Clock Mode)
+  // 4. REVIEW WRONG ANSWERS
   function renderReviewQuestion(stage) {
     if (state.wrongBank.length === 0) {
       stage.innerHTML = `
@@ -2016,6 +2735,7 @@
     const item = state.wrongBank[0];
     game.currentAns = item.ans;
     game.currentQuestionText = item.q;
+    game.currentTip = item.tip || `再仔細算一次：${item.q}`;
 
     const numAns = parseInt(item.ans, 10);
     const opts = new Set([item.ans]);
@@ -2044,9 +2764,9 @@
     `;
   }
 
-  // 5. SCHULTE GRID
+  // 5. SCHULTE GRID (3x3 -> 4x4 -> 5x5 by difficulty)
   function renderSchulteQuestion(stage) {
-    const size = state.diff === 'easy' ? 3 : 4;
+    const size = state.diff === 'easy' ? 3 : (state.diff === 'medium' ? 4 : 5);
     const total = size * size;
     const nums = Array.from({ length: total }, (_, i) => i + 1).sort(() => Math.random() - 0.5);
     game.schulteNext = 1;
@@ -2054,7 +2774,7 @@
 
     stage.innerHTML = `
       <div style="text-align:center; font-weight:900; margin-bottom:6px;">
-        🍪 請依序點擊數字：下一個 <span id="schulte-target" style="color:#E84393; font-size:1.3rem;">1</span> / ${total}
+        🍪 依序點擊數字（${size}×${size}）：下一個 <span id="schulte-target" style="color:#E84393; font-size:1.3rem;">1</span> / ${total}
       </div>
       <div class="schulte-grid" style="grid-template-columns: repeat(${size}, 1fr);">
         ${nums.map(n => `<button class="schulte-cell" data-action="tap-schulte" data-num="${n}">${n}</button>`).join('')}
@@ -2062,17 +2782,19 @@
     `;
   }
 
-  // 6. MEMORY EQUATION
+  // 6. MEMORY EQUATION (3s -> 2s -> 1.2s by difficulty)
   function renderMemoryQuestion(stage) {
-    const a = Math.floor(Math.random() * 15) + 3;
-    const b = Math.floor(Math.random() * 12) + 2;
+    const hideMs = state.diff === 'easy' ? 3000 : (state.diff === 'medium' ? 2000 : 1200);
+    const a = Math.floor(Math.random() * 18) + 4;
+    const b = Math.floor(Math.random() * 14) + 3;
     const ans = a + b;
     game.currentAns = String(ans);
     game.currentQuestionText = `記憶算式：${a} + ${b}`;
+    game.currentTip = `剛剛閃現的是 ${a} + ${b} = ${ans} 喔！`;
 
     stage.innerHTML = `
       <div style="text-align:center; padding:18px 8px;">
-        <div style="font-weight:800; color:var(--text-sub); margin-bottom:8px;">🧠 記住這個算式！（3 秒後隱藏）</div>
+        <div style="font-weight:800; color:var(--text-sub); margin-bottom:8px;">🧠 記住這個算式！（${(hideMs/1000).toFixed(1)} 秒後隱藏）</div>
         <div id="mem-flash" style="font-size:2.4rem; font-weight:900; color:#6C5CE7;">${a} + ${b} = ?</div>
       </div>
     `;
@@ -2085,23 +2807,26 @@
           ${opts.map((o, idx) => `<button class="choice-pill c${idx}" data-action="pick-choice" data-val="${o}">${o}</button>`).join('')}
         </div>
       `;
-    }, 2800);
+    }, hideMs);
   }
 
-  // 7. DISTRACTION BEE
+  // 7. DISTRACTION BEE (More distractors on medium/hard)
   function renderDistractQuestion(stage) {
-    const a = Math.floor(Math.random() * 14) + 5;
+    const a = Math.floor(Math.random() * 16) + 6;
     const b = Math.floor(Math.random() * 9) + 2;
     const ans = a - b;
     game.currentAns = String(ans);
     game.currentQuestionText = `${a} - ${b} = ?`;
+    game.currentTip = `忽略周圍的干擾數字，專心算中間的 ${a} - ${b} = ${ans}！`;
     const opts = [ans, ans + 1, ans + 2].sort(() => Math.random() - 0.5);
+    const extraBee = state.diff !== 'easy' ? `<span style="position:absolute; top:6px; right:14px; font-size:1.1rem; color:#E17055;">🐝 =${ans+5}</span>` : '';
 
     stage.innerHTML = `
       <div style="text-align:center; font-weight:800; color:#0984E3;">🐝 忽略調皮小蜜蜂，算出中間題目！</div>
-      <div style="position:relative; padding:18px; margin:10px 0; background:#F0F8FF; border-radius:18px; text-align:center;">
-        <span style="position:absolute; top:6px; left:12px; font-size:1.2rem;">🐝 99</span>
-        <span style="position:absolute; bottom:6px; right:14px; font-size:1.2rem;">🍯 +77</span>
+      <div style="position:relative; padding:22px 14px; margin:10px 0; background:#F0F8FF; border-radius:18px; text-align:center;">
+        <span style="position:absolute; top:6px; left:12px; font-size:1.1rem;">🐝 99</span>
+        ${extraBee}
+        <span style="position:absolute; bottom:6px; right:14px; font-size:1.1rem;">🍯 +77</span>
         <span style="font-size:2.2rem; font-weight:900; color:#2D3436;">${a} - ${b} = ?</span>
       </div>
       <div class="choice-list">
@@ -2110,17 +2835,19 @@
     `;
   }
 
-  // 8. MAKE 10 MATCH
+  // 8. MAKE 10 / 20 MATCH
   function renderMatchQuestion(stage) {
-    const a = Math.floor(Math.random() * 8) + 1;
-    const ans = 10 - a;
+    const targetSum = state.diff === 'hard' ? 20 : 10;
+    const a = Math.floor(Math.random() * (targetSum - 2)) + 1;
+    const ans = targetSum - a;
     game.currentAns = String(ans);
-    game.currentQuestionText = `${a} + ? = 10`;
-    const opts = [ans, (ans + 2) % 9 + 1, (ans + 4) % 9 + 1].sort(() => Math.random() - 0.5);
+    game.currentQuestionText = `${a} + ? = ${targetSum}`;
+    game.currentTip = `${a} 加上 ${ans} 剛好會等於 ${targetSum} 喔！`;
+    const opts = Array.from(new Set([ans, ans + 1, Math.max(1, ans - 1), ans + 2])).slice(0, 3).sort(() => Math.random() - 0.5);
 
     stage.innerHTML = `
       <div style="text-align:center; font-weight:900; font-size:1.1rem; margin:10px 0;">
-        🍬 湊十好朋友：<b>${a}</b> 要搭配哪個數字才會變成 <b style="color:#E84393;">10</b>？
+        🍬 湊數好朋友：<b>${a}</b> 要搭配哪個數字才會變成 <b style="color:#E84393;">${targetSum}</b>？
       </div>
       <div class="choice-list">
         ${opts.map((o, idx) => `<button class="choice-pill c${idx}" data-action="pick-choice" data-val="${o}">${o}</button>`).join('')}
@@ -2130,10 +2857,13 @@
 
   // 9. ODD ONE OUT EQUATION
   function renderOddOneQuestion(stage) {
-    const wrongEq = '7 + 6 = 14';
+    const a = Math.floor(Math.random() * 8) + 4;
+    const b = Math.floor(Math.random() * 7) + 3;
+    const wrongEq = `${a} + ${b} = ${a + b + 1}`;
     game.currentAns = wrongEq;
     game.currentQuestionText = '找出算錯的算式';
-    const opts = ['5 + 4 = 9', '8 + 7 = 15', wrongEq].sort(() => Math.random() - 0.5);
+    game.currentTip = `${a} + ${b} 應該等於 ${a + b}，所以「${wrongEq}」算錯囉！`;
+    const opts = [`5 + 4 = 9`, `8 + 7 = 15`, wrongEq].sort(() => Math.random() - 0.5);
 
     stage.innerHTML = `
       <div style="text-align:center; font-weight:900; font-size:1.1rem; margin:10px 0;">
@@ -2147,15 +2877,16 @@
 
   // 10. FOREST BALANCE
   function renderBalanceQuestion(stage) {
-    const appleW = 3;
+    const appleW = state.diff === 'easy' ? 3 : 4;
     const count = Math.floor(Math.random() * 3) + 2;
     const ans = appleW * count;
     game.currentAns = String(ans);
     game.currentQuestionText = `${count} 顆蘋果多重？`;
-    const opts = [ans, ans + 3, ans - 2].sort(() => Math.random() - 0.5);
+    game.currentTip = `每顆蘋果 ${appleW} 公克，${count} 顆就是 ${appleW} × ${count} = ${ans} 公克！`;
+    const opts = [ans, ans + appleW, Math.max(1, ans - 2)].sort(() => Math.random() - 0.5);
 
     stage.innerHTML = `
-      <div style="text-align:center; font-weight:900; margin-bottom:8px;">⚖️ 1 顆 🍎 = 3 公克，天平右邊要放幾公克才會平衡？</div>
+      <div style="text-align:center; font-weight:900; margin-bottom:8px;">⚖️ 1 顆 🍎 = ${appleW} 公克，天平右邊要放幾公克才會平衡？</div>
       <div class="visual-aid-box" style="font-size:1.5rem;">
         ${'🍎'.repeat(count)}  ⚖️  [ ? 公克 ]
       </div>
@@ -2167,12 +2898,13 @@
 
   // 11. NUMBER TRAIN
   function renderTrainQuestion(stage) {
-    const step = state.diff === 'easy' ? 2 : 5;
+    const step = state.diff === 'easy' ? 2 : (state.diff === 'medium' ? 5 : 10);
     const start = Math.floor(Math.random() * 10) + 2;
     const seq = [start, start + step, start + step * 2];
     const ans = start + step * 3;
     game.currentAns = String(ans);
     game.currentQuestionText = `數列規律：${seq.join(', ')}, ?`;
+    game.currentTip = `每節車廂都比前一節多 ${step}，所以 ${seq[2]} + ${step} = ${ans}！`;
     const opts = [ans, ans + step, ans - 1].sort(() => Math.random() - 0.5);
 
     stage.innerHTML = `
@@ -2188,16 +2920,16 @@
 
   // 12. WHACK-A-MOLE GO/NO-GO
   function renderWhackQuestion(stage) {
-    const targetOdd = Math.random() > 0.5;
-    const nums = [2, 4, 7, 8, 10, 12];
-    if (!targetOdd) nums[2] = 5;
-    const ans = targetOdd ? '7' : '5';
+    const findBigOdd = state.diff === 'hard';
+    const nums = findBigOdd ? [4, 7, 12, 15, 18, 20] : [2, 4, 7, 8, 10, 12];
+    const ans = findBigOdd ? '15' : '7';
     game.currentAns = ans;
-    game.currentQuestionText = targetOdd ? '找出奇數地鼠' : '找出奇數地鼠';
+    game.currentQuestionText = findBigOdd ? '找出大於 10 的奇數地鼠' : '找出奇數地鼠';
+    game.currentTip = `個位數是 1、3、5、7、9 的才是奇數（單數）喔！`;
 
     stage.innerHTML = `
       <div style="text-align:center; font-weight:900; margin-bottom:8px;">
-        🔨 雙重規則任務：只敲「<span style="color:#E84393;">奇數（單數）</span>」地鼠！
+        🔨 雙重規則：只敲「<span style="color:#E84393;">${findBigOdd ? '大於 10 的奇數' : '奇數（單數）'}</span>」地鼠！
       </div>
       <div class="schulte-grid" style="grid-template-columns: repeat(3, 1fr);">
         ${nums.sort(() => Math.random() - 0.5).map(n => `
@@ -2207,7 +2939,7 @@
     `;
   }
 
-  // Global Single Event Delegation (iOS Safari Rock-Solid)
+  // Global Single Event Delegation
   document.addEventListener('click', function(e) {
     const btn = e.target.closest('[data-action]');
     if (!btn) return;
@@ -2240,8 +2972,71 @@
     } else if (action === 'close-modal') {
       document.getElementById('result-modal').classList.remove('open');
       switchTab('home');
+    } else if (action === 'claim-quest') {
+      const q = state.daily.quests.find(item => item.id === btn.dataset.qid);
+      if (q && q.prog >= q.target && !q.claimed) {
+        q.claimed = true;
+        state.coins += q.rewardCoins;
+        state.xp += q.rewardXp;
+        const pid = state.activePet;
+        state.petAffection[pid] = (state.petAffection[pid] || 1) + 1;
+        while (state.xp >= state.level * 300) {
+          state.xp -= state.level * 300;
+          state.level++;
+        }
+        saveState();
+        syncUI();
+        playTone(880, 'triangle', 0.2);
+        spawnFlyingReward(btn, '🍪');
+        const avatar = document.getElementById('home-pet-avatar');
+        if (avatar) { avatar.classList.remove('hop'); void avatar.offsetWidth; avatar.classList.add('hop'); }
+        showToast(`🎁 任務完成！獲得 +${q.rewardCoins} 🍪 與夥伴親密度 +1！`);
+      }
+    } else if (action === 'claim-path') {
+      const code = btn.dataset.code;
+      if ((state.pathProgress[code] || 0) >= 100 && !state.pathClaimed[code]) {
+        state.pathClaimed[code] = true;
+        state.coins += 50;
+        saveState();
+        renderPath();
+        syncUI();
+        playTone(880, 'triangle', 0.2);
+        showToast(`🎉 階段 ${code} 達標獎勵 +50 🍪！`);
+      }
+    } else if (action === 'use-item') {
+      if (!game || game.lockedAnswer) return;
+      const item = btn.dataset.item;
+      if ((state.items[item] || 0) <= 0) {
+        showToast('🎒 這個道具用完囉，可到動物小屋補充！');
+        return;
+      }
+      if (item === 'freeze') {
+        state.items.freeze--;
+        game.frozenUntil = Date.now() + 5000;
+        playTone(980, 'sine', 0.2);
+        showToast('❄️ 時間凍結！倒數暫停 5 秒鐘');
+        updateTimerHUD();
+      } else if (item === 'hint') {
+        state.items.hint--;
+        game.usedHint = true;
+        playTone(740, 'triangle', 0.16);
+        applyHintEffect(false);
+      } else if (item === 'shield') {
+        if (game.shieldActive) {
+          showToast('🛡️ 目前已經開啟護盾囉！');
+          return;
+        }
+        state.items.shield--;
+        game.shieldActive = true;
+        playTone(620, 'triangle', 0.18);
+        showToast('🛡️ 連擊護盾已啟動！答錯一次不中斷連擊');
+        updateComboAndPetHUD();
+      }
+      updateQuestProgress('q_item_or_rev', 1, false);
+      saveState();
+      syncUI();
     } else if (action === 'pick-choice') {
-      handleAnswer(String(btn.dataset.val) === String(game.currentAns), btn.dataset.val);
+      handleAnswer(String(btn.dataset.val) === String(game.currentAns), btn.dataset.val, btn);
     } else if (action === 'key-num') {
       playTone(500, 'sine', 0.08);
       if (game.inputVal.length < 3) {
@@ -2255,7 +3050,7 @@
       if (slot) slot.textContent = game.inputVal || '?';
     } else if (action === 'key-ok') {
       if (!game.inputVal) return;
-      handleAnswer(game.inputVal === String(game.currentAns), game.inputVal);
+      handleAnswer(game.inputVal === String(game.currentAns), game.inputVal, btn);
     } else if (action === 'toggle-aid') {
       game.showAid = !game.showAid;
       renderSpeedQuestion(document.getElementById('game-stage'));
@@ -2263,13 +3058,19 @@
       game.useHandwritingInput = !game.useHandwritingInput;
       renderSpeedQuestion(document.getElementById('game-stage'));
     } else if (action === 'submit-hw-speed') {
-      if (strokeCount === 0) { showToast('✍️ 請先在畫布上寫出答案喔！'); return; }
-      handleAnswer(true, game.currentAns);
+      if (hwMetrics.points < 8) { showToast('✍️ 請先在畫布上寫出答案喔！'); return; }
+      handleAnswer(true, game.currentAns, btn);
     } else if (action === 'clear-hw') {
       initCanvasDraw(game.mode === 'handwriting' ? game.currentAns : '');
     } else if (action === 'finish-hw') {
-      if (strokeCount === 0) { showToast('✍️ 請先跟著虛線描寫一筆喔！'); return; }
-      handleAnswer(true, game.currentAns);
+      const spanW = hwMetrics.maxX - hwMetrics.minX;
+      const spanH = hwMetrics.maxY - hwMetrics.minY;
+      if (hwMetrics.points < (game.hwMinPoints || 15) || spanW < 25 || spanH < 20) {
+        playTone(240, 'sine', 0.15);
+        showToast('✍️ 筆畫還不夠完整喔！請沿著虛線再描仔細一點～');
+        return;
+      }
+      handleAnswer(true, game.currentAns, btn);
     } else if (action === 'speak-word') {
       speakWord(btn.dataset.word);
     } else if (action === 'set-clock-sub') {
@@ -2293,17 +3094,18 @@
       if (info) info.textContent = '目前設定：' + fmt;
     } else if (action === 'check-dial') {
       const fmt = `${String(game.dialH).padStart(2, '0')}:${String(game.dialM).padStart(2, '0')}`;
-      handleAnswer(fmt === game.currentAns, fmt);
+      handleAnswer(fmt === game.currentAns, fmt, btn);
     } else if (action === 'tap-schulte') {
       const num = parseInt(btn.dataset.num, 10);
       if (num === game.schulteNext) {
-        playTone(520 + num * 35, 'sine', 0.1);
+        playTone(520 + num * 30, 'sine', 0.1);
+        btn.classList.remove('hint-pulse');
         btn.classList.add('done');
         game.schulteNext++;
         const t = document.getElementById('schulte-target');
         if (t) t.textContent = game.schulteNext;
         if (game.schulteNext > game.schulteTotal) {
-          handleAnswer(true, '完成');
+          handleAnswer(true, '完成', btn);
         }
       } else {
         playTone(220, 'sawtooth', 0.15);
@@ -2329,6 +3131,7 @@
       state.unlockedPets.push(pet.id);
       state.activePet = pet.id;
       state.petAffection[pet.id] = 1;
+      checkAchievements();
       saveState();
       renderPets();
       syncUI();
@@ -2347,9 +3150,22 @@
       syncUI();
       playTone(760, 'triangle', 0.16);
       showToast('🍓 夥伴吃得好開心，親密度提升了！');
+    } else if (action === 'buy-items') {
+      if (state.coins < 50) {
+        showToast('🍪 餅乾不足 50 個喔！');
+        return;
+      }
+      state.coins -= 50;
+      state.items.freeze += 1;
+      state.items.hint += 1;
+      state.items.shield += 1;
+      saveState();
+      syncUI();
+      playTone(720, 'triangle', 0.16);
+      showToast('🎒 道具補給完成！凍結/提示/護盾各 +1');
     } else if (action === 'reset-data') {
-      localStorage.removeItem('jojo_math_academy_v5');
-      state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+      localStorage.removeItem('jojo_math_academy_v6');
+      state = initFreshState();
       saveState();
       syncUI();
       renderProfile();
