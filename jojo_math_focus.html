@@ -1383,7 +1383,7 @@
         </div>
       </div>
 
-      <!-- Daily Missions Card (Between Companion Card & Difficulty Strip) -->
+      <!-- Daily Missions Card -->
       <div class="daily-card" id="daily-mission-card">
         <div class="daily-card-header">
           <span>📋 今日森林任務 <small style="font-weight:700; opacity:0.85;">（重置時間：明天 00:00）</small></span>
@@ -1567,7 +1567,7 @@
         <div class="achievement-section">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
             <span style="font-weight:900; font-size:0.95rem;">🏅 成就徽章</span>
-            <span style="font-weight:900; font-size:0.84rem; color:#E67E22;"><span id="ach-unlocked-count">0</span> / <span id="ach-total-count">8</span></span>
+            <span style="font-weight:900; font-size:0.84rem; color:#E67E22;"><span id="ach-unlocked-count">0</span> / <span id="ach-total-count">9</span></span>
           </div>
           <div class="achievement-filter-row" id="ach-filter-row">
             <button class="ach-filter-btn active" data-action="set-ach-filter" data-filter="all">全部</button>
@@ -1730,8 +1730,7 @@
       description: '完成第一局專注訓練',
       type: 'gamesCompleted',
       target: 1,
-      reward: { coins: 50, xp: 30 },
-      hintAction: { tab: 'home' }
+      reward: { coins: 50, xp: 30 }
     },
     {
       id: 'combo_10',
@@ -1741,8 +1740,7 @@
       description: '單局達成 10 題連擊',
       type: 'bestCombo',
       target: 10,
-      reward: { coins: 100, xp: 60 },
-      hintAction: { mode: 'speed' }
+      reward: { coins: 100, xp: 60 }
     },
     {
       id: 'correct_100',
@@ -1752,8 +1750,7 @@
       description: '累計答對 100 題',
       type: 'correctAnswers',
       target: 100,
-      reward: { coins: 120, xp: 80 },
-      hintAction: { mode: 'speed' }
+      reward: { coins: 120, xp: 80 }
     },
     {
       id: 'review_10',
@@ -1763,8 +1760,7 @@
       description: '完成 10 題錯題訂正',
       type: 'reviewCompleted',
       target: 10,
-      reward: { coins: 100, xp: 80 },
-      hintAction: { mode: 'review' }
+      reward: { coins: 100, xp: 80 }
     },
     {
       id: 'mode_6',
@@ -1774,8 +1770,7 @@
       description: '挑戰 6 種不同遊戲模式',
       type: 'uniqueModes',
       target: 6,
-      reward: { coins: 100, xp: 70 },
-      hintAction: { tab: 'home' }
+      reward: { coins: 100, xp: 70 }
     },
     {
       id: 'perfect_round',
@@ -1785,8 +1780,7 @@
       description: '單局 8 題全部答對',
       type: 'perfectRounds',
       target: 1,
-      reward: { coins: 150, xp: 100 },
-      hintAction: { mode: 'clock' }
+      reward: { coins: 150, xp: 100 }
     },
     {
       id: 'pet_3',
@@ -1796,8 +1790,7 @@
       description: '解鎖 3 隻森林夥伴',
       type: 'petsUnlocked',
       target: 3,
-      reward: { coins: 100, xp: 60 },
-      hintAction: { tab: 'pets' }
+      reward: { coins: 100, xp: 60 }
     },
     {
       id: 'feed_10',
@@ -1807,8 +1800,7 @@
       description: '餵食夥伴 10 次',
       type: 'petFed',
       target: 10,
-      reward: { coins: 80, xp: 50 },
-      hintAction: { tab: 'pets' }
+      reward: { coins: 80, xp: 50 }
     },
     {
       id: 'all_modes',
@@ -1818,8 +1810,7 @@
       description: '至少完成所有遊戲模式一次',
       type: 'uniqueModes',
       target: 12,
-      reward: { coins: 300, xp: 200 },
-      hintAction: { tab: 'home' }
+      reward: { coins: 300, xp: 200 }
     }
   ];
 
@@ -1843,7 +1834,7 @@
     eng: [
       { code: 'E1', title: '自然發音 /c/ /a/ /t/ 拼寫', mode: 'handwriting' },
       { code: 'E2', title: '水果單字 banana 描寫', mode: 'handwriting' },
-      { code: 'E3', title: '英文時間 O'clock 認識鐘表', mode: 'clock' }
+      { code: 'E3', title: '英文時間 O\'clock 認識鐘表', mode: 'clock' }
     ]
   };
 
@@ -1907,6 +1898,10 @@
     achievements: Object.assign({}, ACHIEVEMENT_STATE_DEFAULT)
   };
 
+  let state = null;
+  let activeAchFilter = 'all';
+  let lastRoundSummary = { missions: [], unlockedAchs: [] };
+
   function pickDailyMissionIds(count) {
     const basicPool = ['play_2', 'correct_5'];
     const skillPool = ['combo_5', 'review_1'];
@@ -1920,6 +1915,7 @@
   }
 
   function ensureDailyState() {
+    if (!state) return;
     const today = getTodayKey();
     if (state.daily && state.daily.date === today && Array.isArray(state.daily.missionIds) && state.daily.missionIds.length === 3) {
       return;
@@ -1946,10 +1942,9 @@
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) {
-        const fresh = JSON.parse(JSON.stringify(DEFAULT_STATE));
-        state = fresh;
+        state = JSON.parse(JSON.stringify(DEFAULT_STATE));
         ensureDailyState();
-        return fresh;
+        return state;
       }
       const parsed = JSON.parse(raw);
       const merged = Object.assign(
@@ -1977,12 +1972,11 @@
       merged.achievements.uniqueModes = Array.isArray(merged.achievements.uniqueModes) ? merged.achievements.uniqueModes : [];
       state = merged;
       ensureDailyState();
-      return merged;
+      return state;
     } catch (e) {
-      const fallback = JSON.parse(JSON.stringify(DEFAULT_STATE));
-      state = fallback;
+      state = JSON.parse(JSON.stringify(DEFAULT_STATE));
       ensureDailyState();
-      return fallback;
+      return state;
     }
   }
 
@@ -1992,9 +1986,7 @@
     } catch (e) {}
   }
 
-  let state = loadState();
-  let activeAchFilter = 'all';
-  let lastRoundSummary = { missions: [], unlockedAchs: [] };
+  state = loadState();
 
   function getMetricValue(type, roundCorrect) {
     const ach = state.achievements;
@@ -3545,9 +3537,8 @@
       state.unlockedPets.push(pet.id);
       state.activePet = pet.id;
       state.petAffection[pet.id] = 1;
-      saveState();
+      recordProgress({ type: 'petUnlocked' });
       renderPets();
-      syncUI();
       playTone(880, 'triangle', 0.2);
       showToast(`🎉 成功領養 ${pet.name}！`);
     } else if (action === 'feed-pet') {
