@@ -1740,6 +1740,7 @@
       <div class="stat-pill" id="coin-target-pill">🍪 <span id="ui-coins">200</span></div>
       <div class="stat-pill">🔥 <span id="ui-streak">1</span>天</div>
       <button class="icon-btn" data-action="toggle-theme" title="切換日夜背景">☀️</button>
+      <button class="icon-btn" data-action="toggle-bgm" id="btn-bgm" title="背景音樂開關">🎵</button>
       <button class="icon-btn" data-action="toggle-sound" id="btn-sound" title="音效開關">🔊</button>
     </div>
   </header>
@@ -1828,7 +1829,17 @@
           <div class="card-icon-pill">🍎</div>
           <div class="card-title">數數對應</div>
         </button>
-        <div style="flex:2 1 0%;"></div>
+
+        <button class="uniform-card c-train" data-action="start-game" data-mode="linkcount">
+          <span class="badge-float">NEW</span>
+          <div class="card-top-meta">
+            <span class="card-tag">數字連物品</span>
+            <span class="card-best">🏆<span id="best-linkcount">0</span></span>
+          </div>
+          <div class="card-icon-pill">🔗</div>
+          <div class="card-title">連連看數數</div>
+        </button>
+        <div style="flex:1 1 0%;"></div>
       </div>
 
       <div class="sec-heading">
@@ -2295,6 +2306,7 @@
     streak: 1,
     lastPlayDate: '',
     sound: true,
+    bgm: true,
     theme: 'day',
     diff: 'easy',
     activePet: 'panda',
@@ -2304,7 +2316,7 @@
     petCostumes: { panda: 'none' },
     items: { freeze: 2, hint: 2, shield: 2 },
     best: {
-      clock: 0, handwriting: 0, review: 0, counting: 0,
+      clock: 0, handwriting: 0, review: 0, counting: 0, linkcount: 0,
       speed: 0, schulte: 0, memory: 0,
       distract: 0, match: 0, oddone: 0,
       balance: 0, train: 0, whack: 0
@@ -2573,6 +2585,68 @@
     } catch (e) {}
   }
 
+  // Gentle child-friendly forest melody loop via Web Audio API (no external files needed)
+  let bgmTimer = null;
+  let bgmStep = 0;
+  const BGM_NOTES = [
+    523.25, 0, 659.25, 783.99, 659.25, 587.33, 523.25, 0,
+    440.00, 0, 523.25, 659.25, 587.33, 523.25, 493.88, 0,
+    523.25, 659.25, 783.99, 880.00, 783.99, 659.25, 587.33, 0,
+    587.33, 659.25, 587.33, 493.88, 523.25, 0, 523.25, 0
+  ];
+
+  function playBgmNote(freq, dur) {
+    if (!freq || !state || !state.bgm || !state.sound) return;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!audioCtx) audioCtx = new AC();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, now);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(0.026, now + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + dur + 0.02);
+    } catch (e) {}
+  }
+
+  function startBgm() {
+    if (bgmTimer) return;
+    bgmTimer = setInterval(() => {
+      if (!state || !state.bgm || !state.sound) return;
+      const freq = BGM_NOTES[bgmStep % BGM_NOTES.length];
+      bgmStep++;
+      playBgmNote(freq, 0.36);
+    }, 420);
+  }
+
+  function stopBgm() {
+    if (bgmTimer) {
+      clearInterval(bgmTimer);
+      bgmTimer = null;
+    }
+  }
+
+  function updateBgmState() {
+    if (state && state.bgm && state.sound) {
+      startBgm();
+    } else {
+      stopBgm();
+    }
+    const btnBgm = document.getElementById('btn-bgm');
+    if (btnBgm && state) {
+      btnBgm.textContent = (state.bgm && state.sound) ? '🎵' : '🔇';
+      btnBgm.style.opacity = (state.bgm && state.sound) ? '1' : '0.55';
+    }
+  }
+
   function speakWord(text) {
     try {
       if ('speechSynthesis' in window) {
@@ -2672,6 +2746,7 @@
     document.getElementById('ui-coins').textContent = state.coins;
     document.getElementById('ui-streak').textContent = state.streak;
     document.getElementById('btn-sound').textContent = state.sound ? '🔊' : '🔇';
+    updateBgmState();
 
     document.body.classList.remove('theme-sunset', 'theme-night');
     if (state.theme === 'sunset') document.body.classList.add('theme-sunset');
@@ -2944,12 +3019,15 @@
     }
 
     if (game.qIndex > 0 && game.qIndex % 3 === 1) {
-      const pool = [
+      const basePool = [
         { id: 'lucky', text: '🍀 幸運餅乾事件：本題答對獲得雙倍餅乾！' },
         { id: 'pethelp', text: '🐾 寵物神助攻：夥伴幫你刪掉一個錯誤選項！' },
         { id: 'rainbow', text: '🌈 彩虹閃電題：限時 12 秒，答對分數翻倍！' },
         { id: 'silent', text: '🌲 安靜森林考驗：本題靜音倒數，考驗內在專注！' }
       ];
+      const pool = (game.mode === 'match' || game.mode === 'linkcount')
+        ? basePool.filter(ev => ev.id !== 'pethelp')
+        : basePool;
       const chosen = pool[Math.floor(Math.random() * pool.length)];
       game.eventType = chosen.id;
       banner.className = 'event-banner active';
@@ -3402,6 +3480,184 @@
     pgTimer = setInterval(tick, 75);
   }
 
+  function renderLinkCountQuestion(stage) {
+    const maxNum = state.diff === 'hard' ? 10 : (state.diff === 'medium' ? 8 : 6);
+    const pool = [
+      { emoji: '🍎', name: '蘋果' },
+      { emoji: '🍌', name: '香蕉' },
+      { emoji: '🍓', name: '草莓' },
+      { emoji: '🎈', name: '氣球' },
+      { emoji: '⭐', name: '星星' },
+      { emoji: '🐟', name: '小魚' },
+      { emoji: '🧁', name: '杯子蛋糕' },
+      { emoji: '🐢', name: '小烏龜' }
+    ];
+    const counts = [];
+    const usedCounts = new Set();
+    while (counts.length < 3) {
+      const c = Math.floor(Math.random() * maxNum) + 1;
+      if (!usedCounts.has(c)) {
+        usedCounts.add(c);
+        counts.push(c);
+      }
+    }
+    const leftNums = counts.slice().sort(() => Math.random() - 0.5);
+    const rightItems = counts.map((c, idx) => {
+      const p = pool[(idx + Math.floor(Math.random() * pool.length)) % pool.length];
+      return { id: idx, count: c, emoji: p.emoji, name: p.name };
+    }).sort(() => Math.random() - 0.5);
+
+    game.currentAns = `${counts[0]} 連 ${counts[0]} 個物品`;
+    game.currentQuestionText = '阿拉伯數字連物品數量';
+    game.currentTip = `先數右邊物品有幾個，再點左邊對應的阿拉伯數字連起來喔！`;
+    game.linkSelectedLeft = null;
+    game.linkSelectedRight = null;
+    game.linkMatchedCount = 0;
+    game.linkPairs = [];
+
+    stage.innerHTML = `
+      <div style="text-align:center; font-weight:900; font-size:1.25rem; margin-bottom:8px;">
+        🔗 連連看：把<b>阿拉伯數字</b>連到數量相同的<b>物品群組</b>！
+        <span id="link-prog-tag" style="margin-left:6px; font-size:0.9rem; color:#0984E3;">已連線 0/3 組</span>
+      </div>
+      <div id="link-board" style="position:relative; display:grid; grid-template-columns: 88px minmax(48px, 1fr) minmax(150px, 2.2fr); gap:12px; align-items:stretch; padding:8px 4px;">
+        <svg id="link-svg-lines" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:4;"></svg>
+        <div id="link-left-col" style="grid-column:1; display:flex; flex-direction:column; gap:10px; z-index:5;">
+          ${leftNums.map((n, idx) => `
+            <button class="choice-pill c${idx % 4}" data-link-side="left" data-val="${n}" style="border-radius:18px; min-height:74px; margin:0; display:flex; align-items:center; justify-content:center; font-size:1.65rem;">
+              ${n}
+            </button>
+          `).join('')}
+        </div>
+        <div aria-hidden="true" style="grid-column:2; display:flex; align-items:center; justify-content:center; color:rgba(9,132,227,0.35); font-size:0.85rem; font-weight:900; pointer-events:none; user-select:none;">• • •</div>
+        <div id="link-right-col" style="grid-column:3; display:flex; flex-direction:column; gap:10px; z-index:5;">
+          ${rightItems.map((it, idx) => {
+            const icons = Array(it.count).fill(it.emoji);
+            const rows = [];
+            for (let r = 0; r < icons.length; r += 5) {
+              rows.push(`<div style="display:flex; align-items:center; justify-content:center; gap:6px; line-height:1.25;">${icons.slice(r, r + 5).map(ic => `<span style="font-size:1.38rem;">${ic}</span>`).join('')}</div>`);
+            }
+            return `
+            <button class="visual-aid-box" data-link-side="right" data-val="${it.count}" style="margin:0; min-height:74px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; cursor:pointer; border-width:2.5px; border-bottom-width:5px; font-weight:900; padding:8px 10px;">
+              ${rows.join('')}
+            </button>
+          `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+
+    const board = stage.querySelector('#link-board');
+    const svg = stage.querySelector('#link-svg-lines');
+
+    function redrawLines() {
+      if (!svg || !board) return;
+      const bRect = board.getBoundingClientRect();
+      svg.innerHTML = game.linkPairs.map(pair => {
+        const r1 = pair.leftBtn.getBoundingClientRect();
+        const r2 = pair.rightBtn.getBoundingClientRect();
+        const x1 = r1.right - bRect.left;
+        const y1 = r1.top + r1.height / 2 - bRect.top;
+        const x2 = r2.left - bRect.left;
+        const y2 = r2.top + r2.height / 2 - bRect.top;
+        return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#1DD1A1" stroke-width="5" stroke-linecap="round"/>`;
+      }).join('');
+    }
+
+    function clearHighlight(btn) {
+      if (!btn) return;
+      btn.style.boxShadow = '';
+      btn.style.transform = '';
+    }
+
+    function markHighlight(btn, color) {
+      if (!btn) return;
+      btn.style.boxShadow = `0 0 0 4px ${color}`;
+      btn.style.transform = 'scale(1.03)';
+    }
+
+    if (board) {
+      board.onclick = function(ev) {
+        const btn = ev.target.closest('[data-link-side]');
+        if (!btn || !game || game.lockedAnswer || btn.dataset.matched === '1') return;
+        const side = btn.dataset.linkSide;
+        const val = Number(btn.dataset.val);
+
+        if (side === 'left') {
+          if (game.linkSelectedLeft === btn) {
+            clearHighlight(btn);
+            game.linkSelectedLeft = null;
+            return;
+          }
+          clearHighlight(game.linkSelectedLeft);
+          game.linkSelectedLeft = btn;
+          markHighlight(btn, '#54A0FF');
+          playTone(520, 'sine', 0.08);
+        } else {
+          if (game.linkSelectedRight === btn) {
+            clearHighlight(btn);
+            game.linkSelectedRight = null;
+            return;
+          }
+          clearHighlight(game.linkSelectedRight);
+          game.linkSelectedRight = btn;
+          markHighlight(btn, '#FF6B9D');
+          playTone(580, 'sine', 0.08);
+        }
+
+        if (game.linkSelectedLeft && game.linkSelectedRight) {
+          const lBtn = game.linkSelectedLeft;
+          const rBtn = game.linkSelectedRight;
+          const lVal = Number(lBtn.dataset.val);
+          const rVal = Number(rBtn.dataset.val);
+          game.linkSelectedLeft = null;
+          game.linkSelectedRight = null;
+          clearHighlight(lBtn);
+          clearHighlight(rBtn);
+
+          if (lVal === rVal) {
+            lBtn.dataset.matched = '1';
+            rBtn.dataset.matched = '1';
+            lBtn.style.opacity = '0.55';
+            rBtn.style.opacity = '0.55';
+            lBtn.style.pointerEvents = 'none';
+            rBtn.style.pointerEvents = 'none';
+            lBtn.style.borderColor = '#1DD1A1';
+            rBtn.style.borderColor = '#1DD1A1';
+            game.linkPairs.push({ leftBtn: lBtn, rightBtn: rBtn });
+            game.linkMatchedCount++;
+            redrawLines();
+            playTone(760, 'triangle', 0.14);
+
+            const progTag = stage.querySelector('#link-prog-tag');
+            if (progTag) progTag.textContent = `已連線 ${game.linkMatchedCount}/3 組`;
+
+            if (game.linkMatchedCount >= 3) {
+              handleAnswer(true, `數字${lVal}連${rVal}個物品`, rBtn);
+            } else {
+              showToast(`🔗 連線成功！數字 ${lVal} 剛好有 ${rVal} 個物品！`);
+            }
+          } else {
+            lBtn.classList.add('wrong-shake');
+            rBtn.classList.add('wrong-shake');
+            playTone(200, 'sawtooth', 0.2);
+            if (!(state.activePet === 'panda' && !game.pandaFreeSaveUsed && game.combo > 0)) {
+              game.combo = 0;
+              updateComboAndPetHUD();
+            } else {
+              game.pandaFreeSaveUsed = true;
+            }
+            showToast(`🔗 數字 ${lVal} 跟右邊數量不一樣喔，再數一數！`);
+            setTimeout(() => {
+              lBtn.classList.remove('wrong-shake');
+              rBtn.classList.remove('wrong-shake');
+            }, 420);
+          }
+        }
+      };
+    }
+  }
+
   function renderCountingQuestion(stage) {
     const qType = game.qIndex % 4;
     if (qType === 0) {
@@ -3480,6 +3736,7 @@
     const m = game.mode;
 
     if (m === 'counting') renderCountingQuestion(stage);
+    else if (m === 'linkcount') renderLinkCountQuestion(stage);
     else if (m === 'clock') renderClockQuestion(stage);
     else if (m === 'handwriting') renderHandwritingQuestion(stage);
     else if (m === 'review') renderReviewQuestion(stage);
@@ -3496,13 +3753,41 @@
     if (state.activePet === 'hedgehog' && (m === 'schulte' || m === 'oddone')) {
       applyHintEffect(true);
     }
-    if (game.eventType === 'pethelp') {
+    if (game.eventType === 'pethelp' && m !== 'match') {
       applyHintEffect(true);
+    } else if (game.eventType === 'pethelp' && m === 'match') {
+      showToast('🐾 寵物神助攻：找兩顆相加等於目標的果凍配對吧！');
     }
   }
 
   function applyHintEffect(isFree) {
     if (!game) return;
+    if (game.mode === 'linkcount') {
+      const leftBtns = Array.from(document.querySelectorAll('[data-link-side="left"]')).filter(b => b.dataset.matched !== '1');
+      const rightBtns = Array.from(document.querySelectorAll('[data-link-side="right"]')).filter(b => b.dataset.matched !== '1');
+      for (const lb of leftBtns) {
+        const rb = rightBtns.find(x => Number(x.dataset.val) === Number(lb.dataset.val));
+        if (rb) {
+          lb.style.boxShadow = '0 0 0 4px #1DD1A1';
+          rb.style.boxShadow = '0 0 0 4px #1DD1A1';
+          if (!isFree) showToast(`💡 提示：把數字 ${lb.dataset.val} 連到有 ${lb.dataset.val} 個物品的那一排！`);
+          return true;
+        }
+      }
+    }
+    if (game.mode === 'match' && game.matchTargetSum) {
+      const activeBtns = Array.from(document.querySelectorAll('[data-jelly-btn]')).filter(b => b.dataset.cleared !== '1');
+      for (let i = 0; i < activeBtns.length; i++) {
+        for (let j = i + 1; j < activeBtns.length; j++) {
+          if (Number(activeBtns[i].dataset.val) + Number(activeBtns[j].dataset.val) === game.matchTargetSum) {
+            activeBtns[i].style.boxShadow = '0 0 0 4px #1DD1A1';
+            activeBtns[j].style.boxShadow = '0 0 0 4px #1DD1A1';
+            if (!isFree) showToast(`💡 提示：${activeBtns[i].dataset.val} + ${activeBtns[j].dataset.val} = ${game.matchTargetSum}！`);
+            return true;
+          }
+        }
+      }
+    }
     const choices = Array.from(document.querySelectorAll('.choice-pill:not(.eliminated)'));
     const wrongChoices = choices.filter(b => String(b.dataset.val) !== String(game.currentAns));
     if (wrongChoices.length > 1) {
@@ -3567,7 +3852,7 @@
         <div class="hw-canvas-wrap"><canvas id="hw-canvas" class="hw-canvas"></canvas></div>
         <div style="display:flex; gap:8px;">
           <button class="diff-btn" style="flex:1;" data-action="clear-hw">🧹 清除重寫</button>
-          <button class="primary-action-btn" style="flex:2; margin-top:0;" data-action="submit-hw-speed">✓ 送出答案 (${ans})</button>
+          <button class="primary-action-btn" style="flex:2; margin-top:0;" data-action="submit-hw-speed">✓ 送出答案</button>
         </div>
       ` : `
         <div class="keypad-grid">
@@ -3728,7 +4013,18 @@
         <button class="primary-action-btn" style="flex:2; margin-top:0;" data-action="finish-hw">✨ 檢查並送出</button>
       </div>
     `;
+    game.hwTargetText = item.text;
     initCanvasDraw(item.text);
+    const clearBtn = stage.querySelector('[data-action="clear-hw"]');
+    if (clearBtn) {
+      clearBtn.onclick = function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        initCanvasDraw(item.text);
+        playTone(520, 'sine', 0.08);
+        showToast('🧹 已清除筆跡，可以重新書寫囉！');
+      };
+    }
   }
 
   let hwMetrics = { points: 0, minX: 9999, maxX: 0, minY: 9999, maxY: 0 };
@@ -3737,9 +4033,10 @@
     const canvas = document.getElementById('hw-canvas');
     if (!canvas) return;
     const rect = canvas.parentElement.getBoundingClientRect();
-    canvas.width = Math.max(280, rect.width);
-    canvas.height = Math.max(180, rect.height);
+    canvas.width = Math.max(280, Math.round(rect.width));
+    canvas.height = Math.max(180, Math.round(rect.height));
     const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     ctx.strokeStyle = '#FFD6E5';
     ctx.lineWidth = 2;
@@ -3804,10 +4101,205 @@
   }
 
 
+  function normalizeBoxBitmap(pixels, w, h, x0, y0, x1, y1, gridSize) {
+    const bw = Math.max(1, x1 - x0 + 1);
+    const bh = Math.max(1, y1 - y0 + 1);
+    const scale = (gridSize - 4) / Math.max(bw, bh);
+    const nw = Math.max(1, Math.round(bw * scale));
+    const nh = Math.max(1, Math.round(bh * scale));
+    const ox = Math.floor((gridSize - nw) / 2);
+    const oy = Math.floor((gridSize - nh) / 2);
+    const grid = new Float32Array(gridSize * gridSize);
+
+    for (let gy = 0; gy < nh; gy++) {
+      const sy = Math.min(h - 1, y0 + Math.floor((gy / nh) * bh));
+      for (let gx = 0; gx < nw; gx++) {
+        const sx = Math.min(w - 1, x0 + Math.floor((gx / nw) * bw));
+        if (pixels[sy * w + sx]) {
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+              const tx = ox + gx + dx;
+              const ty = oy + gy + dy;
+              if (tx >= 0 && tx < gridSize && ty >= 0 && ty < gridSize) {
+                const weight = (dx === 0 && dy === 0) ? 1.0 : 0.5;
+                if (weight > grid[ty * gridSize + tx]) {
+                  grid[ty * gridSize + tx] = weight;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return grid;
+  }
+
+  const REF_DIGIT_CACHE = {};
+  function getRefDigitGrid(ch, gridSize) {
+    const key = ch + '_' + gridSize;
+    if (REF_DIGIT_CACHE[key]) return REF_DIGIT_CACHE[key];
+    const c = document.createElement('canvas');
+    c.width = 96;
+    c.height = 96;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#000';
+    ctx.font = '800 72px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(ch, 48, 50);
+    const d = ctx.getImageData(0, 0, 96, 96).data;
+    const bin = new Uint8Array(96 * 96);
+    let x0 = 96, y0 = 96, x1 = 0, y1 = 0, any = false;
+    for (let y = 0; y < 96; y++) {
+      for (let x = 0; x < 96; x++) {
+        if (d[(y * 96 + x) * 4 + 3] > 80) {
+          bin[y * 96 + x] = 1;
+          any = true;
+          if (x < x0) x0 = x;
+          if (x > x1) x1 = x;
+          if (y < y0) y0 = y;
+          if (y > y1) y1 = y;
+        }
+      }
+    }
+    if (!any) return null;
+    const res = {
+      grid: normalizeBoxBitmap(bin, 96, 96, x0, y0, x1, y1, gridSize),
+      aspect: (x1 - x0 + 1) / Math.max(1, y1 - y0 + 1)
+    };
+    REF_DIGIT_CACHE[key] = res;
+    return res;
+  }
+
+  function digitSimilarity(box, bin, w, h, ch, gridSize) {
+    const uAspect = (box.x1 - box.x0 + 1) / Math.max(1, box.y1 - box.y0 + 1);
+    const bh = box.y1 - box.y0 + 1;
+    if (ch === '1' && uAspect < 0.42 && bh > 22) return 0.92;
+    const uGrid = normalizeBoxBitmap(bin, w, h, box.x0, box.y0, box.x1, box.y1, gridSize);
+    const ref = getRefDigitGrid(ch, gridSize);
+    if (!ref) return 0;
+    let dot = 0, normU = 0, normR = 0;
+    for (let i = 0; i < gridSize * gridSize; i++) {
+      dot += uGrid[i] * ref.grid[i];
+      normU += uGrid[i] * uGrid[i];
+      normR += ref.grid[i] * ref.grid[i];
+    }
+    return dot / (Math.sqrt(normU * normR) + 1e-6);
+  }
+
+  function recognizeDrawnNumber(bin, w, h, expectedStr) {
+    const vis = new Uint8Array(w * h);
+    const comps = [];
+    const qx = new Int32Array(w * h);
+    const qy = new Int32Array(w * h);
+
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const idx = y * w + x;
+        if (bin[idx] && !vis[idx]) {
+          let head = 0, tail = 0;
+          vis[idx] = 1;
+          qx[tail] = x; qy[tail] = y; tail++;
+          let x0 = x, x1 = x, y0 = y, y1 = y, count = 0;
+          while (head < tail) {
+            const cx = qx[head], cy = qy[head]; head++;
+            count++;
+            if (cx < x0) x0 = cx;
+            if (cx > x1) x1 = cx;
+            if (cy < y0) y0 = cy;
+            if (cy > y1) y1 = cy;
+            for (let dy = -2; dy <= 2; dy++) {
+              for (let dx = -2; dx <= 2; dx++) {
+                const nx = cx + dx, ny = cy + dy;
+                if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
+                  const nidx = ny * w + nx;
+                  if (bin[nidx] && !vis[nidx]) {
+                    vis[nidx] = 1;
+                    qx[tail] = nx; qy[tail] = ny; tail++;
+                  }
+                }
+              }
+            }
+          }
+          if (count >= 16 && (x1 - x0 + 1) >= 4 && (y1 - y0 + 1) >= 10) {
+            comps.push({ x0, y0, x1, y1, count });
+          }
+        }
+      }
+    }
+
+    if (comps.length === 0) return { ok: false, text: '' };
+
+    comps.sort((a, b) => a.x0 - b.x0);
+    const merged = [];
+    for (const c of comps) {
+      const prev = merged[merged.length - 1];
+      if (prev) {
+        const prevW = prev.x1 - prev.x0 + 1;
+        const curW = c.x1 - c.x0 + 1;
+        const overlapX = Math.min(prev.x1, c.x1) - Math.max(prev.x0, c.x0);
+        const minW = Math.min(prevW, curW);
+        const prevCx = (prev.x0 + prev.x1) * 0.5;
+        const curCx = (c.x0 + c.x1) * 0.5;
+        const sameDigitStroke = (overlapX > minW * 0.25) || (Math.abs(prevCx - curCx) < Math.max(prevW, curW) * 0.65 && curW < prevW * 1.15);
+        if (sameDigitStroke) {
+          prev.x0 = Math.min(prev.x0, c.x0);
+          prev.y0 = Math.min(prev.y0, c.y0);
+          prev.x1 = Math.max(prev.x1, c.x1);
+          prev.y1 = Math.max(prev.y1, c.y1);
+          prev.count += c.count;
+          continue;
+        }
+      }
+      merged.push(Object.assign({}, c));
+    }
+
+    const expDigits = String(expectedStr).trim();
+    const G = 28;
+    let recognized = '';
+    for (const box of merged) {
+      let bestCh = '?';
+      let bestScore = -1;
+      for (let d = 0; d <= 9; d++) {
+        const ch = String(d);
+        const sim = digitSimilarity(box, bin, w, h, ch, G);
+        const ref = getRefDigitGrid(ch, G);
+        const uAspect = (box.x1 - box.x0 + 1) / Math.max(1, box.y1 - box.y0 + 1);
+        const score = sim - (ref ? Math.abs(uAspect - ref.aspect) * 0.1 : 0);
+        if (score > bestScore) {
+          bestScore = score;
+          bestCh = ch;
+        }
+      }
+      recognized += bestCh;
+    }
+
+    if (recognized === expDigits) {
+      return { ok: true, text: recognized };
+    }
+
+    // If box count matches expected digits, evaluate per-digit similarity with forgiving child-handwriting threshold
+    if (merged.length === expDigits.length) {
+      let allMatch = true;
+      for (let k = 0; k < expDigits.length; k++) {
+        const sim = digitSimilarity(merged[k], bin, w, h, expDigits[k], G);
+        if (sim < 0.36) {
+          allMatch = false;
+          break;
+        }
+      }
+      if (allMatch) {
+        return { ok: true, text: expDigits };
+      }
+    }
+
+    return { ok: false, text: recognized || '手寫筆跡' };
+  }
+
   function evaluateHandwritingCanvas(canvas, expectedText, minPts) {
     const spanW = hwMetrics.maxX - hwMetrics.minX;
     const spanH = hwMetrics.maxY - hwMetrics.minY;
-    if (!canvas || hwMetrics.points < Math.max(8, (minPts || 12) * 0.55) || spanW < 18 || spanH < 16) {
+    if (!canvas || hwMetrics.points < Math.max(5, (minPts || 10) * 0.4) || spanW < 8 || spanH < 14) {
       return { hasStroke: false, isMatch: false, recognized: '' };
     }
     try {
@@ -3816,7 +4308,28 @@
       const h = canvas.height;
       const userData = ctx.getImageData(0, 0, w, h).data;
 
-      // Build reference mask of expectedText on an offscreen canvas
+      const bin = new Uint8Array(w * h);
+      let userInk = 0;
+      for (let i = 0; i < w * h; i++) {
+        const p = i * 4;
+        if (userData[p] < 140 && userData[p + 1] < 140 && userData[p + 2] < 140 && userData[p + 3] > 80) {
+          bin[i] = 1;
+          userInk++;
+        }
+      }
+      if (userInk < 14) {
+        return { hasStroke: false, isMatch: false, recognized: '' };
+      }
+
+      if (game && game.mode === 'speed') {
+        const res = recognizeDrawnNumber(bin, w, h, expectedText);
+        return {
+          hasStroke: true,
+          isMatch: res.ok,
+          recognized: res.text
+        };
+      }
+
       const refCanvas = document.createElement('canvas');
       refCanvas.width = w;
       refCanvas.height = h;
@@ -3828,22 +4341,17 @@
       rctx.fillText(String(expectedText || ''), w / 2, h / 2 + 4);
       const refData = rctx.getImageData(0, 0, w, h).data;
 
-      // Count dark user ink pixels (#2D3436 -> R<90, G<90, B<90, A>120)
-      let userInk = 0;
-      let hitRef = 0;
       let refTotal = 0;
-
       for (let i = 0; i < refData.length; i += 4) {
         if (refData[i + 3] > 60) refTotal++;
       }
 
-      // Dilate expected character mask slightly (radius ~14px) to allow natural child handwriting
       const mask = new Uint8Array(w * h);
+      const rad = 24;
       for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
           const idx = y * w + x;
           if (refData[idx * 4 + 3] > 60) {
-            const rad = 14;
             for (let dy = -rad; dy <= rad; dy++) {
               for (let dx = -rad; dx <= rad; dx++) {
                 if (dx * dx + dy * dy <= rad * rad) {
@@ -3858,29 +4366,18 @@
         }
       }
 
-      for (let y = 0; y < h; y++) {
-        for (let x = 0; x < w; x++) {
-          const idx = y * w + x;
-          const p = idx * 4;
-          const isDarkInk = userData[p] < 95 && userData[p + 1] < 95 && userData[p + 2] < 95 && userData[p + 3] > 100;
-          if (isDarkInk) {
-            userInk++;
-            if (mask[idx]) hitRef++;
-          }
-        }
+      let hitRef = 0;
+      for (let i = 0; i < w * h; i++) {
+        if (bin[i] && mask[i]) hitRef++;
       }
 
-      if (userInk < 25 || refTotal === 0) {
-        return { hasStroke: false, isMatch: false, recognized: '' };
-      }
-
-      const precision = hitRef / userInk; // How much of user's writing lies on/near the expected character
-      const coverage = Math.min(1, hitRef / Math.max(1, refTotal * 0.22));
-      const isMatch = precision >= 0.58 && coverage >= 0.22;
+      const precision = hitRef / userInk;
+      const coverage = Math.min(1, hitRef / Math.max(1, refTotal * 0.16));
+      const isMatch = precision >= 0.36 && coverage >= 0.16;
       return {
         hasStroke: true,
         isMatch: isMatch,
-        recognized: isMatch ? String(expectedText) : '亂畫筆跡'
+        recognized: isMatch ? String(expectedText) : '偏離字形'
       };
     } catch (e) {
       return { hasStroke: true, isMatch: false, recognized: '' };
@@ -3900,7 +4397,12 @@
       stopGameTimer();
       return;
     }
-    const item = state.wrongBank[0];
+    const rawItem = state.wrongBank[0] || {};
+    const qText = (rawItem.q && String(rawItem.q).trim()) ? String(rawItem.q).trim() : '15 + 18 = ?';
+    const ansText = (rawItem.ans && String(rawItem.ans).trim()) ? String(rawItem.ans).trim() : '33';
+    const userText = (rawItem.user && String(rawItem.user).trim()) ? String(rawItem.user).trim() : '?';
+    const item = { q: qText, ans: ansText, user: userText, tip: rawItem.tip };
+
     game.currentAns = item.ans;
     game.currentQuestionText = item.q;
     game.currentTip = item.tip || `再仔細算一次：${item.q}`;
@@ -3922,8 +4424,8 @@
           ⏰ 訂正計時器（剩餘 ${state.wrongBank.length} 題）
         </div>
         <div style="background:#FFF8F8; border:2px dashed #FF7675; border-radius:18px; padding:14px; margin-bottom:10px;">
-          <div style="font-size:0.82rem; color:#D63031; font-weight:800;">上次答錯：<span style="text-decoration:line-through; border:2px solid #FF4757; border-radius:50%; padding:1px 6px;">${item.user}</span></div>
-          <div style="font-size:1.7rem; font-weight:900; margin-top:6px;">${item.q}</div>
+          <div style="font-size:0.88rem; color:#D63031; font-weight:800;">上次答錯：<span style="text-decoration:line-through; border:2px solid #FF4757; border-radius:50%; padding:1px 6px;">${item.user}</span></div>
+          <div style="font-size:1.85rem; font-weight:900; margin-top:8px; color:#2D3436;">${item.q}</div>
         </div>
       </div>
       <div class="choice-list">
@@ -3982,17 +4484,46 @@
     const ans = a - b;
     game.currentAns = String(ans);
     game.currentQuestionText = `${a} - ${b} = ?`;
-    game.currentTip = `忽略周圍的干擾數字，專心算中間的 ${a} - ${b} = ${ans}！`;
+    game.currentTip = `忽略周圍飛舞的小蜜蜂與干擾數字，專心算中間的 ${a} - ${b} = ${ans}！`;
     const opts = [ans, ans + 1, ans + 2].sort(() => Math.random() - 0.5);
-    const extraBee = state.diff !== 'easy' ? `<span style="position:absolute; top:6px; right:14px; font-size:1.1rem; color:#E17055;">🐝 =${ans+5}</span>` : '';
 
     stage.innerHTML = `
-      <div style="text-align:center; font-weight:800; color:#0984E3;">🐝 忽略調皮小蜜蜂，算出中間題目！</div>
-      <div style="position:relative; padding:22px 14px; margin:10px 0; background:#F0F8FF; border-radius:18px; text-align:center;">
-        <span style="position:absolute; top:6px; left:12px; font-size:1.1rem;">🐝 99</span>
-        ${extraBee}
-        <span style="position:absolute; bottom:6px; right:14px; font-size:1.1rem;">🍯 +77</span>
-        <span style="font-size:2.2rem; font-weight:900; color:#2D3436;">${a} - ${b} = ?</span>
+      <style>
+        @keyframes beeBuzzA {
+          0%, 100% { transform: translate(0px, 0px) rotate(-6deg); }
+          50% { transform: translate(14px, -10px) rotate(6deg); }
+        }
+        @keyframes beeBuzzB {
+          0%, 100% { transform: translate(0px, 0px) rotate(6deg); }
+          50% { transform: translate(-14px, -9px) rotate(-6deg); }
+        }
+        @keyframes beeBuzzC {
+          0%, 100% { transform: translate(0px, 0px) scale(1); }
+          50% { transform: translate(10px, 8px) scale(1.08); }
+        }
+        .distract-bee {
+          position: absolute;
+          display: inline-flex;
+          align-items: center;
+          gap: 3px;
+          padding: 4px 8px;
+          border-radius: 999px;
+          background: rgba(255, 243, 191, 0.92);
+          border: 2px solid #FECA57;
+          box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+          font-weight: 900;
+          color: #2D3436;
+          pointer-events: none;
+          z-index: 3;
+        }
+      </style>
+      <div style="text-align:center; font-weight:900; font-size:1.15rem; color:#0984E3;">🐝 忽略調皮小蜜蜂，算出中間題目！</div>
+      <div style="position:relative; min-height:175px; padding:34px 18px; margin:10px 0; background:#F0F8FF; border-radius:20px; border:2px solid #C8E6FF; text-align:center; overflow:hidden; display:flex; align-items:center; justify-content:center;">
+        <span class="distract-bee" style="top:10px; left:14px; font-size:1.25rem; animation:beeBuzzA 2.2s ease-in-out infinite;">🐝 <span style="color:#D63031;">99</span></span>
+        <span class="distract-bee" style="top:10px; right:14px; font-size:1.25rem; animation:beeBuzzB 2.5s ease-in-out infinite;">🐝 <span style="color:#E17055;">=${ans + 5}</span></span>
+        <span class="distract-bee" style="bottom:10px; left:18px; font-size:1.2rem; animation:beeBuzzC 2.8s ease-in-out infinite;">🐝 <span style="color:#6C5CE7;">+18</span></span>
+        <span class="distract-bee" style="bottom:10px; right:18px; font-size:1.2rem; animation:beeBuzzA 2.4s ease-in-out infinite;">🍯 <span style="color:#B36B00;">+77</span></span>
+        <span style="position:relative; z-index:4; font-size:2.45rem; font-weight:900; color:#2D3436; background:rgba(255,255,255,0.85); padding:6px 18px; border-radius:16px;">${a} - ${b} = ?</span>
       </div>
       <div class="choice-list">
         ${opts.map((o, idx) => `<button class="choice-pill c${idx}" data-action="pick-choice" data-val="${o}">${o}</button>`).join('')}
@@ -4002,21 +4533,102 @@
 
   function renderMatchQuestion(stage) {
     const targetSum = state.diff === 'hard' ? 20 : 10;
-    const a = Math.floor(Math.random() * (targetSum - 2)) + 1;
-    const ans = targetSum - a;
-    game.currentAns = String(ans);
-    game.currentQuestionText = `${a} + ? = ${targetSum}`;
-    game.currentTip = `${a} 加上 ${ans} 剛好會等於 ${targetSum} 喔！`;
-    const opts = Array.from(new Set([ans, ans + 1, Math.max(1, ans - 1), ans + 2])).slice(0, 3).sort(() => Math.random() - 0.5);
+    // Build a 3x2 (6-tile) jelly matching board with 3 pairs that sum to targetSum
+    const pairs = [];
+    const used = new Set();
+    while (pairs.length < 3) {
+      const x = Math.floor(Math.random() * (targetSum - 1)) + 1;
+      const y = targetSum - x;
+      if (x !== y && !used.has(x) && !used.has(y)) {
+        used.add(x);
+        used.add(y);
+        pairs.push([x, y]);
+      }
+    }
+    const tiles = pairs.flatMap((pr, pIdx) => [
+      { id: pIdx * 2, val: pr[0], jelly: ['🍓', '🍇', '🍑'][pIdx] },
+      { id: pIdx * 2 + 1, val: pr[1], jelly: ['🍓', '🍇', '🍑'][pIdx] }
+    ]).sort(() => Math.random() - 0.5);
+
+    game.currentAns = `${pairs[0][0]} + ${pairs[0][1]} = ${targetSum}`;
+    game.currentQuestionText = `湊成 ${targetSum} 的果凍配對`;
+    game.currentTip = `點兩顆相加等於 ${targetSum} 的果凍就能消除囉（例如 ${pairs[0][0]} + ${pairs[0][1]} = ${targetSum}）！`;
+    game.matchSelected = null;
+    game.matchCleared = 0;
+    game.matchTargetSum = targetSum;
 
     stage.innerHTML = `
-      <div style="text-align:center; font-weight:900; font-size:1.1rem; margin:10px 0;">
-        🍬 湊數好朋友：<b>${a}</b> 要搭配哪個數字才會變成 <b style="color:#E84393;">${targetSum}</b>？
+      <div style="text-align:center; font-weight:900; font-size:1.1rem; margin-bottom:8px;">
+        🍬 果凍消消樂：點兩顆相加等於 <b style="color:#E84393;">${targetSum}</b> 的果凍！
+        <span id="match-prog-tag" style="margin-left:6px; font-size:0.85rem; color:#0984E3;">已消除 0/3 組</span>
       </div>
-      <div class="choice-list">
-        ${opts.map((o, idx) => `<button class="choice-pill c${idx}" data-action="pick-choice" data-val="${o}">${o}</button>`).join('')}
+      <div id="jelly-match-grid" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-top:8px;">
+        ${tiles.map((t, idx) => `
+          <button class="choice-pill c${idx % 4}" data-jelly-btn="1" data-val="${t.val}" style="border-radius:20px; min-height:68px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; font-size:1.35rem; line-height:1.15;">
+            <span style="font-size:1.25rem;">${t.jelly}</span>
+            <span>${t.val}</span>
+          </button>
+        `).join('')}
       </div>
     `;
+
+    const gridEl = stage.querySelector('#jelly-match-grid');
+    if (gridEl) {
+      gridEl.onclick = function(ev) {
+        const btn = ev.target.closest('[data-jelly-btn]');
+        if (!btn || !game || game.lockedAnswer || btn.dataset.cleared === '1') return;
+        const val = Number(btn.dataset.val);
+        if (!game.matchSelected) {
+          game.matchSelected = { btn, val };
+          btn.style.transform = 'scale(1.05)';
+          btn.style.boxShadow = '0 0 0 4px #FF6B9D';
+          playTone(540, 'sine', 0.09);
+        } else if (game.matchSelected.btn === btn) {
+          btn.style.transform = '';
+          btn.style.boxShadow = '';
+          game.matchSelected = null;
+        } else {
+          const first = game.matchSelected;
+          game.matchSelected = null;
+          first.btn.style.transform = '';
+          first.btn.style.boxShadow = '';
+
+          if (first.val + val === game.matchTargetSum) {
+            first.btn.dataset.cleared = '1';
+            btn.dataset.cleared = '1';
+            first.btn.style.opacity = '0.22';
+            btn.style.opacity = '0.22';
+            first.btn.style.pointerEvents = 'none';
+            btn.style.pointerEvents = 'none';
+            game.matchCleared++;
+            playTone(740, 'triangle', 0.14);
+            const tagEl = stage.querySelector('#match-prog-tag');
+            if (tagEl) tagEl.textContent = `已消除 ${game.matchCleared}/3 組`;
+
+            if (game.matchCleared >= 3) {
+              handleAnswer(true, `${first.val}+${val}=${game.matchTargetSum}`, btn);
+            } else {
+              showToast(`🍬 配對成功！${first.val} + ${val} = ${game.matchTargetSum}`);
+            }
+          } else {
+            btn.classList.add('wrong-shake');
+            first.btn.classList.add('wrong-shake');
+            playTone(200, 'sawtooth', 0.2);
+            if (!(state.activePet === 'panda' && !game.pandaFreeSaveUsed && game.combo > 0)) {
+              game.combo = 0;
+              updateComboAndPetHUD();
+            } else {
+              game.pandaFreeSaveUsed = true;
+            }
+            showToast(`🍬 ${first.val} + ${val} = ${first.val + val}（不是 ${game.matchTargetSum} 喔，再試試看！）`);
+            setTimeout(() => {
+              btn.classList.remove('wrong-shake');
+              first.btn.classList.remove('wrong-shake');
+            }, 420);
+          }
+        }
+      };
+    }
   }
 
   function renderOddOneQuestion(stage) {
@@ -4100,6 +4712,7 @@
   }
 
   document.addEventListener('click', function(e) {
+    updateBgmState();
     const pgStage = document.getElementById('pet-playground');
     const pgTreasure = e.target.closest('[data-pg-treasure]');
     if (pgTreasure) {
@@ -4251,6 +4864,13 @@
       saveState();
       syncUI();
       showToast(state.theme === 'day' ? '☀️ 陽光森林背景' : state.theme === 'sunset' ? '🌅 粉彩夕陽背景' : '🌙 星空螢火蟲背景');
+    } else if (action === 'toggle-bgm') {
+      state.bgm = !state.bgm;
+      if (state.bgm && !state.sound) state.sound = true;
+      saveState();
+      syncUI();
+      showToast(state.bgm ? '🎵 已開啟森林背景音樂' : '🔇 已關閉背景音樂');
+      if (state.bgm) playTone(587.33, 'triangle', 0.14);
     } else if (action === 'toggle-sound') {
       state.sound = !state.sound;
       saveState();
@@ -4339,6 +4959,11 @@
     } else if (action === 'toggle-aid') {
       game.showAid = !game.showAid;
       renderSpeedQuestion(document.getElementById('game-stage'));
+    } else if (action === 'clear-hw') {
+      const wm = (game && game.mode === 'handwriting' && game.hwTargetText) ? game.hwTargetText : '';
+      initCanvasDraw(wm);
+      playTone(520, 'sine', 0.08);
+      showToast('🧹 已清除筆跡，可以重新書寫囉！');
     } else if (action === 'toggle-hw-input') {
       game.useHandwritingInput = !game.useHandwritingInput;
       renderSpeedQuestion(document.getElementById('game-stage'));
